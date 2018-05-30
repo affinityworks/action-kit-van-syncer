@@ -8,7 +8,8 @@
   "license": "AGPL",
   "private": false,
   "scripts": {
-    "test": "mocha --reporter spec --compilers ts:ts-node/register 'src/test/**/*.spec.ts'"
+    "test": "mocha --reporter spec --compilers ts:ts-node/register 'src/test/**/*.spec.ts'",
+    "tsc": "./node_modules/typescript/bin/tsc"
   },
   "devDependencies": {
     "@types/chai": "^4.1.3",
