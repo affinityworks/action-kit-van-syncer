@@ -1,0 +1,22 @@
+{
+   "type": "postgres",
+   "host": "localhost",
+   "port": 5432,
+   "database": "ak2van",
+   "synchronize": true,
+   "logging": false,
+   "entities": [
+      "src/app/entity/**/*.ts"
+   ],
+   "migrations": [
+      "src/app/migration/**/*.ts"
+   ],
+   "subscribers": [
+      "src/app/subscriber/**/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "src/app/entity",
+      "migrationsDir": "src/app/migration",
+      "subscribersDir": "src/app/subscriber"
+   }
+}
