@@ -5,10 +5,10 @@
    "main": "src/app/index.ts",
    "repository": "https://github.com/affinityworks/ak2van.git",
    "author": "@aguestuser, @vaughanj10",
-   "license": "AGPL-3.0-or-later",
+   "license": "AGPL-3.0",
    "private": false,
    "engines": {
-      "node": "9.2.0"
+      "node": "10.4.0"
    },
    "scripts": {
       "test": "mocha --reporter spec --compilers ts:ts-node/register 'src/test/**/*.spec.ts'",
