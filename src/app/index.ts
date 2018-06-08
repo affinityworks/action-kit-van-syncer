@@ -1,19 +1,22 @@
 import "reflect-metadata"
-import {createConnection} from "typeorm"
+import {createConnection, getRepository} from "typeorm"
 import {User} from "./entity/User"
 
-createConnection().then(async (connection) => {
+(async () => {
+  try {
+    console.log("running...")
 
-    const user = new User()
-    user.firstName = "Timber"
-    user.lastName = "Saw"
-    user.age = 25
-    await connection.manager.save(user)
+    await createConnection()
+    const userRepo = getRepository(User)
+    await userRepo.save({
+      firstName: "Foo",
+      lastName: "Bar",
+      age: 25,
+    })
 
-    // console.log("Loading users from the database...");
-    const users = await connection.manager.find(User)
-    // console.log("Loaded users: ", users);
+    console.log("Loaded users: ", await userRepo.find())
 
-    // console.log("Here you can setup and run express/koa/any other framework.");
-
-}).catch((error) => console.error(error))
+  } catch (e) {
+    console.error(e)
+  }
+})()
