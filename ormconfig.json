@@ -3,20 +3,19 @@
    "host": "localhost",
    "port": 5432,
    "database": "ak2van",
-   "synchronize": true,
-   "logging": false,
+   "logging": true,
    "entities": [
-      "src/app/entity/**/*.ts"
+      "build/app/entity/**/*.js"
    ],
    "migrations": [
-      "src/app/migration/**/*.ts"
+      "build/app/migration/**/*.js"
    ],
    "subscribers": [
-      "src/app/subscriber/**/*.ts"
+      "build/app/subscriber/**/*.js"
    ],
    "cli": {
-      "entitiesDir": "src/app/entity",
-      "migrationsDir": "src/app/migration",
-      "subscribersDir": "src/app/subscriber"
+      "entitiesDir": "build/entity",
+      "migrationsDir": "build/migration",
+      "subscribersDir": "build/subscriber"
    }
 }

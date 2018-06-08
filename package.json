@@ -12,8 +12,8 @@
    },
    "scripts": {
       "test": "mocha --reporter spec --compilers ts:ts-node/register 'src/test/**/*.spec.ts'",
-      "tsc": "./node_modules/typescript/bin/tsc",
-      "start": "ts-node src/app/index.ts"
+      "build": "./node_modules/typescript/bin/tsc",
+      "start": "tsc && node build/app/index.js"
    },
    "devDependencies": {
       "@types/chai": "^4.1.3",
