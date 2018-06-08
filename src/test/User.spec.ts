@@ -1,34 +1,32 @@
 import {expect} from "chai"
 import {User} from "../app/entity/User"
-import {createConnection} from "typeorm"
+import {createConnection, getRepository} from "typeorm"
 import "reflect-metadata"
 import {omit} from "lodash"
 
 describe("User", () => {
+    let connection
+    let userRepo
 
-    // before((done) => {
-    //     createConnection().then(done).catch(console.error)
-    // })
+    before(async () => {
+        connection = await createConnection()
+        userRepo = getRepository(User)
+    })
 
-    it("creates a User", () => {
+    beforeEach(async () => {
+        await userRepo.create({
+            firstName: "Timber",
+            lastName: "Saw",
+            age: 25
+        })
+    })
 
-        createConnection().then(async (connection) => {
-
-            const userRepo = connection.getRepository(User)
-
-            const user = new User()
-            user.firstName = "Timber"
-            user.lastName = "Saw"
-            user.age = 25
-
-            await userRepo.save(user)
-            const users = await connection.manager.find(User)
-
-            expect(omit(users[0], ["id"])).to.eql({
-                age: 25,
-                firstName: "Timber",
-                lastName: "Saw",
-            })
-        }).catch(err => console.error(err))
+    it("creates a User", async () => {
+        const user = await userRepo.findOne({ firstName: "Timber" })
+        expect(omit(user, ["id"])).to.eql({
+            age: 25,
+            firstName: "Timber",
+            lastName: "Saw"
+        })
     })
 })
