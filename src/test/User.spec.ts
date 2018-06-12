@@ -1,15 +1,16 @@
-
 import {expect} from "chai"
 import {User} from "../app/entity/User"
-import {createConnection, getRepository} from "typeorm"
+import {test} from "../config"
+import {createConnection} from "typeorm"
 import {clone, omit} from "lodash"
 
 describe("User", () => {
   let userRepo
 
   before(async () => {
-    await createConnection()
-    userRepo = getRepository(User)
+    const connection = await createConnection(test.db)
+    userRepo = connection.getRepository(User)
+    await userRepo.delete({})
   })
   after( async () => await userRepo.delete({})) // delete all users
 

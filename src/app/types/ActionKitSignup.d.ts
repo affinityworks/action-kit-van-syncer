@@ -11,5 +11,5 @@ declare interface ActionKitSignup {
     // signupfields: [Uri]
     status: string,
     updated_at: Date,
-    // user: Person | Uri
+    user: string
 }

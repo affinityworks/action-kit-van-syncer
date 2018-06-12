@@ -1,13 +1,14 @@
 import "reflect-metadata"
-import {createConnection, getRepository} from "typeorm"
+import {createConnection} from "typeorm"
+import {dev} from "../config"
 import {User} from "./entity/User"
 
 (async () => {
   try {
     console.log("running...")
 
-    await createConnection()
-    const userRepo = getRepository(User)
+    const connection = await createConnection(dev.db)
+    const userRepo = connection.getRepository(User)
     await userRepo.save({
       firstName: "Foo",
       lastName: "Bar",
