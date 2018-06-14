@@ -27,7 +27,7 @@ declare interface ActionKitEvent {
     public_description: string,
     region: string,
     resource_uri: string,
-    signups: [string]
+    signups: [string] //ActionKitSignup
     starts_at: Date,
     starts_at_utc: Date,
     state: string,

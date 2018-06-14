@@ -1,6 +1,6 @@
 import "reflect-metadata"
 import {createConnection} from "typeorm"
-import {dev} from "../config"
+import {dev} from "../../config"
 import {User} from "./entity/User"
 
 (async () => {

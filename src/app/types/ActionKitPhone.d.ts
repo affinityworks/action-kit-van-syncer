@@ -5,7 +5,9 @@ declare interface ActionKitPhone {
     phone: string,
     resource_uri: string,
     source: string,
-    type: string,
+    type: ActionKitPhoneType
     updated_at: Date,
-    // user: Person | Uri
+    user: string // ActionKitPerson
 }
+
+declare type ActionKitPhoneType = "home" | "work" | "mobile" | "emergency" | "home_fax" | "mobile_fax" | "batphone"

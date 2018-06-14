@@ -19,6 +19,7 @@ export const dev = {
   ...config,
   db:  {
     ...config.db,
+    name: "dev",
     database: "ak2van",
     entities: [ "build/app/entity/**/*.js" ],
     migrations: [ "build/app/migration/**/*.js" ],

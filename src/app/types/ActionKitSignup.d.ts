@@ -1,7 +1,7 @@
 declare interface ActionKitSignup {
     attended: boolean,
     created_at: Date,
-    // event: ActionKitEven | Uri
+    event: string // ActionKitEvent
     // fields: [CustomField|Uri]
     id: number,
     // page: Uri
@@ -11,5 +11,5 @@ declare interface ActionKitSignup {
     // signupfields: [Uri]
     status: string,
     updated_at: Date,
-    user: string
+    user: string // ActionKitPerson
 }

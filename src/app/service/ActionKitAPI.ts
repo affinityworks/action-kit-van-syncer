@@ -23,14 +23,20 @@ const getResource = async (resourceUrl: string, responsePath: string[]) => {
   }
 }
 
-export const sync = async () => {
-  const events = await getEvents("/rest/v1/event/?campaign=289")
+export const sync = async (): Promise<{events: ActionKitEvent[], signups: ActionKitSignup[], users: ActionKitPerson[]}> => {
+  const events = await getEvents(secrets.actionKitAPI.campaignEndpoint)
 
   const signups = flatten(await Promise.all(events.map(async (event) => {
-    return await Promise.all(event.signups.map(async (signupUrl) => await getEventSignup(signupUrl)))
+    return await Promise.all(event.signups.map(async (signupUrl) => {
+      return await getEventSignup(signupUrl)
+    }))
   })))
 
-  const users = await Promise.all(signups.map(async (signup) => await getUser(signup.user)))
+  const users = await Promise.all(signups.map(async (signup) => {
+    return await getUser(signup.user)
+  }))
+
+  return { events, signups, users }
 }
 
 const api = () => {
