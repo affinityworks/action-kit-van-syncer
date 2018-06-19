@@ -1,6 +1,6 @@
 import {expect} from "chai"
 import * as nock from "nock"
-import {getEvents, getEventSignup, getUser, sync} from "../../app/service/ActionKitAPI"
+import {getEvents, getEventSignup, getUser, createStreams} from "../../src/service/ActionKitAPI"
 import * as responses from "../Responses"
 
 describe("ActionKitAPI", () => {
@@ -12,6 +12,10 @@ describe("ActionKitAPI", () => {
       .get("/rest/v1/eventsignup/1267/")
       .reply(200, responses.signupResponseHost)
       .get("/rest/v1/eventsignup/1268/")
+      .reply(200, responses.signupResponseAttendee)
+      .get("/rest/v1/eventsignup/1269/")
+      .reply(200, responses.signupResponseHost)
+      .get("/rest/v1/eventsignup/1270/")
       .reply(200, responses.signupResponseAttendee)
       .get("/rest/v1/user/350567/")
       .reply(200, responses.userResponseHost)
@@ -40,12 +44,15 @@ describe("ActionKitAPI", () => {
     })
   })
 
+  describe("createStreams", () => {
+    it("creates streams", (done) => {
+      done()
+    })
+  })
+
   describe("sync", () => {
-    it("contains the id for the user", async () => {
-      const resources = await sync()
-      expect(resources.users.length).to.eq(2)
-      expect(resources.signups.length).to.eq(2)
-      expect(resources.events.length).to.eq(1)
+    it("runs rxjs", (done) => {
+      done()
     })
   })
 })

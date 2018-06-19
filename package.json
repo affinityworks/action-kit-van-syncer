@@ -43,6 +43,8 @@
       "mysql": "^2.14.1",
       "pg": "^7.4.3",
       "reflect-metadata": "^0.1.10",
+      "rxjs": "^6.2.1",
+      "rxjs-compat": "^6.2.1",
       "typeorm": "0.2.7"
    }
 }
