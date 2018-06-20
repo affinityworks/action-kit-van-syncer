@@ -1,11 +1,11 @@
-const vanEventTree: VanEvent[] = [
+export const vanEventTree: VanEvent[] = [
   { // eventsResponse.objects[0]
     actionKitId: 1049,
     name: "Affinity Test Event #1",
     description: "Affinity Test Event #1",
-    createdDate: "2018-06-07T15:57:50-05:00",
-    startDate: "2018-07-25T12:00:00-05:00",
-    endDate: "2018-07-25T16:00:00-05:00",
+    createdDate: "2018-06-07T15:57:50",
+    startDate: "2018-07-25T16:00:00-00:00",
+    endDate: "2018-07-25T20:00:00-00:00",
     eventType: {}, // hmmm...
     codes: [{}],
     notes: [{}],
@@ -13,18 +13,18 @@ const vanEventTree: VanEvent[] = [
     shifts: [
       {
         name: "FULL SHIFT",
-        startTime: "2018-07-25T12:00:00-05:00",
-        endTime: "2018-07-25T16:00:00-05:00",
+        startTime: "2018-07-25T16:00:00-00:00",
+        endTime: "2018-07-25T20:00:00-00:00",
       },
     ],
     roles: [
       {
         name: "Host",
-        isEventLead: 1,
+        isEventLead: true,
       },
       {
         name: "Attendee",
-        isEventLead: 0,
+        isEventLead: false,
         max: 50,
       },
     ],
@@ -44,8 +44,8 @@ const vanEventTree: VanEvent[] = [
     ],
     signups: [
       { // signupResponseAttendee
-        status: "Invited",
         actionKitId: 1268,
+        status: { statusId: 4, name: "Invited"  },
         role: { name: "Attendee" },
         person: { // userResponseAttendee
           actionKitId: 350568,
@@ -76,7 +76,7 @@ const vanEventTree: VanEvent[] = [
       },
       { // signupResponseHost
         actionKitId: 1267,
-        status: "Invited",
+        status: { statusId: 4, name: "Invited"  },
         role: { name: "Host" },
         person: { // userResponseHost
           actionKitId: 350567,
@@ -115,9 +115,9 @@ const vanEventTree: VanEvent[] = [
     actionKitId: 1049,
     name: "Affinity Test Event #2",
     description: "Affinity Test Event #2",
-    startDate: "2018-07-25T12:00:00-05:00",
-    endDate: "2018-07-25T16:00:00-05:00",
-    createdDate: "2018-06-07T15:57:50-05:00",
+    startDate: "2018-07-25T16:00:00-00:00",
+    endDate: "2018-07-25T20:00:00-00:00",
+    createdDate: "2018-06-07T15:57:50",
     eventType: {}, // hmmm...
     codes: [{}],
     notes: [{}],
@@ -125,19 +125,19 @@ const vanEventTree: VanEvent[] = [
     roles: [
       {
         name: "Host",
-        isEventLead: 1,
+        isEventLead: true,
       },
       {
         name: "Attendee",
-        isEventLead: 0,
+        isEventLead: false,
         max: 50,
       },
     ],
     shifts: [
       {
         name: "FULL SHIFT",
-        startTime: "2018-07-25T12:00:00-05:00",
-        endTime: "2018-07-25T16:00:00-05:00",
+        startTime: "2018-07-25T16:00:00-00:00",
+        endTime: "2018-07-25T20:00:00-00:00",
       },
     ],
     locations: [
@@ -154,6 +154,7 @@ const vanEventTree: VanEvent[] = [
         },
       },
     ],
+    signups: [],
     // attendee_count: 1,
     // confirmed_at: "2018-06-07T15:58:33",
     // country: "United States",

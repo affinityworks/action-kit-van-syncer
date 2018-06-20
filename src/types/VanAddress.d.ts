@@ -7,6 +7,8 @@ declare interface VanAddress {
   stateOrProvince: string,
   zipOrPostalCode: string,
   countryCode: string,
-  type: "Mailing" | "Home" | "Voting" | "Work" | "Custom",
+  type: VanAddressType
   isPreferred?: boolean,
 }
+
+declare type VanAddressType = "Mailing" | "Home" | "Voting" | "Work" | "Custom"

@@ -3,10 +3,11 @@ declare interface AbstractActionKitSignup {
   created_at: Date | string,
   id: number,
   role: string,
-  status: string, // enum
+  status: ActionKitSignupStatus,
   updated_at: Date | string,
-
 }
+
+declare type ActionKitSignupStatus = "active" | "deleted" | "cancelled"
 
 declare interface ActionKitSignupResponse extends AbstractActionKitSignup {
   event: string,

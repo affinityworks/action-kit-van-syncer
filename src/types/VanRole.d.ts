@@ -1,7 +1,7 @@
 declare interface VanRole {
     roleId?: number,
     name?: "Attendee" | "Host",
-    isEventLead?: number,
+    isEventLead?: boolean,
     min?: number,
     max?: number,
     goal?: number,
