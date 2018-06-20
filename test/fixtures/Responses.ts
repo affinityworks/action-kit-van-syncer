@@ -1,4 +1,4 @@
-export const eventsResponse = {
+export const eventsResponse: ActionKitEventResponseInEnvelope = {
   meta: {
     limit: 20,
     next: null,
@@ -110,7 +110,41 @@ export const eventsResponse = {
   ],
 }
 
-export const userResponseAttendee = {
+export const signupResponseAttendee: ActionKitSignupResponse = {
+  attended: false,
+  created_at: "2018-06-07T15:59:20",
+  event: "/rest/v1/event/1049/",
+  fields: {},
+  id: 1268,
+  page: "/rest/v1/eventsignuppage/13236/",
+  resource_uri: "/rest/v1/eventsignup/1268/",
+  role: "attendee",
+  signupaction: [
+    "/rest/v1/eventsignupaction/2481976/",
+  ],
+  signupfields: [],
+  status: "active",
+  updated_at: "2018-06-07T15:59:20",
+  user: "/rest/v1/user/350568/",
+}
+
+export const signupResponseHost: ActionKitSignupResponse = {
+  attended: false,
+  created_at: "2018-06-07T15:57:50",
+  event: "/rest/v1/event/1049/",
+  fields: {},
+  id: 1267,
+  page: "/rest/v1/eventcreatepage/13235/",
+  resource_uri: "/rest/v1/eventsignup/1267/",
+  role: "host",
+  signupaction: [],
+  signupfields: [],
+  status: "active",
+  updated_at: "2018-06-07T15:57:50",
+  user: "/rest/v1/user/350567/",
+}
+
+export const userResponseAttendee: ActionKitPersonResponse = {
   actions: "/rest/v1/action/?user=350568",
   address1: "",
   address2: "",
@@ -151,41 +185,7 @@ export const userResponseAttendee = {
   zip: "11213",
 }
 
-export const signupResponseAttendee = {
-  attended: false,
-  created_at: "2018-06-07T15:59:20",
-  event: "/rest/v1/event/1049/",
-  fields: {},
-  id: 1268,
-  page: "/rest/v1/eventsignuppage/13236/",
-  resource_uri: "/rest/v1/eventsignup/1268/",
-  role: "attendee",
-  signupaction: [
-    "/rest/v1/eventsignupaction/2481976/",
-  ],
-  signupfields: [],
-  status: "active",
-  updated_at: "2018-06-07T15:59:20",
-  user: "/rest/v1/user/350568/",
-}
-
-export const signupResponseHost = {
-  attended: false,
-  created_at: "2018-06-07T15:57:50",
-  event: "/rest/v1/event/1049/",
-  fields: {},
-  id: 1267,
-  page: "/rest/v1/eventcreatepage/13235/",
-  resource_uri: "/rest/v1/eventsignup/1267/",
-  role: "host",
-  signupaction: [],
-  signupfields: [],
-  status: "active",
-  updated_at: "2018-06-07T15:57:50",
-  user: "/rest/v1/user/350567/",
-}
-
-export const userResponseHost = {
+export const userResponseHost: ActionKitPersonResponse = {
   actions: "/rest/v1/action/?user=350567",
   address1: "",
   address2: "",
