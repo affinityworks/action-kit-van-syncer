@@ -1,4 +1,4 @@
-export const actionKitEvents: ActionKitEvent[] = [
+export const actionKitEventTree: ActionKitEvent[] = [
   { // eventsResponse.objects[0]
     address1: "123 Albany Avenue",
     address2: "",

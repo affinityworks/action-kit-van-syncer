@@ -18,8 +18,8 @@ export const eventsResponse: ActionKitEventResponseInEnvelope = {
       created_at: "2018-06-07T15:57:50",
       creator: "/rest/v1/user/350567/",
       directions: "",
-      ends_at: null,
-      ends_at_utc: null,
+      ends_at: "2018-07-25T16:00:00",
+      ends_at_utc: "2018-07-25T20:00:00",
       fields: [
         {
           event: "/rest/v1/event/1049/",
@@ -68,8 +68,8 @@ export const eventsResponse: ActionKitEventResponseInEnvelope = {
       created_at: "2018-06-07T15:57:50",
       creator: "/rest/v1/user/350567/",
       directions: "",
-      ends_at: null,
-      ends_at_utc: null,
+      ends_at: "2018-07-25T16:00:00",
+      ends_at_utc: "2018-07-25T20:00:00",
       fields: [
         {
           event: "/rest/v1/event/1050/",
