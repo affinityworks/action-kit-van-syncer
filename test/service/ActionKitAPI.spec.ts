@@ -1,11 +1,12 @@
 import {expect} from "chai"
+import {describe, it, before} from "mocha"
 import * as nock from "nock"
 import {getEvents, getEventSignup, getUser} from "../../src/service/ActionKitAPI"
 import * as responses from "../fixtures/Responses"
 
 describe("ActionKitAPI", () => {
   before(() => {
-    nock("https://roboticdogs.actionkit.com"  )
+    nock("https://roboticdogs.actionkit.com")
       .persist()
       .get("/rest/v1/event/?campaign=289")
       .reply(200, responses.eventsResponse)
@@ -21,7 +22,13 @@ describe("ActionKitAPI", () => {
       .reply(200, responses.userResponseHost)
       .get("/rest/v1/user/350568/")
       .reply(200, responses.userResponseAttendee)
+      .get("/rest/v1/phone/568")
+      .reply(200, responses.phoneResponseAttendeeHome)
+      .get("/rest/v1/phone/569")
+      .reply(200, responses.phoneResponseAttendeeMobile)
   })
+
+  // TODO: expand test coverage, esp: for pagination
 
   describe("getEvents", () => {
     it("contains the events for the campaign", async () => {
@@ -44,15 +51,7 @@ describe("ActionKitAPI", () => {
     })
   })
 
-  describe("createStreams", () => {
-    it("creates streams", (done) => {
-      done()
-    })
-  })
-
   describe("sync", () => {
-    it("runs rxjs", (done) => {
-      done()
-    })
+    it("syncs all resources")
   })
 })

@@ -164,7 +164,10 @@ export const userResponseAttendee: ActionKitPersonResponse = {
   middle_name: "",
   orderrecurrings: "/rest/v1/orderrecurring/?user=350568",
   orders: "/rest/v1/order/?user=350568",
-  phones: [],
+  phones: [
+    "/rest/v1/phone/568/",
+    "/rest/v1/phone/569/",
+  ],
   plus4: "",
   postal: "11213",
   prefix: "",
@@ -183,6 +186,30 @@ export const userResponseAttendee: ActionKitPersonResponse = {
   usermailings: "/rest/v1/usermailing/?user=350568",
   useroriginal: "/rest/v1/useroriginal/350568/",
   zip: "11213",
+}
+
+export const phoneResponseAttendeeHome = {
+  created_at: "2018-06-12T20:13:49",
+  id: 568,
+  normalized_phone: "6151234567",
+  phone: "6151234567",
+  resource_uri: "/rest/v1/phone/568/",
+  source: "user",
+  type: "home",
+  updated_at: "2018-06-12T20:13:49",
+  user: "/rest/v1/user/350568/",
+}
+
+export const phoneResponseAttendeeMobile = {
+  created_at: "2018-06-12T20:15:11",
+  id: 569,
+  normalized_phone: "3041234567",
+  phone: "+1-304-123-4567",
+  resource_uri: "/rest/v1/phone/569/",
+  source: "user",
+  type: "mobile",
+  updated_at: "2018-06-12T20:15:11",
+  user: "/rest/v1/user/350568/",
 }
 
 export const userResponseHost: ActionKitPersonResponse = {

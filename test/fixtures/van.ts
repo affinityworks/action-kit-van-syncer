@@ -69,7 +69,15 @@ export const vanEventTree: VanEvent[] = [
             email: "james+coolguy@affinity.works",
             type: "P",
           }],
-          phones: [],
+          phones: [{
+            actionKitId: 568,
+            phoneNumber: "6151234567",
+            phoneType: "H",
+          }, {
+            actionKitId: 569,
+            phoneNumber: "3041234567",
+            phoneType: "M",
+          }],
           // region: "",
           // source: "website",
         },

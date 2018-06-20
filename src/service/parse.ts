@@ -3,7 +3,7 @@ import {lowerFirst} from "lodash"
 export const parseVanEvents = (akes: ActionKitEvent[]): VanEvent[] =>
   akes.map(parseVanEvent)
 
-export const parseVanEvent = (ake: ActionKitEvent): VanEvent => ({
+const parseVanEvent = (ake: ActionKitEvent): VanEvent => ({
   actionKitId: ake.id,
   name: ake.title,
   description: ake.public_description,
@@ -71,5 +71,20 @@ const parseVanPerson = (akp: ActionKitPerson): VanPerson => ({
   suffix: akp.suffix,
   addresses: [parseVanAddress(akp, "Home")],
   emails: [{ email: akp.email, type: "P" }],
-  phones: [],
+  phones: parseVanPhones(akp.phones),
+})
+
+const parseVanPhones = (akphs: ActionKitPhone[]): VanPhone[] =>
+  akphs.map(parseVanPhone)
+
+const parseVanPhone = (akph: ActionKitPhone): VanPhone => ({
+  actionKitId: akph.id,
+  phoneNumber: akph.normalized_phone,
+  phoneType: {
+    home: "H",
+    work: "W",
+    mobile: "M",
+    home_fax: "F",
+    mobile_fax: "F",
+  }[akph.type] || "M",
 })

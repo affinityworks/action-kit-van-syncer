@@ -1,6 +1,6 @@
 import {expect} from "chai"
 import {describe, it} from "mocha"
-import {parseVanEvent, parseVanEvents} from "../../src/service/parse"
+import {parseVanEvents} from "../../src/service/parse"
 import {actionKitEventTree} from "../fixtures/actionKit"
 import {vanEventTree} from "../fixtures/van"
 

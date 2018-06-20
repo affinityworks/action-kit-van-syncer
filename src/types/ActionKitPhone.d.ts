@@ -1,12 +1,12 @@
 declare interface ActionKitPhone {
-    created_at: Date,
+    created_at: Date | string,
     id: number,
     normalized_phone: string,
     phone: string,
     resource_uri: string,
     source: string,
     type: ActionKitPhoneType
-    updated_at: Date,
+    updated_at: Date | string,
     user: string // ActionKitPerson
 }
 
