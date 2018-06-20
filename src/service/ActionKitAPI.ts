@@ -16,6 +16,9 @@ const api = () => {
 }
 
 const getResource = async (resourceUrl: string, responsePath: string[]) => {
+  // TODO (aguestuser|20 Jun 2018): PAGINATION
+  // - we do not currently follow pagination redirects for any resources
+  // - we should follow them for *all* resources, likely here
   try {
     const response = await api().get(resourceUrl)
     return _.get(response, responsePath)
@@ -55,6 +58,9 @@ export const getPhone = async (phoneUrl: string) => {
 }
 
 export const getResources = async () => {
+  // TODO (aguestuser|20 Jun 2018): refactor
+  // - rip out rxjs
+  // - tweak logic a touch (could parallelize over all events, not just signups)
   const events = await getEvents(secrets.actionKitAPI.campaignEndpoint)
 
   events.map( async (event) => {
