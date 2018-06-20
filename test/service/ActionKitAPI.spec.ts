@@ -1,6 +1,6 @@
 import {expect} from "chai"
 import * as nock from "nock"
-import {getEvents, getEventSignup, getUser, createStreams} from "../../src/service/ActionKitAPI"
+import {getEvents, getEventSignup, getUser} from "../../src/service/ActionKitAPI"
 import * as responses from "../fixtures/Responses"
 
 describe("ActionKitAPI", () => {

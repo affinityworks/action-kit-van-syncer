@@ -1,14 +1,9 @@
 import axios from "axios"
 import * as _ from "lodash"
-import {Observable, interval} from "rxjs"
-import {mergeMap} from "rxjs/operators"
-import "rxjs/add/observable/of"
-import "rxjs/add/observable/from"
-import "rxjs/add/operator/map"
-import "rxjs/add/observable/fromPromise"
-import "rxjs/add/observable/forkJoin"
-import "rxjs/add/observable/interval"
 import {secrets} from "../Secrets"
+import {Subject} from "rxjs/Subject"
+
+export const actionKitSubject = new Subject()
 
 const api = () => {
   return axios.create({
@@ -34,9 +29,7 @@ export const getEvents = async (eventsUrl) => {
 }
 
 export const getEventSignups = (eventSignupUrls) => {
-  return eventSignupUrls.map((signupUrl) => {
-    return getEventSignup(signupUrl)
-  })
+  return eventSignupUrls.map(getEventSignup)
 }
 
 export const getEventSignup = (eventSignupUrl: string) => {
@@ -44,42 +37,36 @@ export const getEventSignup = (eventSignupUrl: string) => {
 }
 
 export const getUsers = (userUrls) => {
-  return userUrls.map((userUrl) => getUser(userUrl))
+  return userUrls.map(getUser)
 }
 
 export const getUser = (userUrl: string) => {
   return getResource(userUrl, ["data"])
 }
 
-export const buildEventsStream = (intervalStream) => {
-  return intervalStream.pipe(
-    mergeMap((_) => Observable.fromPromise(getEvents(secrets.actionKitAPI.campaignEndpoint))),
-  )
+export const getPhones = async (phoneUrls) => {
+  return await Promise.all(phoneUrls.map(async (phoneUrl) => {
+    return await getPhone(phoneUrl)
+  }))
 }
 
-export const buildSignupsStream = (eventsStream) => {
-  return eventsStream.pipe(
-    mergeMap((events: [ActionKitEvent]) => {
-      const eventSignupUrls = [].concat(...events.map( (event) => event.signups))
-      return Observable.forkJoin(getEventSignups(eventSignupUrls))
-    }),
-  )
+export const getPhone = async (phoneUrl: string) => {
+  return await getResource(phoneUrl, ["data"])
 }
 
-export const buildUsersStream = (signupsStream) => {
-  return signupsStream.pipe(
-    mergeMap((signups: [ActionKitSignup]) => {
-      const userUrls = signups.map((signup) => signup.user)
-      return Observable.forkJoin(getUsers(userUrls))
-    }),
-  )
-}
+export const getResources = async () => {
+  const events = await getEvents(secrets.actionKitAPI.campaignEndpoint)
 
-export const createStreams = (intervalPeriod = 10000) => {
-  const intervalStream = interval(intervalPeriod)
-  const eventsStream = buildEventsStream(intervalStream)
-  const signupsStream = buildSignupsStream(eventsStream)
-  const usersStream = buildUsersStream(signupsStream)
+  events.map( async (event) => {
+    const eventSignups = await Promise.all(event.signups.map( async (signupUrl) => {
+      const eventSignup = await getEventSignup(signupUrl)
+      const user = await getUser(eventSignup.user)
+      const phones = await getPhones(user.phones)
 
-  return { eventsStream, signupsStream, usersStream }
+      return { ...eventSignup, user: {...user, phones } }
+    }))
+
+    const resourceTree = { ...event, signups: eventSignups }
+    actionKitSubject.next(resourceTree)
+  })
 }
