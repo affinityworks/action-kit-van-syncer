@@ -1,7 +1,8 @@
 import axios from "axios"
 import * as _ from "lodash"
-import {secrets} from "../../config/"
 import {Subject} from "rxjs/Subject"
+import config from "../../config/"
+const {secrets} = config
 
 export const actionKitSubject = new Subject()
 
