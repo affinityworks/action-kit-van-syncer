@@ -2,7 +2,7 @@
 
 import * as Sequelize from "sequelize"
 import {values, forEach} from "lodash"
-import config from "../../config"
+import config from "../config/index"
 
 export const initDb = () => {
 
