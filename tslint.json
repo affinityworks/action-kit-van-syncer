@@ -13,7 +13,8 @@
       "ordered-imports": false,
       "no-trailing-whitespace": false,
       "object-literal-sort-keys": false,
-      "indent": [true, "spaces", 2]
+      "indent": [true, "spaces", 2],
+      "no-var-requires": false
     },
     "rulesDirectory": []
 }
