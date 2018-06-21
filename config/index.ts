@@ -10,16 +10,19 @@ const defaults = {
 const test = {
   ...defaults,
   db: db.test,
+  secrets: secrets.test,
 }
 
 const development = {
   ...defaults,
   db: db.development,
+  secrets: secrets.development,
 }
 
 const production = {
   ...defaults,
   db: db.production,
+  secrets: secrets.production,
 }
 
 export default {
