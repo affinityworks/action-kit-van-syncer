@@ -2,9 +2,7 @@
 
 import * as Sequelize from "sequelize"
 import {values, forEach} from "lodash"
-
-const env       = process.env.NODE_ENV || "development"
-const config    = require(__dirname + "/../config/")[env]
+import config from "../../config"
 
 export const initDb = () => {
 

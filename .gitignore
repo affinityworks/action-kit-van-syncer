@@ -4,4 +4,4 @@ node_modules/
 build/
 tmp/
 temp/
-src/Secrets.ts
+config/secrets.ts
