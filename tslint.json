@@ -14,7 +14,8 @@
       "no-trailing-whitespace": false,
       "object-literal-sort-keys": false,
       "indent": [true, "spaces", 2],
-      "no-var-requires": false
+      "no-var-requires": false,
+      "arrow-parens": false
     },
     "rulesDirectory": []
 }

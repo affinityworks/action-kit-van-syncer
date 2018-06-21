@@ -5,9 +5,9 @@ declare interface VanEvent {
   id?: number,
   ////////////////////
   eventId?: number,
-  name?: string,
+  name: string,
   shortName?: string,
-  description?: string,
+  description: string,
   startDate: Date | string,
   endDate: Date | string,
   eventType: object,
@@ -15,8 +15,8 @@ declare interface VanEvent {
   isPubliclyViewable?: boolean,
   codes: object[], // need VanCode
   notes: object[], // need VanNote ?
-  districtFieldValue?: string,
-  voterRegistrationBatches: object[],
+  // districtFieldValue?: string,
+  // voterRegistrationBatches?: object[],
   createdDate: Date | string,
   roles?: VanRole[],
   locations?: VanLocation[],

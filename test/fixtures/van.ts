@@ -9,7 +9,6 @@ export const vanEventTree: VanEvent[] = [
     eventType: {}, // hmmm...
     codes: [{}],
     notes: [{}],
-    voterRegistrationBatches: [{}], // hmmm..
     shifts: [
       {
         name: "FULL SHIFT",
@@ -129,7 +128,6 @@ export const vanEventTree: VanEvent[] = [
     eventType: {}, // hmmm...
     codes: [{}],
     notes: [{}],
-    voterRegistrationBatches: [{}], // hmmm..
     roles: [
       {
         name: "Host",
