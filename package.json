@@ -13,7 +13,7 @@
    "scripts": {
       "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run",
       "genMigration": "ts-node ./node_modules/typeorm/cli.js migration:generate",
-      "test": "mocha --reporter spec --compilers ts:ts-node/register src/test/**/*.spec.ts",
+      "test": "mocha --reporter spec --require ts-node/register test/**/*.spec.ts",
       "build": "./node_modules/typescript/bin/tsc",
       "start": "tsc && node build/src/index.js"
    },

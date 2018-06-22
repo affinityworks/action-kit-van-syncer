@@ -12,7 +12,6 @@ const parseVanEvent = (ake: ActionKitEvent): VanEvent => ({
   eventType: {}, // TODO: is this right?
   codes: [{}], // TODO: ditto
   notes: [{}], // TODO: ditto
-  voterRegistrationBatches: [{}], // TODO: ditto
   createdDate: ake.created_at,
   shifts: [{
     name: "FULL SHIFT",
