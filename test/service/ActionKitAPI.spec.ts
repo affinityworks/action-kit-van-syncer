@@ -1,7 +1,7 @@
 import {expect} from "chai"
 import {describe, it, before} from "mocha"
 import * as nock from "nock"
-import {getEvents, getEventSignup, getUser} from "../../src/service/ActionKitAPI"
+import {getEvents, getEventSignup, getUser} from "../../src/service/actionKitAPI"
 import * as responses from "../fixtures/Responses"
 
 describe("ActionKitAPI", () => {

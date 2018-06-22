@@ -1,5 +1,6 @@
-const db = require("db.json")
+const db = require("./db.json")
 import {secrets} from "./secrets"
+export {secrets}
 
 const defaults = {
   port: 8081,

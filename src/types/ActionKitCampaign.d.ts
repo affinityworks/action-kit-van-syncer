@@ -1,0 +1,47 @@
+declare interface ActionKitCampaignResponse {
+  allow_private: boolean,
+  created_at: Date | string,
+  default_event_size: number,
+  default_title: string,
+  eventcreatepages: string[],
+  events: string,
+  eventsignuppages: string[],
+  hidden: boolean,
+  id: number,
+  max_event_size: number,
+  name: string,
+  public_create_page: boolean,
+  public_search_page: boolean,
+  require_email_confirmation: boolean,
+  require_staff_approval: boolean,
+  resource_uri: string,
+  show_address1: boolean,
+  show_attendee_count: boolean,
+  show_city: boolean,
+  show_completed_events: boolean,
+  show_directions: boolean,
+  show_full_events: boolean,
+  show_public_description: boolean,
+  show_state: boolean,
+  show_title: boolean,
+  show_venue: boolean,
+  show_zip: boolean,
+  starts_at: Date | string,
+  timezone: string,
+  title: string,
+  updated_at: Date | string,
+  use_start_date: boolean,
+  use_start_time: boolean,
+  use_title: boolean
+}
+
+declare interface ActionKitCampaignResponseInEnvelope {
+  meta: {
+    limit: number,
+    next?: string,
+    offset: number,
+    previous?: string,
+    total_count: number,
+  },
+  objects: ActionKitCampaignResponse[]
+}

@@ -15,7 +15,7 @@
       "genMigration": "ts-node ./node_modules/typeorm/cli.js migration:generate",
       "test": "mocha --reporter spec --compilers ts:ts-node/register src/test/**/*.spec.ts",
       "build": "./node_modules/typescript/bin/tsc",
-      "start": "tsc && node build/app/index.js"
+      "start": "tsc && node build/src/index.js"
    },
    "devDependencies": {
       "@types/chai": "^4.1.3",
