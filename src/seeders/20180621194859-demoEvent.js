@@ -1,8 +1,9 @@
 'use strict';
+
 const {omit, map, merge} = require("lodash");
 
 // TODO: would be better to import this from compile output forvan.ts --v
-const {vanEventTree} = require("../../test/fixtures/van.js");
+const {vanEventTree} = require("../../test/fixtures/vanES5");
 
 const events = map(vanEventTree, event =>
   merge(

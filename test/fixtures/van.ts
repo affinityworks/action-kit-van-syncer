@@ -1,14 +1,28 @@
+export const vanEvents: VanEvent[] = [{
+  actionKitId: 1049,
+  name: "Affinity Test Event #1",
+  description: "Affinity Test Event #1",
+  createdDate: "2018-06-07T15:57:50",
+  startDate: "2018-07-25T16:00:00-00:00",
+  endDate: "2018-07-25T20:00:00-00:00",
+  eventType: {}, // hmmm...
+  codes: [{}],
+  notes: [{}],
+}, {
+  actionKitId: 1049,
+  name: "Affinity Test Event #2",
+  description: "Affinity Test Event #2",
+  startDate: "2018-07-25T16:00:00-00:00",
+  endDate: "2018-07-25T20:00:00-00:00",
+  createdDate: "2018-06-07T15:57:50",
+  eventType: {}, // hmmm...
+  codes: [{}],
+  notes: [{}],
+}]
+
 export const vanEventTree: VanEvent[] = [
   { // eventsResponse.objects[0]
-    actionKitId: 1049,
-    name: "Affinity Test Event #1",
-    description: "Affinity Test Event #1",
-    createdDate: "2018-06-07T15:57:50",
-    startDate: "2018-07-25T16:00:00-00:00",
-    endDate: "2018-07-25T20:00:00-00:00",
-    eventType: {}, // hmmm...
-    codes: [{}],
-    notes: [{}],
+    ...vanEvents[0],
     shifts: [
       {
         name: "FULL SHIFT",
@@ -119,15 +133,7 @@ export const vanEventTree: VanEvent[] = [
     // note_to_attendees: "",
   },
   { // eventsResponse.objects[0]
-    actionKitId: 1049,
-    name: "Affinity Test Event #2",
-    description: "Affinity Test Event #2",
-    startDate: "2018-07-25T16:00:00-00:00",
-    endDate: "2018-07-25T20:00:00-00:00",
-    createdDate: "2018-06-07T15:57:50",
-    eventType: {}, // hmmm...
-    codes: [{}],
-    notes: [{}],
+    ...vanEvents[1],
     roles: [
       {
         name: "Host",
