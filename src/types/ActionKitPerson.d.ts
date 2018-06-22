@@ -6,12 +6,18 @@ declare interface AbstractActionKitPerson {
   country: string,
   created_at: Date | string,
   email: string,
+  events: string,
+  eventsignups: string,
   fields?: object | object[],
   first_name: string,
   id: number,
   lang?: string, // uri
   last_name: string,
+  location: string,
+  logintoken: string,
   middle_name: string,
+  orderrecurrings: string,
+  orders: string,
   plus4: string,
   postal: string,
   prefix: string,
@@ -21,25 +27,19 @@ declare interface AbstractActionKitPerson {
   source: string,
   state: string,
   subscription_status: string,
+  subscriptionhistory: string,
+  subscriptions: string,
   suffix: string,
+  token: string,
   updated_at: Date | string,
+  usergeofields: string,
+  usermailings: string,
+  useroriginal: string,
   zip: string
 }
 
 declare interface ActionKitPersonResponse extends AbstractActionKitPerson {
-  events: string,
-  eventsignups: string,
-  location: string,
-  logintoken: string,
-  orderrecurrings: string,
-  orders: string,
   phones: string[],
-  subscriptionhistory: string,
-  subscriptions: string,
-  token: string,
-  usergeofields: string,
-  usermailings: string,
-  useroriginal: string,
 }
 
 declare interface ActionKitPerson extends AbstractActionKitPerson {

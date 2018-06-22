@@ -2,13 +2,16 @@ declare interface AbstractActionKitEvent {
   address1: string,
   address2: string,
   attendee_count: number,
+  campaign: string,
   city: string,
   confirmed_at: string,
   country: string,
   created_at: Date | string,
+  creator: string,
   directions: string,
   ends_at: Date | string,
   ends_at_utc: Date | string,
+  fields: object[],
   host_is_confirmed: boolean,
   id: number,
   is_approved: boolean,
@@ -35,15 +38,10 @@ declare interface AbstractActionKitEvent {
 }
 
 declare interface ActionKitEventResponse extends AbstractActionKitEvent {
-  campaign: string,
-  creator: string,
-  fields: object[],
   signups: string[]
 }
 
 declare interface ActionKitEvent extends AbstractActionKitEvent {
-  // campaign: ActionKitCampaign
-  // creator: ActionKitPerson,
   signups: ActionKitSignup[]
 }
 

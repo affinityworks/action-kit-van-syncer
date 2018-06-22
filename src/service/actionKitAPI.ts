@@ -47,10 +47,6 @@ export const getResources = async (resourceUrl: string, offset: number = 0, reso
   }
 }
 
-export const getCampaigns = async (campaignsUrl: string): Promise<ActionKitCampaignResponse[]> => {
-  return getResources(campaignsUrl)
-}
-
 export const getEvents = async (eventsUrl: string): Promise<ActionKitEventResponse[]> => {
   return getResources(eventsUrl)
 }
@@ -73,23 +69,21 @@ export const getPhone = async (phoneUrl: string): Promise<ActionKitPhone> => {
   return await getResource(phoneUrl)
 }
 
-export const getAllResources = async () => {
-  const campaigns = await getCampaigns(secrets.actionKitAPI.campaignsEndpoint)
+export const getEventTrees = async () => {
+  const events = await getEvents(secrets.actionKitAPI.eventsEndpoint)
+  return Promise.all(events.filter(noSyncEventFilter).map(getEventTree))
+}
 
-  Promise.all(campaigns.map( async (campaign) => {
-    const events = await getEvents(campaign.events)
+const noSyncEventFilter = event => !event.title.includes("NOSYNC")
 
-    Promise.all(events.map( async (event) => {
-      const eventSignups = await Promise.all(event.signups.map(async (signupUrl) => {
-        const eventSignup = await getEventSignup(signupUrl)
-        const user = await getUser(eventSignup.user)
-        const phones = await getPhones(user.phones)
+export const getEventTree = async (event): Promise<ActionKitEvent> => {
+  const eventSignups = await Promise.all(event.signups.map(async (signupUrl) => {
+    const eventSignup = await getEventSignup(signupUrl)
+    const user = await getUser(eventSignup.user)
+    const phones = await getPhones(user.phones)
 
-        return {...eventSignup, user: {...user, phones}}
-      }))
-
-      const resourceTree = {...event, signups: eventSignups}
-      actionKitSubject.next(resourceTree)
-    }))
+    return {...eventSignup, user: {...user, phones}}
   }))
+
+  return {...event, signups: eventSignups}
 }
