@@ -5,7 +5,6 @@ declare type SequelizeAttributes<T extends{ [key: string]: any}> = {
 }
 
 declare interface Attributes {
-  actionKitId: number,
   id?: number,
   vanId?: number,
   archived?: string,

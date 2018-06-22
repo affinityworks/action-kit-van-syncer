@@ -1,4 +1,4 @@
-import {DataTypes, Instance, Sequelize, SequelizeStaticAndInstance} from "sequelize"
+import {DataTypes, Instance, Models, Sequelize, SequelizeStaticAndInstance} from "sequelize"
 import {Attributes} from "../types/Attributes"
 type Model = SequelizeStaticAndInstance["Model"]
 
@@ -24,8 +24,13 @@ export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
     tableName: "events",
   })
 
-  Event.associate = db => {
-    // associations can be defined here
+  Event.associate = (db: Models) => {
+    Event.hasOne(db.Location, {
+      as: "location",
+      hooks: true,
+      onDelete: "cascade",
+      foreignKey: "eventId",
+    })
   }
 
   return Event

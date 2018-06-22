@@ -1,3 +1,5 @@
+import {LocationAttributes} from "../../src/models/location"
+
 export const vanEvents: VanEvent[] = [{
   actionKitId: 1049,
   name: "Affinity Test Event #1",
@@ -181,3 +183,9 @@ export const vanEventTree: VanEvent[] = [
     // updated_at: "2018-06-07T16:09:34",
   },
 ]
+
+export const locationAttrs: LocationAttributes = {
+  name: "Space Jam",
+  displayName: "Really professional space Jam",
+  vanId: 1,
+}

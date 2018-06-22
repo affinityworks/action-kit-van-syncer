@@ -4,7 +4,8 @@ import * as SequelizeClass from "sequelize"
 import {Sequelize, SequelizeStaticAndInstance, SequelizeStatic, Models} from "sequelize"
 import {values, forEach} from "lodash"
 import {db as config} from "../config/index"
-import {eventFactory} from "./models/Event"
+import {eventFactory} from "./models/event"
+import {locationFactory} from "./models/location"
 
 type Model = SequelizeStaticAndInstance["Model"]
 
@@ -12,6 +13,7 @@ export interface Database {
   sequelize: Sequelize,
   SequelizeClass: SequelizeStatic,
   Event: Model,
+  Location: Model,
 }
 
 export const initDb = (): Database => {
@@ -22,6 +24,7 @@ export const initDb = (): Database => {
 
   const db = {
     Event: eventFactory(sequelize, SequelizeClass),
+    Location: locationFactory(sequelize, SequelizeClass),
   }
 
   forEach(values(db), (mdl: Model) => mdl.associate && mdl.associate(db))
