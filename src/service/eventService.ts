@@ -1,5 +1,5 @@
-import {Database} from "../../db"
-import {EventAttributes, EventInstance} from "../../models/Event"
+import {Database} from "../db"
+import {EventAttributes, EventInstance} from "../models/Event"
 import Bluebird = require("bluebird")
 
 export const create = (db: Database, attrs: EventAttributes): Bluebird<EventInstance> =>
