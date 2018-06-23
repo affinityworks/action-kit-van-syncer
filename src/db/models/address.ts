@@ -1,5 +1,5 @@
 import {DataTypes, Instance, Models, Sequelize, SequelizeStaticAndInstance} from "sequelize"
-import {Attributes} from "../../types/Attributes"
+import {AbstractAttributes} from "../../types/Attributes"
 import {LocationAttributes, LocationInstance} from "./location"
 import Bluebird = require("bluebird")
 type Model = SequelizeStaticAndInstance["Model"]
@@ -8,7 +8,7 @@ export interface AddressInstance extends Instance<AddressAttributes>, AddressAtt
   getLocation(): Bluebird<LocationInstance>
 }
 
-export interface AddressAttributes extends Attributes, VanAddress {
+export interface AddressAttributes extends AbstractAttributes, VanAddress {
   addressableId: number,
   addressable: LocationAttributes | LocationInstance,
 }

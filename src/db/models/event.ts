@@ -1,10 +1,10 @@
 import {DataTypes, Instance, Models, Sequelize, SequelizeStaticAndInstance} from "sequelize"
-import {Attributes} from "../../types/Attributes"
+import {AbstractAttributes} from "../../types/Attributes"
 import {LocationInstance} from "./location"
 import Bluebird = require("bluebird")
 type Model = SequelizeStaticAndInstance["Model"]
 
-export interface EventAttributes extends Attributes, VanEvent {}
+export interface EventAttributes extends AbstractAttributes, VanEvent {}
 export interface EventInstance extends Instance<EventAttributes>, EventAttributes {
   getLocation(): Bluebird<LocationInstance>
 }
@@ -29,8 +29,16 @@ export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
   })
 
   Event.associate = (db: Models) => {
+
     Event.hasOne(db.Location, {
       as: "location",
+      hooks: true,
+      onDelete: "cascade",
+      foreignKey: "eventId",
+    })
+
+    Event.hasMany(db.Shift, {
+      as: "shifts",
       hooks: true,
       onDelete: "cascade",
       foreignKey: "eventId",

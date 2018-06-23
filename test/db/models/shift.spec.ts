@@ -4,9 +4,8 @@ import {Database, initDb} from "../../../src/db"
 import {keys, pick} from "lodash"
 import {EventInstance} from "../../../src/db/models/event"
 import {ShiftInstance} from "../../../src/db/models/shift"
-import {LocationInstance} from "../../../src/db/models/location"
 import {parseDate} from "../../../src/service/parse"
-import {locationAttrs, vanEventTree} from "../../fixtures/vanEvent"
+import {vanEventTree} from "../../fixtures/vanEvent"
 
 describe("Shift model", () => {
   const eventAttrs = vanEventTree[0]

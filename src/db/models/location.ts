@@ -1,11 +1,11 @@
 import {DataTypes, Instance, Models, Sequelize, SequelizeStaticAndInstance} from "sequelize"
-import {Attributes} from "../../types/Attributes"
+import {AbstractAttributes} from "../../types/Attributes"
 import {AddressInstance} from "./address"
 import {EventInstance} from "./event"
 import Bluebird = require("bluebird")
 type Model = SequelizeStaticAndInstance["Model"]
 
-export interface LocationAttributes extends Attributes, VanLocation {}
+export interface LocationAttributes extends AbstractAttributes, VanLocation {}
 export interface LocationInstance extends Instance<LocationAttributes>, LocationAttributes {
   getAddress(): Bluebird<AddressInstance>
   getEvent(): Bluebird<EventInstance>

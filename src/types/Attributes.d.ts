@@ -1,13 +1,23 @@
 import {DataTypeAbstract, DefineAttributeColumnOptions} from "sequelize"
+import {AddressAttributes} from "../db/models/address"
+import {EventAttributes} from "../db/models/event"
+import {LocationAttributes} from "../db/models/location"
+import {ShiftAttributes} from "../db/models/shift"
 
 declare type SequelizeAttributes<T extends{ [key: string]: any}> = {
   [P in keyof T]: string | DataTypeAbstract | DefineAttributeColumnOptions
 }
 
-declare interface Attributes {
+declare interface AbstractAttributes {
   id?: number,
   vanId?: number,
   archived?: string,
   createdAt?: string,
   updatedAt?: string,
 }
+
+declare type Attributes =
+  AddressAttributes |
+  EventAttributes |
+  LocationAttributes |
+  ShiftAttributes

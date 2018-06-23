@@ -1,9 +1,9 @@
 import {DataTypes, Instance, Models, Sequelize, SequelizeStaticAndInstance} from "sequelize"
-import {Attributes} from "../../types/Attributes"
+import {AbstractAttributes} from "../../types/Attributes"
 import {EventInstance} from "./event"
 type Model = SequelizeStaticAndInstance["Model"]
 
-export interface ShiftAttributes extends Attributes, VanShift {
+export interface ShiftAttributes extends AbstractAttributes, VanShift {
   eventId?: number
 }
 

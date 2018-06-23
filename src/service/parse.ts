@@ -1,4 +1,5 @@
-import {lowerFirst} from "lodash"
+import {lowerFirst, reduce} from "lodash"
+import {AbstractAttributes, Attributes} from "../types/Attributes"
 
 export const parseVanEvents = (akes: ActionKitEvent[]): VanEvent[] =>
   akes.map(parseVanEvent)
@@ -90,3 +91,12 @@ const parseVanPhone = (akph: ActionKitPhone): VanPhone => ({
 
 export const parseDate = (timestamp: Date|string): Date =>
   new Date(Date.parse(timestamp.toString()))
+
+export const parseDatesIn = (obj: Attributes): Attributes =>
+  reduce(obj, (acc, v, k) => ({
+    ...acc,
+    [k]: isDateField(k) ? parseDate(v as string) : v,
+  }), {} as Attributes)
+
+const isDateField = (k: string): boolean =>
+  k.includes("Date") || k.includes("Time")
