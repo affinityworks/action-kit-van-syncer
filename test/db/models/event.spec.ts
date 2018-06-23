@@ -1,8 +1,8 @@
 import {describe, it, test, before, after} from "mocha"
 import {expect} from "chai"
-import {initDb} from "../../src/db/index"
+import {initDb} from "../../../src/db/index"
 import {keys, pick} from "lodash"
-import {locationAttrs, vanEvents} from "../fixtures/vanEvent"
+import {locationAttrs, vanEvents} from "../../fixtures/vanEvent"
 
 describe("Event model", () => {
 
@@ -45,7 +45,7 @@ describe("Event model", () => {
   })
 
   test("associations", async () => {
-    const ascLocation = await event.getLocation()
-    expect(pick(ascLocation.dataValues, keys(locationAttrs))).to.eql(locationAttrs)
+    const l = await event.getLocation()
+    expect(pick(l, keys(locationAttrs))).to.eql(locationAttrs)
   })
 })
