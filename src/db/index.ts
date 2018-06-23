@@ -7,6 +7,7 @@ import {db as config} from "../../config/index"
 import {addressFactory} from "./models/address"
 import {eventFactory} from "./models/event"
 import {locationFactory} from "./models/location"
+import {roleFactory} from "./models/role"
 import {shiftFactory} from "./models/shift"
 
 type Model = SequelizeStaticAndInstance["Model"]
@@ -17,6 +18,7 @@ export interface Database {
   Address: Model,
   Event: Model,
   Location: Model,
+  Role: Model,
   Shift: Model,
 }
 
@@ -30,6 +32,7 @@ export const initDb = (): Database => {
     Address: addressFactory(sequelize, SequelizeClass),
     Event: eventFactory(sequelize, SequelizeClass),
     Location: locationFactory(sequelize, SequelizeClass),
+    Role: roleFactory(sequelize, SequelizeClass),
     Shift: shiftFactory(sequelize, SequelizeClass),
   }
 

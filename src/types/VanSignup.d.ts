@@ -5,11 +5,11 @@ declare interface VanSignup {
   id?: number,
   ////////////////////
   eventSignupId?: number,
-  status: VanSignupStatus,
   startTimeOverride?: Date | string,
   endTimeOverride?: Date | string,
   printedLists?: object[],
   minivanExports?: object[],
+  status: VanSignupStatus,
   person: VanPerson,
   event?: VanEvent,
   shift?: VanShift,
