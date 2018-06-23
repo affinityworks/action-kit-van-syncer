@@ -1,7 +1,7 @@
 import {describe, it, test, before, after} from "mocha"
 import {expect} from "chai"
 import {Database, initDb} from "../../../src/db"
-import {keys, pick} from "lodash"
+import {keys, pick, clone} from "lodash"
 import {EventInstance} from "../../../src/db/models/event"
 import {ShiftInstance} from "../../../src/db/models/shift"
 import {parseDate} from "../../../src/service/parse"
@@ -14,24 +14,24 @@ describe("Shift model", () => {
 
   before(async () => {
     db = initDb()
-    event = await db.Event.create(eventAttrs)
-    shift = await db.Shift.create({
+    event = await db.event.create(eventAttrs)
+    shift = await db.shift.create({
       ...shiftAttrs,
       eventId: event.id,
-      include: [{model: db.Event, as: "event" }],
+      include: [{ model: db.event }],
     })
   })
 
   after(async () => {
-    await db.Event.destroy({where: {}})
-    await db.Shift.destroy({where: {}})
+    await db.event.destroy({where: {}})
+    await db.shift.destroy({where: {}})
     await db.sequelize.close()
   })
 
   describe("fields", () => {
 
     it("has correct fields", () => {
-      expect(keys(shift.get())).to.eql([
+      expect(keys(shift.get()).sort()).to.eql([
         "id",
         "name",
         "startTime",
@@ -40,7 +40,7 @@ describe("Shift model", () => {
         "createdAt",
         "eventId",
         "eventShiftId",
-      ])
+      ].sort())
     })
     
     it("saves correct fields", () => {

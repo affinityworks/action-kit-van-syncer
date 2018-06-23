@@ -14,7 +14,7 @@ export interface AddressAttributes extends AbstractAttributes, VanAddress {
 }
 
 export const addressFactory = (s: Sequelize, t: DataTypes): Model => {
-  const Address = s.define<AddressInstance, AddressAttributes>("Address", {
+  const address = s.define<AddressInstance, AddressAttributes>("address", {
     addressable: t.STRING,
     addressableId: t.INTEGER,
     addressId: t.INTEGER, // van id
@@ -27,19 +27,14 @@ export const addressFactory = (s: Sequelize, t: DataTypes): Model => {
     countryCode: t.STRING,
     type: t.STRING,
     isPreferred: t.BOOLEAN,
-  }, {
-    tableName: "addresses",
   })
 
-  Address.associate = (db: Models) => {
-
-    Address.belongsTo(db.Location, {
+  address.associate = (db: Models) => {
+    address.belongsTo(db.location, {
       foreignKey: "addressableId",
       constraints: false,
-      as: "location",
     })
-
   }
 
-  return Address
+  return address
 }

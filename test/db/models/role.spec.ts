@@ -1,7 +1,7 @@
 import {describe, it, test, before, after} from "mocha"
 import {expect} from "chai"
 import {Database, initDb} from "../../../src/db"
-import {keys, pick} from "lodash"
+import {keys, pick, clone} from "lodash"
 import {EventInstance} from "../../../src/db/models/event"
 import {RoleInstance} from "../../../src/db/models/role"
 
@@ -14,17 +14,17 @@ describe("Role model", () => {
 
   before(async () => {
     db = initDb()
-    event = await db.Event.create(eventAttrs)
-    role = await db.Role.create({
+    event = await db.event.create(eventAttrs)
+    role = await db.role.create({
       ...roleAttrs,
       rolable: "event",
       rolableId: event.id,
-      include: [{model: db.Event, as: "event" }],
+      include: [{model: db.event }],
     })
   })
 
   after(async () => {
-    await db.Role.destroy({where: {}})
+    await db.role.destroy({where: {}})
     await db.sequelize.close()
   })
 

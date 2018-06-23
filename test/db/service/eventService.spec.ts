@@ -10,16 +10,16 @@ describe("event service", () => {
   before(() => db = initDb())
   after(async () => await db.sequelize.close())
   
-  beforeEach(async () => await db.Event.destroy({where: {}}))
+  beforeEach(async () => await db.event.destroy({where: {}}))
   
   it("creates an event", async () => {
     await eventService.create(db, vanEvents[0])
-    expect(await db.Event.count()).to.eql(1)
+    expect(await db.event.count()).to.eql(1)
   })
   
   it("creates many events", async () => {
     await eventService.createMany(db, vanEvents)
-    expect(await db.Event.count()).to.eql(2)
+    expect(await db.event.count()).to.eql(2)
   })
   
   it("creates an event with associations")

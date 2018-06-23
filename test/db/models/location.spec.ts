@@ -11,31 +11,29 @@ describe("Location model", () => {
 
   before(async () => {
     db = initDb()
-    event = await db.Event.create(vanEvents[0])
-    location = await db.Location.create({
+    event = await db.event.create(vanEvents[0])
+    location = await db.location.create({
       ...locationAttrs,
       eventId: event.id,
       address: addressAttrs, // accepts nested
     }, {
       include: [
-        { model: db.Event, as: "event" },
-        { model: db.Address, as: "address" },
+        { model: db.event },
+        { model: db.address },
       ],
     })
   })
 
   after(async () => {
-    await db.Address.destroy({where: {}})
-    await db.Event.destroy({where: {}})
-    await db.Location.destroy({where: {}})
+    await db.address.destroy({where: {}})
+    await db.event.destroy({where: {}})
+    await db.location.destroy({where: {}})
     await db.sequelize.close()
   })
 
   describe("fields", () => {
 
     it("has the right fields", () => {
-      // TODO: we could likely do without this test.
-      // just feeling my way into testing sequelize (ag)
       expect(keys(location.dataValues)).to.eql([
         "id",
         "name",
@@ -66,9 +64,9 @@ describe("Location model", () => {
     })
 
     it("deletes address when it deletes location", async () => {
-      const count = await db.Address.count()
+      const count = await db.address.count()
       await location.destroy()
-      expect(await db.Address.count()).to.eql(count - 1)
+      expect(await db.address.count()).to.eql(count - 1)
     })
   })
 })

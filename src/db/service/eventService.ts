@@ -3,7 +3,7 @@ import {EventAttributes, EventInstance} from "../models/event"
 import Bluebird = require("bluebird")
 
 export const create = (db: Database, attrs: EventAttributes): Bluebird<EventInstance> =>
-  db.Event.create(attrs)
+  db.event.create(attrs)
 
 export const createMany = (db: Database, attrs: EventAttributes[]): Bluebird<EventInstance[]> =>
-  db.Event.bulkCreate(attrs)
+  db.event.bulkCreate(attrs)

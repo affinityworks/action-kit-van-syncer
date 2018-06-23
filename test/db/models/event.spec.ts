@@ -1,20 +1,21 @@
 import {describe, it, test, before, after} from "mocha"
 import {expect} from "chai"
 import {initDb} from "../../../src/db"
-import {keys, pick, omit, map} from "lodash"
+import {keys, pick, omit, map, cloneDeep} from "lodash"
 import {parseDatesIn} from "../../../src/service/parse"
-import {vanEvents, vanEventTree} from "../../fixtures/vanEvent"
+import {vanEventTree} from "../../fixtures/vanEvent"
 
 describe("Event model", () => {
-  const eventAttrs = vanEvents[0]
-  const locationAttrs = vanEventTree[0].locations[0]
-  const shiftsAttrs = vanEventTree[0].shifts
-  const rolesAttrs = vanEventTree[0].roles
+  const et = cloneDeep(vanEventTree) // else #create call will mutate fixture
+  const eventAttrs = et[0]
+  const locationAttrs = et[0].locations[0]
+  const shiftsAttrs = et[0].shifts
+  const rolesAttrs = et[0].roles
   let db, event
 
   before(async () => {
     db = initDb()
-    event = await db.Event.create({
+    event = await db.event.create({
       ...eventAttrs,
       location: locationAttrs,
       shifts: shiftsAttrs,
@@ -22,24 +23,42 @@ describe("Event model", () => {
     }, {
       include: [
         {
-          model: db.Location,
-          as: "location",
-          include: [{ model: db.Address, as: "address" }],
+          model: db.location,
+          include: [{ model: db.address }],
         },
-        { model: db.Shift, as: "shifts" },
-        { model: db.Role, as: "roles" },
+        { model: db.shift },
+        { model: db.role },
       ],
     })
   })
 
   after(async () => {
-    await db.Event.destroy({where: {}})
-    await db.Location.destroy({where: {}})
+    await db.event.destroy({where: {}})
+    await db.location.destroy({where: {}})
     await db.sequelize.close()
   })
 
   test("fields", () => {
-    expect(pick(event, keys(eventAttrs))).to.eql(parseDatesIn(eventAttrs))
+    expect(keys(event.get())).to.eql([
+      "id",
+      "actionKitId",
+      "name",
+      "description",
+      "createdDate",
+      "startDate",
+      "endDate",
+      "eventType",
+      "codes",
+      "notes",
+      "shifts",
+      "roles",
+      "location",
+      "updatedAt",
+      "createdAt",
+      "vanId",
+      "eventId",
+      "shortName",
+    ])
   })
 
   describe("associations", async () => {
@@ -51,7 +70,7 @@ describe("Event model", () => {
     })
 
     it("has one location (w/ nested attrs)", async () => {
-      const l = await event.getLocation({include: [{ model: db.Address, as: "address" }]})
+      const l = await event.getLocation({include: [{ model: db.address, as: "address" }]})
       expect({
         ...pick(l, keys(locationAttrs)),
         address: pick(l.address, keys(locationAttrs.address)),
@@ -78,23 +97,23 @@ describe("Event model", () => {
       let counts
       before(async () => {
         counts = {
-          location: await db.Location.count(),
-          shift: await db.Shift.count(),
-          role: await db.Role.count(),
+          location: await db.location.count(),
+          shift: await db.shift.count(),
+          role: await db.role.count(),
         }
         await event.destroy()
       })
 
       it("deletes associated location", async () => {
-        expect(await db.Location.count()).to.eql(counts.location - 1)
+        expect(await db.location.count()).to.eql(counts.location - 1)
       })
 
       it("deletes associated shifts", async () => {
-        expect(await db.Shift.count()).to.eql(counts.shift - 1)
+        expect(await db.shift.count()).to.eql(counts.shift - 1)
       })
 
       it("deletes associated roles", async () => {
-        expect(await db.Role.count()).to.eql(counts.role - 2)
+        expect(await db.role.count()).to.eql(counts.role - 2)
       })
     })
   })

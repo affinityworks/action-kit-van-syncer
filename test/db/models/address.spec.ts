@@ -12,8 +12,8 @@ describe("Address model", () => {
 
   before(async () => {
     db = initDb()
-    location = await db.Location.create(locationAttrs)
-    address = await db.Address.create({
+    location = await db.location.create(locationAttrs)
+    address = await db.address.create({
       ...addressAttrs,
       addressable: "location",
       addressableId: location.id,
@@ -21,7 +21,7 @@ describe("Address model", () => {
   })
 
   after(async () => {
-    await db.Address.destroy({where: {}})
+    await db.address.destroy({where: {}})
     await db.sequelize.close()
   })
 

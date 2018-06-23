@@ -13,26 +13,21 @@ export interface LocationInstance extends Instance<LocationAttributes>, Location
 
 export const locationFactory = (s: Sequelize, t: DataTypes): Model => {
 
-  const Location = s.define<LocationInstance, LocationAttributes>("Location", {
+  const location = s.define<LocationInstance, LocationAttributes>("location", {
     locationId: t.INTEGER,
     name: t.STRING,
     displayName: t.STRING,
     eventId: t.INTEGER,
-  }, {
-    tableName: "locations",
   })
 
-  Location.associate = (db: Models) => {
-
-    Location.belongsTo(db.Event, { as: "event" })
-
-    Location.hasOne(db.Address, {
+  location.associate = (db: Models) => {
+    location.belongsTo(db.event)
+    location.hasOne(db.address, {
       foreignKey: "addressableId",
-      as: "address",
       hooks: true,
       onDelete: "cascade",
     })
   }
 
-  return Location
+  return location
 }

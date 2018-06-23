@@ -13,19 +13,17 @@ export interface ShiftInstance extends Instance<ShiftAttributes>, ShiftAttribute
 
 export const shiftFactory = (s: Sequelize, t: DataTypes): Model => {
 
-  const Shift = s.define<ShiftInstance, ShiftAttributes>("shift", {
+  const shift = s.define<ShiftInstance, ShiftAttributes>("shift", {
     eventId: t.INTEGER,
     eventShiftId: t.INTEGER,
     name: t.STRING,
     startTime: t.DATE,
     endTime: t.DATE,
-  }, {
-    tableName: "shifts",
   })
 
-  Shift.associate = (db: Models) => {
-    Shift.belongsTo(db.Event, { as: "event" })
+  shift.associate = (db: Models) => {
+    shift.belongsTo(db.event)
   }
 
-  return Shift
+  return shift
 }

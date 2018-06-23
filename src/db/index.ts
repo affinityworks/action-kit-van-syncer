@@ -15,11 +15,11 @@ type Model = SequelizeStaticAndInstance["Model"]
 export interface Database {
   sequelize: Sequelize,
   SequelizeClass: SequelizeStatic,
-  Address: Model,
-  Event: Model,
-  Location: Model,
-  Role: Model,
-  Shift: Model,
+  address: Model,
+  event: Model,
+  location: Model,
+  role: Model,
+  shift: Model,
 }
 
 export const initDb = (): Database => {
@@ -29,11 +29,11 @@ export const initDb = (): Database => {
     : new SequelizeClass(config.database, config.username, config.password, config)
 
   const db = {
-    Address: addressFactory(sequelize, SequelizeClass),
-    Event: eventFactory(sequelize, SequelizeClass),
-    Location: locationFactory(sequelize, SequelizeClass),
-    Role: roleFactory(sequelize, SequelizeClass),
-    Shift: shiftFactory(sequelize, SequelizeClass),
+    address: addressFactory(sequelize, SequelizeClass),
+    event: eventFactory(sequelize, SequelizeClass),
+    location: locationFactory(sequelize, SequelizeClass),
+    role: roleFactory(sequelize, SequelizeClass),
+    shift: shiftFactory(sequelize, SequelizeClass),
   }
 
   forEach(values(db), (mdl: Model) => mdl.associate && mdl.associate(db))

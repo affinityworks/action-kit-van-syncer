@@ -15,7 +15,7 @@ export interface EventInstance extends Instance<EventAttributes>, EventAttribute
 
 export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
 
-  const Event = s.define<EventInstance, EventAttributes>("Event", {
+  const event = s.define<EventInstance, EventAttributes>("event", {
     actionKitId: t.INTEGER,
     vanId: t.INTEGER,
     eventId: t.INTEGER,
@@ -27,29 +27,21 @@ export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
     eventType: t.JSON,
     codes: t.JSON,
     notes: t.JSON,
-    createdDate: t.DATE
-  }, {
-    tableName: "events",
+    createdDate: t.DATE,
   })
 
-  Event.associate = (db: Models) => {
-
-    Event.hasOne(db.Location, {
-      as: "location",
+  event.associate = (db: Models) => {
+    event.hasOne(db.location, {
       hooks: true,
       onDelete: "cascade",
       foreignKey: "eventId",
     })
-
-    Event.hasMany(db.Shift, {
-      as: "shifts",
+    event.hasMany(db.shift, {
       hooks: true,
       onDelete: "cascade",
       foreignKey: "eventId",
     })
-
-    Event.hasMany(db.Role, {
-      as: "roles",
+    event.hasMany(db.role, {
       foreignKey: "rolableId",
       scope: {
         rolable: "event",
@@ -59,5 +51,5 @@ export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
     })
   }
 
-  return Event
+  return event
 }
