@@ -1,9 +1,13 @@
 import {DataTypes, Instance, Models, Sequelize, SequelizeStaticAndInstance} from "sequelize"
 import {Attributes} from "../../types/Attributes"
+import {LocationInstance} from "./location"
+import Bluebird = require("bluebird")
 type Model = SequelizeStaticAndInstance["Model"]
 
 export interface EventAttributes extends Attributes, VanEvent {}
-export type EventInstance = Instance<EventAttributes> & EventAttributes
+export interface EventInstance extends Instance<EventAttributes>, EventAttributes {
+  getLocation(): Bluebird<LocationInstance>
+}
 
 export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
 

@@ -87,3 +87,6 @@ const parseVanPhone = (akph: ActionKitPhone): VanPhone => ({
     mobile_fax: "F",
   }[akph.type] || "M",
 })
+
+export const parseDate = (timestamp: Date|string): Date =>
+  new Date(Date.parse(timestamp.toString()))
