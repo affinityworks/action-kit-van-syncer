@@ -1,11 +1,11 @@
-import {Address} from "cluster"
 import {describe, it, test, before, after} from "mocha"
 import {expect} from "chai"
 import {initDb} from "../../../src/db"
 import {keys, pick} from "lodash"
-import {locationAttrs, vanEvents, vanEventTree} from "../../fixtures/vanEvent"
+import {locationAttrs as la, vanEvents, vanEventTree} from "../../fixtures/vanEvent"
 
 describe("Location model", () => {
+  const locationAttrs = {...la, locationId: Math.round(Math.random() * 1000000000) }
   const addressAttrs = vanEventTree[0].locations[0].address
   let db, location, event
 
@@ -31,8 +31,26 @@ describe("Location model", () => {
     await db.sequelize.close()
   })
 
-  test("fields", () => {
-    expect(pick(location.dataValues, keys(locationAttrs))).to.eql(locationAttrs)
+  describe("fields", () => {
+
+    it("has the right fields", () => {
+      // TODO: we could likely do without this test.
+      // just feeling my way into testing sequelize (ag)
+      expect(keys(location.dataValues)).to.eql([
+        "id",
+        "name",
+        "displayName",
+        "locationId",
+        "eventId",
+        "address",
+        "updatedAt",
+        "createdAt",
+      ])
+    })
+
+    it("saves the right fields", () => {
+      expect(pick(location, keys(locationAttrs))).to.eql(locationAttrs)
+    })
   })
 
   describe("associations", async () => {

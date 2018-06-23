@@ -1,5 +1,5 @@
 declare interface VanLocation {
-  // locationId?: number, use vanId instead
+  locationId?: number,
   id?: number,
   vanId?: number,
   ////////////////////

@@ -187,5 +187,5 @@ export const vanEventTree: VanEvent[] = [
 export const locationAttrs: LocationAttributes = {
   name: "Space Jam",
   displayName: "Really professional space Jam",
-  vanId: 1,
+  locationId: 1,
 }
