@@ -3,7 +3,7 @@
 const {omit, map, merge} = require("lodash");
 
 // TODO: would be better to import this from compile output forvan.ts --v
-const {vanEventTree} = require("../../test/fixtures/vanEventES5");
+const {vanEventTree} = require("../../../test/fixtures/vanEventES5");
 
 const events = map(vanEventTree, event =>
   merge(

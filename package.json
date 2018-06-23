@@ -11,11 +11,10 @@
       "node": "10.4.0"
    },
    "scripts": {
-      "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run",
-      "genMigration": "ts-node ./node_modules/typeorm/cli.js migration:generate",
-      "test": "mocha --reporter spec --require ts-node/register test/**/*.spec.ts",
+      "test": "find ./test -name '*.spec.ts' | NODE_ENV=test xargs mocha -R spec -r ts-node/register",
       "build": "./node_modules/typescript/bin/tsc",
-      "start": "tsc && node build/src/index.js"
+      "start": "tsc && NODE_ENV=development node build/src/index.js",
+      "startProd": "NODE_ENV=production node build/src/index.js"
    },
    "devDependencies": {
       "@types/chai": "^4.1.3",

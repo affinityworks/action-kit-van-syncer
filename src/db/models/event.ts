@@ -1,5 +1,5 @@
 import {DataTypes, Instance, Models, Sequelize, SequelizeStaticAndInstance} from "sequelize"
-import {Attributes} from "../types/Attributes"
+import {Attributes} from "../../types/Attributes"
 type Model = SequelizeStaticAndInstance["Model"]
 
 export interface EventAttributes extends Attributes, VanEvent {}

@@ -2,7 +2,7 @@ import {expect} from "chai"
 import {describe, it, xit, before} from "mocha"
 import * as nock from "nock"
 import {getEvents, getEventSignup, getUser, getEventTrees, getEventTree} from "../../src/service/actionKitAPI"
-import {actionKitEventTree, actionKitEventTreeWithNoSyncEvent} from "../fixtures/actionKit"
+import {actionKitEventTree, actionKitEventTreeWithNoSyncEvent} from "../fixtures/actionKitEvent"
 import * as responses from "../fixtures/Responses"
 
 describe("actionKitAPI", () => {

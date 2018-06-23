@@ -1,7 +1,7 @@
 import {expect} from "chai"
 import {describe, it, before, after, beforeEach} from "mocha"
-import {initDb} from "../../src/db"
-import * as eventService from "../../src/service/eventService"
+import {initDb} from "../../src/db/index"
+import * as eventService from "../../src/db/service/eventService"
 import {vanEvents} from "../fixtures/vanEvent"
 
 describe("event service", () => {

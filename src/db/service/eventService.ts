@@ -1,4 +1,4 @@
-import {Database} from "../db"
+import {Database} from "../index"
 import {EventAttributes, EventInstance} from "../models/event"
 import Bluebird = require("bluebird")
 

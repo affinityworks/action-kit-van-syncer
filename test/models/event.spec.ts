@@ -1,6 +1,6 @@
 import {describe, it, test, before, after} from "mocha"
 import {expect} from "chai"
-import {initDb} from "../../src/db"
+import {initDb} from "../../src/db/index"
 import {keys, pick} from "lodash"
 import {locationAttrs, vanEvents} from "../fixtures/vanEvent"
 
