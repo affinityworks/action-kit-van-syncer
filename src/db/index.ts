@@ -7,6 +7,7 @@ import {db as config} from "../../config/index"
 import {addressFactory} from "./models/address"
 import {eventFactory} from "./models/event"
 import {locationFactory} from "./models/location"
+import {shiftFactory} from "./models/shift"
 
 type Model = SequelizeStaticAndInstance["Model"]
 
@@ -16,6 +17,7 @@ export interface Database {
   Address: Model,
   Event: Model,
   Location: Model,
+  Shift: Model,
 }
 
 export const initDb = (): Database => {
@@ -28,6 +30,7 @@ export const initDb = (): Database => {
     Address: addressFactory(sequelize, SequelizeClass),
     Event: eventFactory(sequelize, SequelizeClass),
     Location: locationFactory(sequelize, SequelizeClass),
+    Shift: shiftFactory(sequelize, SequelizeClass),
   }
 
   forEach(values(db), (mdl: Model) => mdl.associate && mdl.associate(db))

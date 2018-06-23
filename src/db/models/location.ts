@@ -1,7 +1,7 @@
 import {DataTypes, Instance, Models, Sequelize, SequelizeStaticAndInstance} from "sequelize"
 import {Attributes} from "../../types/Attributes"
 import {AddressInstance} from "./address"
-import {EventAttributes, EventInstance} from "./event"
+import {EventInstance} from "./event"
 import Bluebird = require("bluebird")
 type Model = SequelizeStaticAndInstance["Model"]
 
