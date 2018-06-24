@@ -4,7 +4,7 @@ import {Database, initDb} from "../../../src/db"
 import {keys, pick, clone} from "lodash"
 import {EventInstance} from "../../../src/db/models/event"
 import {ShiftInstance} from "../../../src/db/models/shift"
-import {parseDate} from "../../../src/service/parse"
+import {parseDate, parseDatesIn} from "../../../src/service/parse"
 import {vanEventTree} from "../../fixtures/vanEvent"
 
 describe("Shift model", () => {
@@ -44,11 +44,7 @@ describe("Shift model", () => {
     })
     
     it("saves correct fields", () => {
-      expect(pick(shift, keys(shiftAttrs))).to.eql({
-        ...shiftAttrs,
-        startTime: parseDate(shiftAttrs.startTime),
-        endTime: parseDate(shiftAttrs.endTime),
-      })
+      expect(pick(shift, keys(shiftAttrs))).to.eql(parseDatesIn(shiftAttrs))
     })
   })
 
