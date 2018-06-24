@@ -9,6 +9,7 @@ import {eventFactory} from "./models/event"
 import {locationFactory} from "./models/location"
 import {personFactory} from "./models/person"
 import {shiftFactory} from "./models/shift"
+import {signupFactory} from "./models/signup"
 
 type Model = SequelizeStaticAndInstance["Model"]
 
@@ -20,6 +21,7 @@ export interface Database {
   location: Model,
   person: Model,
   shift: Model,
+  signup: Model,
 }
 
 export const initDb = (): Database => {
@@ -34,6 +36,7 @@ export const initDb = (): Database => {
     location: locationFactory(sequelize, SequelizeClass),
     person: personFactory(sequelize, SequelizeClass),
     shift: shiftFactory(sequelize, SequelizeClass),
+    signup: signupFactory(sequelize, SequelizeClass),
   }
 
   forEach(values(db), (mdl: Model) => mdl.associate && mdl.associate(db))

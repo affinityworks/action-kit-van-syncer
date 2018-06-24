@@ -1,6 +1,8 @@
 import {lowerFirst, reduce} from "lodash"
 import {Attributes} from "../types/Attributes"
 import {values} from "lodash"
+import {VanEvent} from "../types/VanEvent"
+import {VanSignup, VanSignupStatus} from "../types/VanSignup"
 
 // TODO: fill these in with actual ids once we find or create them
 export const roles: { [key: string]: VanRole } = {

@@ -1,3 +1,5 @@
+import {VanSignup} from "./VanSignup"
+
 declare interface VanEvent {
 /////////////////////// TODO: extract --v
   actionKitId: number,

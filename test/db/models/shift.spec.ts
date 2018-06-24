@@ -4,7 +4,7 @@ import {Database, initDb} from "../../../src/db"
 import {keys, pick, clone} from "lodash"
 import {EventInstance} from "../../../src/db/models/event"
 import {ShiftInstance} from "../../../src/db/models/shift"
-import {parseDate, parseDatesIn} from "../../../src/service/parse"
+import {parseDatesIn} from "../../../src/service/parse"
 import {vanEventTree} from "../../fixtures/vanEvent"
 
 describe("Shift model", () => {

@@ -46,7 +46,7 @@ describe("Event model", () => {
       "eventId",
       "eventType",
       "id",
-      "location",
+      "locations",
       "name",
       "notes",
       "roles",
@@ -60,18 +60,10 @@ describe("Event model", () => {
 
   describe("associations", async () => {
 
-    it("has one location (w/o nested attrs)", async () => {
-      const l = await event.getLocation()
-      expect(pick(l, keys(omit(locationAttrs, ["address"]))))
+    it("has many locations", async () => {
+      const l = await event.getLocations()
+      expect(pick(l[0], keys(omit(locationAttrs, ["address"]))))
         .to.eql(omit(locationAttrs, ["address"]))
-    })
-
-    it("has one location (w/ nested attrs)", async () => {
-      const l = await event.getLocation({include: [{ model: db.address, as: "address" }]})
-      expect({
-        ...pick(l, keys(locationAttrs)),
-        address: pick(l.address, keys(locationAttrs.address)),
-      }).to.eql(locationAttrs)
     })
 
     it("has many shifts", async () => {

@@ -1,4 +1,5 @@
 import {LocationAttributes} from "../../src/db/models/location"
+import {VanEvent} from "../../src/types/VanEvent"
 
 export const vanEvents: VanEvent[] = [{
   actionKitId: 1049,
