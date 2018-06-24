@@ -33,15 +33,8 @@ export const vanEventTree: VanEvent[] = [
       },
     ],
     roles: [
-      {
-        name: "Host",
-        isEventLead: true,
-      },
-      {
-        name: "Attendee",
-        isEventLead: false,
-        max: 50,
-      },
+      { roleId: 1 },
+      { roleId: 2 },
     ],
     locations: [
       {
@@ -61,7 +54,7 @@ export const vanEventTree: VanEvent[] = [
       { // signupResponseHost
         actionKitId: 1267,
         status: { statusId: 4, name: "Invited"  },
-        role: { name: "Host" },
+        role: { roleId: 1 },
         person: { // userResponseHost
           actionKitId: 350567,
           salutation: "",
@@ -87,7 +80,7 @@ export const vanEventTree: VanEvent[] = [
       { // signupResponseAttendee
         actionKitId: 1268,
         status: { statusId: 4, name: "Invited"  },
-        role: { name: "Attendee" },
+        role: { roleId: 2 },
         person: { // userResponseAttendee
           actionKitId: 350568,
           salutation: "",
@@ -138,13 +131,10 @@ export const vanEventTree: VanEvent[] = [
     ...vanEvents[1],
     roles: [
       {
-        name: "Host",
-        isEventLead: true,
+        roleId: 1,
       },
       {
-        name: "Attendee",
-        isEventLead: false,
-        max: 50,
+        roleId: 2,
       },
     ],
     shifts: [

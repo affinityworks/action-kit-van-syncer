@@ -1,12 +1,12 @@
 import {describe, it, test, before, after} from "mocha"
 import {expect} from "chai"
 import {Database, initDb} from "../../../src/db"
-import {keys, pick, omit, map} from "lodash"
+import {keys, pick, omit, map, cloneDeep} from "lodash"
 import {PersonInstance} from "../../../src/db/models/person"
 import {vanEventTree} from "../../fixtures/vanEvent"
 
 describe("Person model", () => {
-  const personAttrs = vanEventTree[0].signups[1].person
+  const personAttrs = cloneDeep(vanEventTree[0].signups[1].person)
   const addressesAttrs = personAttrs.addresses
   let db: Database, person: PersonInstance
 
@@ -30,6 +30,7 @@ describe("Person model", () => {
     it("has correct fields", () => {
       expect(keys(person.get()).sort()).to.eql([
         "actionKitId",
+        "addresses",
         "createdAt",
         "emails",
         "firstName",
@@ -45,8 +46,8 @@ describe("Person model", () => {
     })
 
     it("saves correct fields", () => {
-      expect(pick(person, keys(personAttrs)))
-        .to.eql(omit(personAttrs, ["addresses"]))// hack for now
+      expect(pick(person, keys(omit(personAttrs, ["addresses"]))))
+        .to.eql(omit(personAttrs, ["addresses"]))
     })
   })
 

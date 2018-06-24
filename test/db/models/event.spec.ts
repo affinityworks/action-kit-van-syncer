@@ -10,7 +10,6 @@ describe("Event model", () => {
   const eventAttrs = et[0]
   const locationAttrs = et[0].locations[0]
   const shiftsAttrs = et[0].shifts
-  const rolesAttrs = et[0].roles
   let db, event
 
   before(async () => {
@@ -19,7 +18,6 @@ describe("Event model", () => {
       ...eventAttrs,
       location: locationAttrs,
       shifts: shiftsAttrs,
-      roles: rolesAttrs,
     }, {
       include: [
         {
@@ -27,7 +25,6 @@ describe("Event model", () => {
           include: [{ model: db.address }],
         },
         { model: db.shift },
-        { model: db.role },
       ],
     })
   })
@@ -39,25 +36,25 @@ describe("Event model", () => {
   })
 
   test("fields", () => {
-    expect(keys(event.get())).to.eql([
-      "id",
+    expect(keys(event.get()).sort()).to.eql([
       "actionKitId",
-      "name",
-      "description",
-      "createdDate",
-      "startDate",
-      "endDate",
-      "eventType",
       "codes",
-      "notes",
-      "shifts",
-      "roles",
-      "location",
-      "updatedAt",
       "createdAt",
-      "vanId",
+      "createdDate",
+      "description",
+      "endDate",
       "eventId",
+      "eventType",
+      "id",
+      "location",
+      "name",
+      "notes",
+      "roles",
+      "shifts",
       "shortName",
+      "startDate",
+      "updatedAt",
+      "vanId",
     ])
   })
 
@@ -83,13 +80,6 @@ describe("Event model", () => {
         expect(pick(shift, keys(shiftsAttrs[i]))).to.eql(parseDatesIn(shiftsAttrs[i])),
       )
     })
-
-    it("has many roles", async () => {
-      const roles = await event.getRoles()
-      map(roles, (role, i) =>
-        expect(pick(role, keys(rolesAttrs[i]))),
-      )
-    })
   })
 
   describe("hooks", async () => {
@@ -99,7 +89,6 @@ describe("Event model", () => {
         counts = {
           location: await db.location.count(),
           shift: await db.shift.count(),
-          role: await db.role.count(),
         }
         await event.destroy()
       })
@@ -110,10 +99,6 @@ describe("Event model", () => {
 
       it("deletes associated shifts", async () => {
         expect(await db.shift.count()).to.eql(counts.shift - 1)
-      })
-
-      it("deletes associated roles", async () => {
-        expect(await db.role.count()).to.eql(counts.role - 2)
       })
     })
   })

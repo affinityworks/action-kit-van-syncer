@@ -1,5 +1,12 @@
 import {lowerFirst, reduce} from "lodash"
-import {AbstractAttributes, Attributes} from "../types/Attributes"
+import {Attributes} from "../types/Attributes"
+import {values} from "lodash"
+
+// TODO: fill these in with actual ids once we find or create them
+export const roles: { [key: string]: VanRole } = {
+  HOST: { roleId: 1 },
+  ATTENDEE: { roleId: 2 },
+}
 
 export const parseVanEvents = (akes: ActionKitEvent[]): VanEvent[] =>
   akes.map(parseVanEvent)
@@ -19,14 +26,7 @@ const parseVanEvent = (ake: ActionKitEvent): VanEvent => ({
     startTime: `${ake.starts_at_utc}-00:00`, // TODO: just time?
     endTime: `${ake.ends_at_utc}-00:00`, // TODO: ditto
   }],
-  roles: [{
-    name: "Host",
-    isEventLead: true,
-  }, {
-    name: "Attendee",
-    isEventLead: false,
-    max: ake.max_attendees,
-  }],
+  roles: values(roles),
   locations: [{
     name: ake.venue,
     address: parseVanAddress(ake, "Custom"),
@@ -47,7 +47,7 @@ const parseVanAddress = (akx: ActionKitEvent | ActionKitPerson, type: VanAddress
 const parseVanSignup = (aks: ActionKitSignup): VanSignup => ({
   actionKitId: aks.id,
   status: parseVanSignupStatus(aks.status),
-  role: { name: lowerFirst(aks.role) === "host" ? "Host" : "Attendee" },
+  role: lowerFirst(aks.role) === "host" ? roles.HOST : roles.ATTENDEE,
   person: parseVanPerson(aks.user),
 })
 
