@@ -23,7 +23,6 @@
       "@types/node": "^10.3.1",
       "@types/pg": "^7.4.9",
       "@types/sequelize": "^4.27.22",
-      "@types/sinon": "^5.0.1",
       "@types/sinon-chai": "^2.7.32",
       "chai": "^4.1.2",
       "mocha": "^5.2.0",
