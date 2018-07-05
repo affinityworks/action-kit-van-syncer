@@ -1,26 +1,36 @@
-import {describe, it, test, before, after} from "mocha"
 import {expect} from "chai"
+import {cloneDeep, keys, omit, pick} from "lodash"
+import {after, before, describe, it} from "mocha"
 import {Database, initDb} from "../../../src/db"
-import {keys, pick, cloneDeep, omit} from "lodash"
 import {EventInstance} from "../../../src/db/models/event"
-import {PersonInstance} from "../../../src/db/models/person"
-import {ShiftInstance} from "../../../src/db/models/shift"
-import {parseDatesIn} from "../../../src/service/parse"
-import {vanEventTree} from "../../fixtures/vanEvent"
 import {SignupInstance} from "../../../src/db/models/signup"
+import {vanEventTree} from "../../fixtures/vanEvent"
+import * as vanApi from "../../../src/api/vanApi"
+import * as sinon from "sinon"
+import * as chai from "chai"
+import * as sinonChai from "sinon-chai"
 
 describe("Signup model", () => {
+  chai.use(sinonChai)
   const eventAttrs = cloneDeep(vanEventTree[0])
   const personAttrs = eventAttrs.signups[0].person
   const signupAttrs = eventAttrs.signups[0]
 
-  let
-    db: Database,
+  const createEventStub = sinon
+    .stub(vanApi, "createEvent")
+    .callsFake(() => Promise.resolve({ eventId: 100000 }))
+
+  const createSignupStub = sinon
+    .stub(vanApi, "createSignup")
+    .callsFake(() => Promise.resolve({ eventSignupId: 100000 }))
+
+  let db: Database,
     event: EventInstance,
     signup: SignupInstance
 
   before(async () => {
     db = initDb()
+
     event = await db.event.create(eventAttrs, {
       include: [
         { model: db.shift },
@@ -40,6 +50,8 @@ describe("Signup model", () => {
   })
 
   after(async () => {
+    createEventStub.restore()
+    createSignupStub.restore()
     await db.event.destroy({where: {}})
     await db.location.destroy({where: {}})
     await db.address.destroy({where: {}})
@@ -49,7 +61,7 @@ describe("Signup model", () => {
     await db.sequelize.close()
   })
 
-  describe("fields", () => {
+  describe("fields", async () => {
 
     it("has correct fields", () => {
       expect(keys(signup.get()).sort()).to.eql([
@@ -91,10 +103,35 @@ describe("Signup model", () => {
       expect(pick(p.get(), keys(personAttrs)))
         .to.eql(omit(personAttrs, ["addresses"]))
     })
+
     it("accepts nested attributes for a person's address", async () => {
       const a = await signup.getPerson().then(p => p.getAddresses())
       expect(pick(a[0].get(), keys(personAttrs.addresses[0])))
         .to.eql(personAttrs.addresses[0])
+    })
+  })
+
+  describe("hooks", () => {
+
+    describe("on creation", () => {
+
+      it("posts nested event to VAN", () => {
+        expect(createEventStub).to.have.been.calledWith(signup.event)
+      })
+
+      it("saves van event id to db", async () => {
+        expect(await db.event.findOne({ where: { eventId: 100000 }})).to.exist
+      })
+
+      it("posts signup with all nested resources to VAN", () => {
+        expect(pick(createSignupStub.getCall(0).args[0], ["eventId"])).to.eql({
+          eventId: 100000,
+        })
+      })
+
+      it("saves signup id to VAN", async () => {
+        expect(await db.signup.findOne({ where: { eventSignupId: 100000 }})).to.exist
+      })
     })
   })
 })

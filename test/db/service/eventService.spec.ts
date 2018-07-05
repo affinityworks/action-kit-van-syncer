@@ -3,36 +3,36 @@ import {describe, it, before, after, beforeEach, afterEach} from "mocha"
 import {initDb} from "../../../src/db"
 import * as eventService from "../../../src/db/service/eventService"
 import {vanEvents, vanEventTree} from "../../fixtures/vanEvent"
+import {cloneDeep} from "lodash"
 
 describe("event service", () => {
+  const eventsAttrs = cloneDeep(vanEvents)
+  const eventTreeAttrs = cloneDeep(vanEventTree)
   let db
-  const teardown = () =>
-    Promise.all([
-      db.event.destroy({where: {}}),
-      db.shift.destroy({ where: {}}),
-      db.location.destroy({ where: {}}),
-      db.address.destroy({ where: {}}),
-      db.signup.destroy({ where: {}}),
-      db.person.destroy({ where: {}}),
-    ])
   
   before(async () => db = initDb())
+  afterEach(async () => {
+    await db.event.destroy({where: {}})
+    await db.location.destroy({where: {}})
+    await db.address.destroy({where: {}})
+    await db.shift.destroy({where: {}})
+    await db.signup.destroy({where: {}})
+    await db.person.destroy({where: {}})
+  })
   after(async () => await db.sequelize.close())
-  beforeEach(async () => await teardown())
-  afterEach(async () => await teardown())
   
   it("creates an event", async () => {
-    await eventService.create(db)(vanEvents[0])
+    await eventService.create(db)(eventsAttrs[0])
     expect(await db.event.count()).to.eql(1)
   })
   
   it("creates many events", async () => {
-    await eventService.createMany(db)(vanEvents)
+    await eventService.createMany(db)(eventsAttrs)
     expect(await db.event.count()).to.eql(2)
   })
   
   it("creates an event with associations", async () => {
-    await eventService.create(db)(vanEventTree[0])
+    await eventService.create(db)(eventTreeAttrs[0])
     expect(await db.event.count()).to.eql(1)
     expect(await db.shift.count()).to.eql(1)
     expect(await db.location.count()).to.eql(1)
@@ -42,7 +42,7 @@ describe("event service", () => {
   })
   
   it("creates many events with associations", async() => {
-    await eventService.createMany(db)(vanEventTree)
+    await eventService.createMany(db)(eventTreeAttrs)
     expect(await db.event.count()).to.eql(2)
     expect(await db.shift.count()).to.eql(2)
     expect(await db.location.count()).to.eql(2)

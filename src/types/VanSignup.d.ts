@@ -1,4 +1,4 @@
-import {EventAttributes} from "../db/models/event"
+import {EventAttributes, EventInstance} from "../db/models/event"
 import {LocationAttributes} from "../db/models/location"
 import {PersonAttributes} from "../db/models/person"
 import {ShiftAttributes} from "../db/models/shift"
