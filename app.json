@@ -1,0 +1,25 @@
+{
+  "name": "ak2van",
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-apt.git"
+    },
+    {
+      "url": "https://github.com/affinityworks/blackbox-buildpack.git"
+    },
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "environments": {
+    "test": {
+      "scripts": {
+        "test": "find ./test -name '*.spec.ts' | NODE_ENV=test xargs mocha -R spec -r ts-node/register"
+      },
+      "addons": ["heroku-postgresql:in-dyno"]
+    }
+  }
+}
