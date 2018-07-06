@@ -60,7 +60,8 @@ export const signupFactory = (s: Sequelize, t: DataTypes): Model => {
 const postNewSignupToVan = (signup: SignupInstance, options: object): Promise<any> =>
   Promise.all([
     postNewEventToVan(signup),
-    postNewPersonToVan(signup)
+    postNewPersonToVan(signup),
+    postNewShiftToVan(signup),
   ])
     .then(fromPairs)
     .then(childIds => vanApi.createSignup({...signup.get(), ...childIds}))
@@ -68,12 +69,19 @@ const postNewSignupToVan = (signup: SignupInstance, options: object): Promise<an
 
 const postNewEventToVan = async (signup: SignupInstance): Promise<[string, number]> => {
   const {eventId} = await vanApi.createEvent(signup.event)
-  await signup.getEvent().then(e => e.update({eventId}))
+  await signup.getEvent().then(x => x.update({eventId}))
   return ["eventId", eventId]
 }
 
 const postNewPersonToVan = async (signup: SignupInstance): Promise<[string, number]> => {
   const {vanId} = await vanApi.createPerson(signup.person)
-  await signup.getPerson().then(p => p.update({vanId}))
+  await signup.getPerson().then(x => x.update({vanId}))
   return ["vanId", vanId]
+}
+
+const postNewShiftToVan = async (signup: SignupInstance): Promise<[string, number]> => {
+  const shift = await signup.getShift()
+  const {eventShiftId} = await vanApi.createShift(shift.get())
+  await shift.update({eventShiftId})
+  return ["eventShiftId", eventShiftId]
 }

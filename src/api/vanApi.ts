@@ -1,16 +1,19 @@
 import {EventAttributes} from "../db/models/event"
 import {PersonAttributes} from "../db/models/person"
+import {ShiftAttributes} from "../db/models/shift"
 import {SignupAttributes} from "../db/models/signup"
 
 // TODO (aguestuser): consider moving these to `/types` dir
 export type VanApiResponse =
   VanEventCreateResponse |
-  VanSignupCreateResponse |
-  VanPersonCreateResponse
+  VanPersonCreateResponse |
+  VanShiftCreateResponse |
+  VanSignupCreateResponse
 
 export interface VanEventCreateResponse { eventId: number }
-export interface VanSignupCreateResponse { eventSignupId: number }
 export interface VanPersonCreateResponse { vanId: number }
+export interface VanShiftCreateResponse { eventShiftId: number }
+export interface VanSignupCreateResponse { eventSignupId: number }
 
 export const createEvent = (attrs: EventAttributes): Promise<VanEventCreateResponse> =>
   Promise.resolve({ eventId: Math.random() * 100000000 })
@@ -20,3 +23,6 @@ export const createSignup = (attrs: SignupAttributes): Promise<VanSignupCreateRe
 
 export const createPerson = (attrs: PersonAttributes): Promise<VanPersonCreateResponse> =>
   Promise.resolve({ vanId: Math.random() * 100000000 })
+
+export const createShift = (attrs: ShiftAttributes): Promise<VanShiftCreateResponse> =>
+  Promise.resolve({ eventShiftId: Math.random() * 100000000 })

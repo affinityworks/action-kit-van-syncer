@@ -19,6 +19,7 @@ describe("Signup model", () => {
   const createEventStub = vanApiStubOf("createEvent", { eventId: 1000000 })
   const createSignupStub = vanApiStubOf("createSignup", { eventSignupId: 1000000 })
   const createPersonStub = vanApiStubOf("createPerson", { vanId: 1000000 })
+  const createShiftStub = vanApiStubOf("createShift", { eventShiftId: 1000000 })
 
   let db: Database,
     event: EventInstance,
@@ -126,14 +127,28 @@ describe("Signup model", () => {
         expect(await db.person.findOne({ where: { vanId: 1000000 }})).to.exist
       })
 
+      it ("posts nested shift to db", async () => {
+        const shift = await signup.getShift()
+        expect(createShiftStub.getCall(0).args[0]).to.eql(shift.get())
+      })
+
+      it ("saves van shift id to db", async () => {
+        expect(await db.shift.findOne({ where: { eventShiftId: 1000000 }})).to.exist
+      })
+
       it("posts signup with all nested resources to VAN", () => {
         expect(
           pick(
             createSignupStub.getCall(0).args[0],
-            ["eventId", "vanId"],
+            [
+              "eventId",
+              "eventShiftId",
+              "vanId",
+            ],
           ),
         ).to.eql({
           eventId: 1000000,
+          eventShiftId: 1000000,
           vanId: 1000000,
         })
       })
