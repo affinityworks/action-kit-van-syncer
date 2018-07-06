@@ -112,16 +112,18 @@ describe("Signup model", () => {
 
     describe("on creation", () => {
 
-      it("posts nested event to VAN", () => {
-        expect(createEventStub).to.have.been.calledWith(signup.event)
+      it("posts nested event to VAN", async () => {
+        const event = await signup.getEvent()
+        expect(createEventStub).to.have.been.calledWith(event.get())
       })
 
       it("saves VAN event id to db", async () => {
         expect(await db.event.findOne({ where: { eventId: 1000000 }})).to.exist
       })
 
-      it("posts nested person to VAN", () => {
-        expect(createPersonStub).to.have.been.calledWith(signup.person)
+      it("posts nested person to VAN", async () => {
+        const person = await signup.getPerson()
+        expect(createPersonStub).to.have.been.calledWith(person.get())
       })
 
       it("saves VAN person id to db", async () => {

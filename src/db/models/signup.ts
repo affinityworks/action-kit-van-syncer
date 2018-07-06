@@ -71,14 +71,16 @@ const postNewSignupToVan = (signup: SignupInstance, options: object): Promise<an
 // TODO (aguestuser|05 Jul 2018): boy could this be dried up, hunh?
 
 const postNewEventToVan = async (signup: SignupInstance): Promise<[string, number]> => {
-  const {eventId} = await vanApi.createEvent(signup.event)
-  await signup.getEvent().then(x => x.update({eventId}))
+  const event = await signup.getEvent()
+  const {eventId} = await vanApi.createEvent(event.get())
+  await event.update({eventId})
   return ["eventId", eventId]
 }
 
 const postNewPersonToVan = async (signup: SignupInstance): Promise<[string, number]> => {
-  const {vanId} = await vanApi.createPerson(signup.person)
-  await signup.getPerson().then(x => x.update({vanId}))
+  const person = await signup.getPerson()
+  const {vanId} = await vanApi.createPerson(person.get())
+  await person.update({vanId})
   return ["vanId", vanId]
 }
 
