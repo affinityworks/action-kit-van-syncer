@@ -17,8 +17,7 @@
   "environments": {
     "test": {
       "scripts": {
-        "test-setup": "node_modules/.bin/sequelize db:migrate",
-        "test": "find ./test -name '*.spec.ts' | NODE_ENV=test xargs mocha -R spec -r ts-node/register"
+        "test-setup": "node_modules/.bin/sequelize db:migrate"
       },
       "addons": ["heroku-postgresql:in-dyno"]
     }
