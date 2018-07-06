@@ -19,7 +19,10 @@
       "scripts": {
         "test-setup": "node_modules/.bin/sequelize db:migrate"
       },
-      "addons": ["heroku-postgresql:in-dyno"]
+      "addons": ["heroku-postgresql:in-dyno"],
+      "env": {
+        "NODE_ENV": "staging"
+      }
     }
   }
 }
