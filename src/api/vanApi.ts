@@ -30,5 +30,5 @@ export const createPerson = (attrs: PersonAttributes): Promise<VanPersonCreateRe
 export const createShift = (attrs: ShiftAttributes): Promise<VanShiftCreateResponse> =>
   Promise.resolve({ eventShiftId: Math.random() * 100000000 })
 
-export const createSignup = (attrs: SignupAttributes): Promise<VanSignupCreateResponse> =>
+export const createSignup = (attrs: VanSignupCreateRequest): Promise<VanSignupCreateResponse> =>
   Promise.resolve({ eventSignupId: Math.random() * 100000000 })

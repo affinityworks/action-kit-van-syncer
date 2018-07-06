@@ -18,7 +18,7 @@ declare interface VanSignup {
   location?: VanLocation | LocationAttributes, // assoc
 }
 
-declare type VanSignupStatus =
+export type VanSignupStatus =
   { statusId: 4,  name: "Invited"   } |
   { statusId: 1,  name: "Scheduled" } |
   { statusId: 3,  name: "Declined"  } |

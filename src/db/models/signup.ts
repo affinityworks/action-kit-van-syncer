@@ -1,14 +1,20 @@
 import * as Bluebird from "bluebird"
 import {DataTypes, Instance, Models, Sequelize, SequelizeStaticAndInstance} from "sequelize"
+import {
+  VanEventCreateResponse,
+  VanLocationCreateResponse,
+  VanPersonCreateResponse,
+  VanShiftCreateResponse
+} from "../../api/vanApi"
 import {AbstractAttributes} from "../../types/Attributes"
-import {VanSignup} from "../../types/VanSignup"
+import {VanSignup, VanSignupStatus} from "../../types/VanSignup"
 import {EventAttributes, EventInstance} from "./event"
 import {LocationInstance} from "./location"
 import {PersonInstance} from "./person"
 import {ShiftInstance} from "./shift"
 type Model = SequelizeStaticAndInstance["Model"]
 import * as vanApi from "../../api/vanApi"
-import {fromPairs} from "lodash"
+import {fromPairs, pick} from "lodash"
 
 export interface SignupAttributes extends AbstractAttributes, VanSignup {
   personId: number,
@@ -60,12 +66,12 @@ export const signupFactory = (s: Sequelize, t: DataTypes): Model => {
 const postNewSignupToVan = (signup: SignupInstance, options: object): Promise<any> =>
   Promise.all([
     postNewEventToVan(signup),
+    postNewLocationToVan(signup),
     postNewPersonToVan(signup),
     postNewShiftToVan(signup),
-    postNewLocationToVan(signup),
   ])
     .then(fromPairs)
-    .then(childIds => vanApi.createSignup({...signup.get(), ...childIds}))
+    .then(childIds => vanApi.createSignup(parseVanSignupRequest(signup, childIds)))
     .then(({eventSignupId}) => signup.update({eventSignupId}))
 
 // TODO (aguestuser|05 Jul 2018): boy could this be dried up, hunh?
@@ -75,6 +81,13 @@ const postNewEventToVan = async (signup: SignupInstance): Promise<[string, numbe
   const {eventId} = await vanApi.createEvent(event.get())
   await event.update({eventId})
   return ["eventId", eventId]
+}
+
+const postNewLocationToVan = async (signup: SignupInstance): Promise<[string, number]> => {
+  const location = await signup.getLocation()
+  const {locationId} = await vanApi.createLocation(location.get())
+  await location.update({locationId})
+  return ["locationId", locationId]
 }
 
 const postNewPersonToVan = async (signup: SignupInstance): Promise<[string, number]> => {
@@ -91,9 +104,21 @@ const postNewShiftToVan = async (signup: SignupInstance): Promise<[string, numbe
   return ["eventShiftId", eventShiftId]
 }
 
-const postNewLocationToVan = async (signup: SignupInstance): Promise<[string, number]> => {
-  const location = await signup.getLocation()
-  const {locationId} = await vanApi.createLocation(location.get())
-  await location.update({locationId})
-  return ["locationId", locationId]
+declare interface VanSignupChildIds {
+  eventId?: number,
+  locationId?: number,
+  eventShiftId?: number,
+  vanId?: number,
+}
+
+const parseVanSignupRequest = (signup: SignupInstance, childIds: VanSignupChildIds): VanSignupCreateRequest => {
+  const {eventId, locationId, eventShiftId, vanId } = childIds
+  return {
+    event: { eventId },
+    location: { locationId },
+    person: { vanId },
+    role: pick(signup.role, ["roleId"]),
+    shift: { eventShiftId },
+    status: pick(signup.status, ["statusId"]),
+  }
 }

@@ -5,8 +5,6 @@ import {Database, initDb} from "../../../src/db"
 import {EventInstance} from "../../../src/db/models/event"
 import {SignupInstance} from "../../../src/db/models/signup"
 import {vanEventTree} from "../../fixtures/vanEvent"
-import * as vanApi from "../../../src/api/vanApi"
-import * as sinon from "sinon"
 import * as chai from "chai"
 import * as sinonChai from "sinon-chai"
 import {vanApiStubOf} from "../../support/spies"
@@ -153,17 +151,33 @@ describe("Signup model", () => {
           pick(
             createSignupStub.getCall(0).args[0],
             [
-              "eventId",
-              "eventShiftId",
-              "locationId",
-              "vanId",
+              "event",
+              "location",
+              "person",
+              "role",
+              "shift",
+              "status",
             ],
           ),
         ).to.eql({
-          eventId: 1000000,
-          eventShiftId: 1000000,
-          locationId: 1000000,
-          vanId: 1000000,
+          event: {
+            eventId: 1000000,
+          },
+          location: {
+            locationId: 1000000,
+          },
+          person: {
+            vanId: 1000000,
+          },
+          role: {
+            roleId: signupAttrs.role.roleId,
+          },
+          shift: {
+            eventShiftId: 1000000,
+          },
+          status: {
+            statusId: signupAttrs.status.statusId,
+          },
         })
       })
 
