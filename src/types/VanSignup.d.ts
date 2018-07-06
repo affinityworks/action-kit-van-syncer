@@ -9,6 +9,7 @@ declare interface VanSignup {
   actionKitId: number,
   id?: number,
   ////////////////////
+  personId?: number,
   eventSignupId?: number,
   status: VanSignupStatus, // JSON
   role: VanRole, // JSON

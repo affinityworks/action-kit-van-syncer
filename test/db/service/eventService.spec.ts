@@ -41,7 +41,7 @@ describe("event service", () => {
     expect(await db.person.count()).to.eql(2)
   })
   
-  it("creates many events with associations", async() => {
+  it("creates many events with associations", async () => {
     await eventService.createMany(db)(eventTreeAttrs)
     expect(await db.event.count()).to.eql(2)
     expect(await db.shift.count()).to.eql(2)
