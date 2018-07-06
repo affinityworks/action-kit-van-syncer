@@ -111,8 +111,8 @@ describe("Signup model", () => {
     describe("on creation", () => {
 
       it("posts nested event to VAN", async () => {
-        const event = await signup.getEvent()
-        expect(createEventStub).to.have.been.calledWith(event.get())
+        const e = await signup.getEvent()
+        expect(createEventStub).to.have.been.calledWith(e.get())
       })
 
       it("saves VAN event id to db", async () => {

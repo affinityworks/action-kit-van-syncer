@@ -4,7 +4,7 @@
       "es2017",
       "dom"
     ],
-    "types": ["node", "mocha", "chai"],
+    "types": ["node", "mocha", "chai", "sinon", "sinon-chai"],
     "target": "es2017",
     "module": "commonjs",
     "moduleResolution": "node",

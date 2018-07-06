@@ -1,9 +1,16 @@
 import {VanApiResponse} from "../../src/api/vanApi"
-import * as sinon from "sinon"
 import * as vanApi from "../../src/api/vanApi"
+import sinon from "ts-sinon"
+
+type VanApiMethod =
+"createEvent" |
+  "createLocation" |
+  "createPerson" |
+  "createShift" |
+  "createSignup"
 
 // TODO: provide an actual Sinon return type eventually?
-export const vanApiStubOf = (method: string, response: VanApiResponse): any =>
+export const vanApiStubOf = (method: VanApiMethod, response: VanApiResponse): sinon.SinonStub =>
   sinon
     .stub(vanApi, method)
     .callsFake(() => Promise.resolve(response))

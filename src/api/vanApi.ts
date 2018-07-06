@@ -2,7 +2,6 @@ import {EventAttributes} from "../db/models/event"
 import {LocationAttributes} from "../db/models/location"
 import {PersonAttributes} from "../db/models/person"
 import {ShiftAttributes} from "../db/models/shift"
-import {SignupAttributes} from "../db/models/signup"
 
 // TODO (aguestuser): consider moving these to `/types` dir
 export type VanApiResponse =
