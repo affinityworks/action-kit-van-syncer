@@ -58,7 +58,10 @@ export const signupFactory = (s: Sequelize, t: DataTypes): Model => {
 }
 
 const postNewSignupToVan = (signup: SignupInstance, options: object): Promise<any> =>
-  Promise.all([postNewEventToVan(signup)])
+  Promise.all([
+    postNewEventToVan(signup),
+    postNewPersonToVan(signup)
+  ])
     .then(fromPairs)
     .then(childIds => vanApi.createSignup({...signup.get(), ...childIds}))
     .then(({eventSignupId}) => signup.update({eventSignupId}))
@@ -67,4 +70,10 @@ const postNewEventToVan = async (signup: SignupInstance): Promise<[string, numbe
   const {eventId} = await vanApi.createEvent(signup.event)
   await signup.getEvent().then(e => e.update({eventId}))
   return ["eventId", eventId]
+}
+
+const postNewPersonToVan = async (signup: SignupInstance): Promise<[string, number]> => {
+  const {vanId} = await vanApi.createPerson(signup.person)
+  await signup.getPerson().then(p => p.update({vanId}))
+  return ["vanId", vanId]
 }

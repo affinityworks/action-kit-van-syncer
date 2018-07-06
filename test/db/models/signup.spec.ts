@@ -9,20 +9,16 @@ import * as vanApi from "../../../src/api/vanApi"
 import * as sinon from "sinon"
 import * as chai from "chai"
 import * as sinonChai from "sinon-chai"
+import {vanApiStubOf} from "../../support/spies"
 
 describe("Signup model", () => {
   chai.use(sinonChai)
   const eventAttrs = cloneDeep(vanEventTree[0])
   const personAttrs = eventAttrs.signups[0].person
   const signupAttrs = eventAttrs.signups[0]
-
-  const createEventStub = sinon
-    .stub(vanApi, "createEvent")
-    .callsFake(() => Promise.resolve({ eventId: 100000 }))
-
-  const createSignupStub = sinon
-    .stub(vanApi, "createSignup")
-    .callsFake(() => Promise.resolve({ eventSignupId: 100000 }))
+  const createEventStub = vanApiStubOf("createEvent", { eventId: 1000000 })
+  const createSignupStub = vanApiStubOf("createSignup", { eventSignupId: 1000000 })
+  const createPersonStub = vanApiStubOf("createPerson", { vanId: 1000000 })
 
   let db: Database,
     event: EventInstance,
@@ -52,6 +48,7 @@ describe("Signup model", () => {
   after(async () => {
     createEventStub.restore()
     createSignupStub.restore()
+    createPersonStub.restore()
     await db.event.destroy({where: {}})
     await db.location.destroy({where: {}})
     await db.address.destroy({where: {}})
@@ -81,8 +78,6 @@ describe("Signup model", () => {
         "vanShiftId",
       ])
     })
-
-    it("saves correct fields")
   })
 
   describe("associations", async () => {
@@ -120,17 +115,31 @@ describe("Signup model", () => {
       })
 
       it("saves van event id to db", async () => {
-        expect(await db.event.findOne({ where: { eventId: 100000 }})).to.exist
+        expect(await db.event.findOne({ where: { eventId: 1000000 }})).to.exist
+      })
+
+      it("posts nested person to VAN", () => {
+        expect(createPersonStub).to.have.been.calledWith(signup.person)
+      })
+
+      it("saves van person id to db", async () => {
+        expect(await db.person.findOne({ where: { vanId: 1000000 }})).to.exist
       })
 
       it("posts signup with all nested resources to VAN", () => {
-        expect(pick(createSignupStub.getCall(0).args[0], ["eventId"])).to.eql({
-          eventId: 100000,
+        expect(
+          pick(
+            createSignupStub.getCall(0).args[0],
+            ["eventId", "vanId"],
+          ),
+        ).to.eql({
+          eventId: 1000000,
+          vanId: 1000000,
         })
       })
 
       it("saves signup id to VAN", async () => {
-        expect(await db.signup.findOne({ where: { eventSignupId: 100000 }})).to.exist
+        expect(await db.signup.findOne({ where: { eventSignupId: 1000000 }})).to.exist
       })
     })
   })
