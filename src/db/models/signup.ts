@@ -62,10 +62,13 @@ const postNewSignupToVan = (signup: SignupInstance, options: object): Promise<an
     postNewEventToVan(signup),
     postNewPersonToVan(signup),
     postNewShiftToVan(signup),
+    postNewLocationToVan(signup),
   ])
     .then(fromPairs)
     .then(childIds => vanApi.createSignup({...signup.get(), ...childIds}))
     .then(({eventSignupId}) => signup.update({eventSignupId}))
+
+// TODO (aguestuser|05 Jul 2018): boy could this be dried up, hunh?
 
 const postNewEventToVan = async (signup: SignupInstance): Promise<[string, number]> => {
   const {eventId} = await vanApi.createEvent(signup.event)
@@ -84,4 +87,11 @@ const postNewShiftToVan = async (signup: SignupInstance): Promise<[string, numbe
   const {eventShiftId} = await vanApi.createShift(shift.get())
   await shift.update({eventShiftId})
   return ["eventShiftId", eventShiftId]
+}
+
+const postNewLocationToVan = async (signup: SignupInstance): Promise<[string, number]> => {
+  const location = await signup.getLocation()
+  const {locationId} = await vanApi.createLocation(location.get())
+  await location.update({locationId})
+  return ["locationId", locationId]
 }

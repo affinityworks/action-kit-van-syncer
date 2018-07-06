@@ -20,6 +20,7 @@ describe("Signup model", () => {
   const createSignupStub = vanApiStubOf("createSignup", { eventSignupId: 1000000 })
   const createPersonStub = vanApiStubOf("createPerson", { vanId: 1000000 })
   const createShiftStub = vanApiStubOf("createShift", { eventShiftId: 1000000 })
+  const createLocationStub = vanApiStubOf("createLocation", { locationId: 1000000 })
 
   let db: Database,
     event: EventInstance,
@@ -115,7 +116,7 @@ describe("Signup model", () => {
         expect(createEventStub).to.have.been.calledWith(signup.event)
       })
 
-      it("saves van event id to db", async () => {
+      it("saves VAN event id to db", async () => {
         expect(await db.event.findOne({ where: { eventId: 1000000 }})).to.exist
       })
 
@@ -123,17 +124,26 @@ describe("Signup model", () => {
         expect(createPersonStub).to.have.been.calledWith(signup.person)
       })
 
-      it("saves van person id to db", async () => {
+      it("saves VAN person id to db", async () => {
         expect(await db.person.findOne({ where: { vanId: 1000000 }})).to.exist
       })
 
-      it ("posts nested shift to db", async () => {
+      it ("posts nested shift to VAN", async () => {
         const shift = await signup.getShift()
         expect(createShiftStub.getCall(0).args[0]).to.eql(shift.get())
       })
 
-      it ("saves van shift id to db", async () => {
+      it ("saves VAN shift id to db", async () => {
         expect(await db.shift.findOne({ where: { eventShiftId: 1000000 }})).to.exist
+      })
+
+      it("posts nested location to VAN", async () => {
+        const location = await signup.getLocation()
+        expect(createLocationStub.getCall(0).args[0]).to.eql(location.get())
+      })
+
+      it("saves VAN location id to db", async () => {
+        expect(await db.location.findOne({ where: { locationId: 1000000 }})).to.exist
       })
 
       it("posts signup with all nested resources to VAN", () => {
@@ -143,12 +153,14 @@ describe("Signup model", () => {
             [
               "eventId",
               "eventShiftId",
+              "locationId",
               "vanId",
             ],
           ),
         ).to.eql({
           eventId: 1000000,
           eventShiftId: 1000000,
+          locationId: 1000000,
           vanId: 1000000,
         })
       })
