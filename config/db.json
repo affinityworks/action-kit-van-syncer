@@ -13,7 +13,7 @@
   "staging": {
     "database": "ak2van_staging",
     "dialect": "postgres",
-    "logging": true,
+    "logging": false,
     "use_env_variable": "DATABASE_URL"
   },
   "production": {}
