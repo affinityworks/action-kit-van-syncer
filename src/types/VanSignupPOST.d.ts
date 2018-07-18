@@ -2,9 +2,6 @@ declare interface VanSignupCreateRequest {
   event: {
     eventId: number,
   },
-  location: {
-    locationId: number,
-  },
   person: {
     vanId: number,
   },

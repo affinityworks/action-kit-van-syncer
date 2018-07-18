@@ -18,8 +18,7 @@ describe("Signup model", () => {
   const createSignupStub = vanApiStubOf("createSignup", { eventSignupId: 1000000 })
   const createPersonStub = vanApiStubOf("createPerson", { vanId: 1000000 })
   const createShiftStub = vanApiStubOf("createShift", { eventShiftId: 1000000 })
-  const createLocationStub = vanApiStubOf("createLocation", { locationId: 1000000 })
-
+  
   let db: Database,
     event: EventInstance,
     signup: SignupInstance
@@ -28,17 +27,13 @@ describe("Signup model", () => {
     db = initDb()
 
     event = await db.event.create(eventAttrs, {
-      include: [
-        { model: db.shift },
-        { model: db.location },
-      ],
+      include: [{ model: db.shift }],
     })
 
     signup = await db.signup.create({
       ...signupAttrs,
       eventId: event.id,
       shiftId: event.shifts[0].id,
-      locationId: event.locations[0].id,
       person: personAttrs,
     }, {
       include: [{ model: db.person }],
@@ -50,7 +45,6 @@ describe("Signup model", () => {
     createSignupStub.restore()
     createPersonStub.restore()
     await db.event.destroy({where: {}})
-    await db.location.destroy({where: {}})
     await db.shift.destroy({where: {}})
     await db.signup.destroy({where: {}})
     await db.person.destroy({where: {}})
@@ -66,7 +60,6 @@ describe("Signup model", () => {
         "eventId",
         "eventSignupId",
         "id",
-        "locationId",
         "person",
         "personId",
         "role",
@@ -85,14 +78,12 @@ describe("Signup model", () => {
       const e = await signup.getEvent()
       expect(e.get("id")).to.eql(event.id)
     })
-    it("belongs to a location", async () => {
-      const l = await signup.getLocation()
-      expect(l.get("id")).to.eql(event.locations[0].id)
-    })
+
     it("belongs to a shift", async () => {
       const s = await signup.getShift()
       expect(s.get("id")).to.eql(event.shifts[0].id)
     })
+
     it("belongs to a person", async () => {
       const p = await signup.getPerson()
       expect(pick(p.get(), keys(personAttrs))).to.eql(personAttrs)
@@ -130,22 +121,12 @@ describe("Signup model", () => {
         expect(await db.shift.findOne({ where: { eventShiftId: 1000000 }})).to.exist
       })
 
-      it("posts nested location to VAN", async () => {
-        const location = await signup.getLocation()
-        expect(createLocationStub.getCall(0).args[0]).to.eql(location.get())
-      })
-
-      it("saves VAN location id to db", async () => {
-        expect(await db.location.findOne({ where: { locationId: 1000000 }})).to.exist
-      })
-
       it("posts signup with all nested resources to VAN", () => {
         expect(
           pick(
             createSignupStub.getCall(0).args[0],
             [
               "event",
-              "location",
               "person",
               "role",
               "shift",
@@ -155,9 +136,6 @@ describe("Signup model", () => {
         ).to.eql({
           event: {
             eventId: 1000000,
-          },
-          location: {
-            locationId: 1000000,
           },
           person: {
             vanId: 1000000,
