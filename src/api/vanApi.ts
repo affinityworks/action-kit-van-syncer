@@ -36,11 +36,6 @@ export const createEvent = async (attrs: EventAttributes): Promise<VanEventCreat
   return { eventId }
 }
 
-export const createLocation = async (attrs: LocationAttributes): Promise<VanLocationCreateResponse> => {
-  const locationId = await createResource("/locations/findOrCreate", attrs)
-  return { locationId }
-}
-
 export const createPerson = async (attrs: PersonAttributes): Promise<VanPersonCreateResponse> => {
   const vanId = await createResource("/people/findOrCreate", attrs)
   return { vanId }

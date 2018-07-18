@@ -41,7 +41,7 @@ export const signupFactory = (s: Sequelize, t: DataTypes): Model => {
     role: t.JSON,
   }, {
     hooks: {
-      afterCreate: postNewSignupToVan,
+      afterCreate: postSignupToVan,
     },
   })
 
@@ -54,35 +54,37 @@ export const signupFactory = (s: Sequelize, t: DataTypes): Model => {
   return signup
 }
 
-const postNewSignupToVan = (signup: SignupInstance, options: object): Promise<any> =>
+const postSignupToVan = (signup: SignupInstance, options: object): Promise<any> =>
   Promise.all([
-    postNewEventToVan(signup),
-    postNewPersonToVan(signup),
-    postNewShiftToVan(signup),
+    postEventToVan(signup),
+    postPersonToVan(signup),
+    postShiftToVan(signup),
   ])
     .then(fromPairs)
     .then(childIds => vanApi.createSignup(parseVanSignupRequest(signup, childIds)))
     .then(({eventSignupId}) => signup.update({eventSignupId}))
 
-// TODO (aguestuser|05 Jul 2018): boy could this be dried up, hunh?
-
-const postNewEventToVan = async (signup: SignupInstance): Promise<[string, number]> => {
+const postEventToVan = async (signup: SignupInstance): Promise<[string, number]> => {
   const event = await signup.getEvent()
-  const {eventId} = await vanApi.createEvent(event.get())
+  const eventId =
+    event.eventId ||
+    await vanApi.createEvent(event.get()).then(r => r.eventId)
   await event.update({eventId})
   return ["eventId", eventId]
 }
 
-const postNewPersonToVan = async (signup: SignupInstance): Promise<[string, number]> => {
+const postPersonToVan = async (signup: SignupInstance): Promise<[string, number]> => {
   const person = await signup.getPerson()
   const {vanId} = await vanApi.createPerson(person.get())
   await person.update({vanId})
   return ["vanId", vanId]
 }
 
-const postNewShiftToVan = async (signup: SignupInstance): Promise<[string, number]> => {
+const postShiftToVan = async (signup: SignupInstance): Promise<[string, number]> => {
   const shift = await signup.getShift()
-  const {eventShiftId} = await vanApi.createShift(shift.get())
+  const eventShiftId =
+    shift.eventShiftId ||
+    await vanApi.createShift(shift.get()).then(r => r.eventShiftId)
   await shift.update({eventShiftId})
   return ["eventShiftId", eventShiftId]
 }
