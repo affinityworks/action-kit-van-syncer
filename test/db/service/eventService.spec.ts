@@ -44,7 +44,7 @@ describe("event service", () => {
     expect(await db.event.count()).to.eql(1)
     expect(await db.shift.count()).to.eql(1)
     expect(await db.location.count()).to.eql(1)
-    expect(await db.address.count()).to.eql(3) // 1 for event, 2 for people
+    expect(await db.address.count()).to.eql(1)
     expect(await db.signup.count()).to.eql(2)
     expect(await db.person.count()).to.eql(2)
   })
@@ -59,7 +59,7 @@ describe("event service", () => {
     expect(await db.event.count()).to.eql(2)
     expect(await db.shift.count()).to.eql(2)
     expect(await db.location.count()).to.eql(2)
-    expect(await db.address.count()).to.eql(4) // 1 for event, 2 for people
+    expect(await db.address.count()).to.eql(2)
     expect(await db.signup.count()).to.eql(2)
     expect(await db.person.count()).to.eql(2)
   })

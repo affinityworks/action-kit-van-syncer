@@ -32,7 +32,7 @@ const createSignups = (db: Database, event: EventInstance, eventTree: VanEvent):
         locationId: event.locations[0].id,
         person: signup.person,
       }, {
-        include: [{ model: db.person, include: [{ model: db.address }]}],
+        include: [{ model: db.person }],
       }),
     ),
   )

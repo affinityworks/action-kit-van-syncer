@@ -7,17 +7,11 @@ import {vanEventTree} from "../../fixtures/vanEvent"
 
 describe("Person model", () => {
   const personAttrs = cloneDeep(vanEventTree[0].signups[1].person)
-  const addressesAttrs = personAttrs.addresses
   let db: Database, person: PersonInstance
 
   before(async () => {
     db = initDb()
-    person = await db.person.create({
-      ...personAttrs,
-      addresses: addressesAttrs,
-    }, {
-      include: [{ model: db.address }],
-    })
+    person = await db.person.create(personAttrs)
   })
 
   after(async () => {
@@ -46,33 +40,7 @@ describe("Person model", () => {
     })
 
     it("saves correct fields", () => {
-      expect(pick(person, keys(omit(personAttrs, ["addresses"]))))
-        .to.eql(omit(personAttrs, ["addresses"]))
-    })
-  })
-
-  describe("associations", () => {
-    it("has many addresses", async () => {
-      const as = await person.getAddresses()
-      map(as, (a, i) =>
-        expect(pick(a.get(), keys(addressesAttrs[i])))
-          .to.eql(addressesAttrs[i]),
-      )
-    })
-  })
-
-  describe ("hooks", async () => {
-
-    describe("on delete", async () => {
-      let count
-      before(async () => {
-        count = await db.address.count()
-        await person.destroy()
-      })
-
-      it ("deletes associated addresses", async () => {
-        expect(await db.address.count()).to.eql(count - 1)
-      })
+      expect(pick(person, keys(personAttrs))).to.eql(personAttrs)
     })
   })
 })

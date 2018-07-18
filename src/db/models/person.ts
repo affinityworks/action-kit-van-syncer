@@ -11,7 +11,7 @@ export interface PersonInstance extends Instance<PersonAttributes>, PersonAttrib
 
 export const personFactory = (s: Sequelize, t: DataTypes): Model => {
 
-  const person = s.define<PersonInstance, PersonAttributes>("person", {
+  return s.define<PersonInstance, PersonAttributes>("person", {
     actionKitId: t.INTEGER,
     vanId: t.INTEGER,
     firstName: t.STRING,
@@ -21,16 +21,6 @@ export const personFactory = (s: Sequelize, t: DataTypes): Model => {
     suffix: t.STRING,
     emails: t.JSON,
     phones: t.JSON,
+    addresses: t.JSON,
   }, {})
-
-  person.associate = (db: Models) => {
-    person.hasMany(db.address, {
-      foreignKey: "addressableId",
-      scope: { addressable: "person" },
-      hooks: true,
-      onDelete: "cascade",
-    })
-  }
-
-  return person
 }

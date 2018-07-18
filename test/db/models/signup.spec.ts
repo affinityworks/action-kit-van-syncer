@@ -41,7 +41,7 @@ describe("Signup model", () => {
       locationId: event.locations[0].id,
       person: personAttrs,
     }, {
-      include: [{ model: db.person, include: [{ model: db.address }]}],
+      include: [{ model: db.person }],
     })
   })
 
@@ -81,6 +81,7 @@ describe("Signup model", () => {
   })
 
   describe("associations", async () => {
+
     it("belongs to an event", async () => {
       const e = await signup.getEvent()
       expect(e.get("id")).to.eql(event.id)
@@ -95,14 +96,7 @@ describe("Signup model", () => {
     })
     it("belongs to a person", async () => {
       const p = await signup.getPerson()
-      expect(pick(p.get(), keys(personAttrs)))
-        .to.eql(omit(personAttrs, ["addresses"]))
-    })
-
-    it("accepts nested attributes for a person's address", async () => {
-      const a = await signup.getPerson().then(p => p.getAddresses())
-      expect(pick(a[0].get(), keys(personAttrs.addresses[0])))
-        .to.eql(personAttrs.addresses[0])
+      expect(pick(p.get(), keys(personAttrs))).to.eql(personAttrs)
     })
   })
 
