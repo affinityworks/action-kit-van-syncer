@@ -17,7 +17,6 @@ describe("event service", () => {
   afterEach(async () => {
     await db.event.destroy({where: {}})
     await db.location.destroy({where: {}})
-    await db.address.destroy({where: {}})
     await db.shift.destroy({where: {}})
     await db.signup.destroy({where: {}})
     await db.person.destroy({where: {}})
@@ -44,7 +43,6 @@ describe("event service", () => {
     expect(await db.event.count()).to.eql(1)
     expect(await db.shift.count()).to.eql(1)
     expect(await db.location.count()).to.eql(1)
-    expect(await db.address.count()).to.eql(1)
     expect(await db.signup.count()).to.eql(2)
     expect(await db.person.count()).to.eql(2)
   })
@@ -59,7 +57,6 @@ describe("event service", () => {
     expect(await db.event.count()).to.eql(2)
     expect(await db.shift.count()).to.eql(2)
     expect(await db.location.count()).to.eql(2)
-    expect(await db.address.count()).to.eql(2)
     expect(await db.signup.count()).to.eql(2)
     expect(await db.person.count()).to.eql(2)
   })

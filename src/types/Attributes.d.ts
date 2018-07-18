@@ -1,5 +1,4 @@
 import {DataTypeAbstract, DefineAttributeColumnOptions} from "sequelize"
-import {AddressAttributes} from "../db/models/address"
 import {EventAttributes} from "../db/models/event"
 import {LocationAttributes} from "../db/models/location"
 import {ShiftAttributes} from "../db/models/shift"
@@ -17,7 +16,6 @@ declare interface AbstractAttributes {
 }
 
 declare type Attributes =
-  AddressAttributes |
   EventAttributes |
   LocationAttributes |
   ShiftAttributes

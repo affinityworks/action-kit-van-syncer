@@ -17,7 +17,7 @@ const createEvent = (db: Database, eventAttrs: VanEvent): Bluebird<EventInstance
   db.event.create(eventAttrs, {
     include: [
       { model: db.shift },
-      { model: db.location, include: [{ model: db.address }] },
+      { model: db.location },
     ],
   })
 

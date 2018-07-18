@@ -20,10 +20,7 @@ describe("Event model", () => {
       shifts: shiftsAttrs,
     }, {
       include: [
-        {
-          model: db.location,
-          include: [{ model: db.address }],
-        },
+        { model: db.location },
         { model: db.shift },
       ],
     })

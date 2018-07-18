@@ -51,7 +51,6 @@ describe("Signup model", () => {
     createPersonStub.restore()
     await db.event.destroy({where: {}})
     await db.location.destroy({where: {}})
-    await db.address.destroy({where: {}})
     await db.shift.destroy({where: {}})
     await db.signup.destroy({where: {}})
     await db.person.destroy({where: {}})
