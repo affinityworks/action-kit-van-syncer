@@ -4,7 +4,7 @@ import {LocationAttributes} from "../db/models/location"
 import {PersonAttributes} from "../db/models/person"
 import {ShiftAttributes} from "../db/models/shift"
 import config from "../../config/"
-import * as _ from "lodash"
+import {get} from "lodash"
 const {secrets} = config
 
 // TODO (aguestuser): consider moving these to `/types` dir
@@ -56,7 +56,7 @@ export const createSignup = async (attrs: VanSignupCreateRequest): Promise<VanSi
   return { eventSignupId }
 }
 
-const createResource = async (resourceEndpoint, attrs) => {
+const createResource = async (resourceEndpoint, attrs): Promise<number> => {
   const response = await api().post(resourceEndpoint, attrs)
-  return _.get(response, ["data"])
+  return get(response, ["data"])
 }
