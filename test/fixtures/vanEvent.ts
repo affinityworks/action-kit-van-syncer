@@ -1,5 +1,6 @@
 import {LocationAttributes} from "../../src/db/models/location"
 import {VanEvent} from "../../src/types/VanEvent"
+import {EventAttributes} from "../../src/db/models/event"
 
 export const vanEvents: VanEvent[] = [{
   actionKitId: 1049,
@@ -179,4 +180,45 @@ export const locationAttrs: LocationAttributes = {
   name: "Space Jam",
   displayName: "Really professional space Jam",
   locationId: 1,
+}
+
+export const eventAttrs: EventAttributes = {
+  ...vanEventTree[0],
+  vanId: 1,
+  signups: [
+    { // signupResponseHost
+      personId: 1,
+      eventId: 1,
+      vanEventId: 1,
+      shiftId: 1,
+      vanShiftId: 1,
+      roleId: 1,
+      vanRoleId: 1,
+      locationId: 1,
+      actionKitId: 1267,
+      status: { statusId: 4, name: "Invited"  },
+      role: { roleId: 1 },
+      person: { // userResponseHost
+        actionKitId: 350567,
+        salutation: "",
+        firstName: "James",
+        middleName: "",
+        lastName: "V",
+        suffix: "",
+        addresses: [
+          {
+            addressLine1: "",
+            addressLine2: "",
+            city: "Brooklyn",
+            stateOrProvince: "NY",
+            zipOrPostalCode: "11213",
+            countryCode: "US",
+            type: "Home",
+          },
+        ],
+        emails: [{ email: "james@affinity.works", type: "P"}],
+        phones: [],
+      },
+    },
+  ],
 }

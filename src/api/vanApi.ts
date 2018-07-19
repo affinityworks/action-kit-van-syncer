@@ -31,6 +31,8 @@ const api = () => {
   })
 }
 
+// CREATE RESOURCES
+
 export const createEvent = async (attrs: EventAttributes): Promise<VanEventCreateResponse> => {
   const eventId = await createResource("/events", attrs)
   return { eventId }
@@ -54,4 +56,22 @@ export const createSignup = async (attrs: VanSignupCreateRequest): Promise<VanSi
 const createResource = async (resourceEndpoint, attrs): Promise<number> => {
   const response = await api().post(resourceEndpoint, attrs)
   return get(response, ["data"])
+}
+
+// UPDATE RESOURCES
+
+export const updateEvent = async (attrs: EventAttributes) => {
+  await updateResource(`/events/${attrs.vanId}`, attrs, api().put)
+}
+
+export const updatePerson = async (attrs: PersonAttributes) => {
+  await updateResource(`/people/${attrs.vanId}`, attrs, api().post)
+}
+
+export const updateSignup = async (attrs: VanSignupUpdateRequest) => {
+  await updateResource(`/signups/${attrs.vanId}`, attrs, api().put)
+}
+
+const updateResource = async (resourceEndpoint, attrs, httpMethod) => {
+  await httpMethod(resourceEndpoint, attrs)
 }
