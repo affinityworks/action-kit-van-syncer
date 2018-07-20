@@ -1,10 +1,9 @@
 import {DataTypes, Instance, Models, Sequelize, SequelizeStaticAndInstance} from "sequelize"
 import {AbstractAttributes} from "../../types/Attributes"
 import {VanEvent} from "../../types/VanEvent"
-import {VanSignup} from "../../types/VanSignup"
 import {LocationAttributes, LocationInstance} from "./location"
 import {ShiftAttributes, ShiftInstance} from "./shift"
-import {SignupAttributes} from "./signup"
+import {SignupAttributes, SignupInstance} from "./signup"
 import Bluebird = require("bluebird")
 type Model = SequelizeStaticAndInstance["Model"]
 
@@ -14,8 +13,9 @@ export interface EventAttributes extends AbstractAttributes, VanEvent {
   signups?: SignupAttributes[],
 }
 export interface EventInstance extends Instance<EventAttributes>, EventAttributes {
-  getLocations(): Bluebird<LocationInstance[]>
-  getShifts(): Bluebird<ShiftInstance[]>
+  getLocations(): Bluebird<LocationInstance[]>,
+  getShifts(): Bluebird<ShiftInstance[]>,
+  getSignups(): Bluebird<SignupInstance[]>
 }
 
 export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
@@ -43,6 +43,11 @@ export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
       foreignKey: "eventId",
     })
     event.hasMany(db.shift, {
+      hooks: true,
+      onDelete: "cascade",
+      foreignKey: "eventId",
+    })
+    event.hasMany(db.signup, {
       hooks: true,
       onDelete: "cascade",
       foreignKey: "eventId",

@@ -4,7 +4,6 @@ import sinon from "ts-sinon"
 
 type VanApiMethod =
 "createEvent" |
-  "createLocation" |
   "createPerson" |
   "createShift" |
   "createSignup"

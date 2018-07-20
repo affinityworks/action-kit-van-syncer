@@ -13,6 +13,7 @@ import {fromPairs, pick} from "lodash"
 export interface SignupAttributes extends AbstractAttributes, VanSignup {
   personId: number,
   eventId: number,
+  locationId?: number,
   vanEventId: number,
   shiftId: number,
   vanShiftId: number,

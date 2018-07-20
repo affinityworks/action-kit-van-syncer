@@ -19,13 +19,13 @@ declare interface VanSignup {
   location?: VanLocation | LocationAttributes, // assoc
 }
 
-export type VanSignupStatus =
-  { statusId: 4,  name: "Invited"   } |
-  { statusId: 1,  name: "Scheduled" } |
-  { statusId: 3,  name: "Declined"  } |
-  { statusId: 11, name: "Confirmed" } |
-  { statusId: 2,  name: "Completed" } |
-  { statusId: 15, name: "Walk In"   }
+declare interface VanSignupStatus { statusId: number, name: string }
+  // { statusId: 4,  name: "Invited"   } |
+  // { statusId: 1,  name: "Scheduled" } |
+  // { statusId: 3,  name: "Declined"  } |
+  // { statusId: 11, name: "Confirmed" } |
+  // { statusId: 2,  name: "Completed" } |
+  // { statusId: 15, name: "Walk In"   }
 
 //
 // declare type VanSignupStatusString =

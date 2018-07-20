@@ -1,19 +1,90 @@
 import {expect} from "chai"
+import * as chai from "chai"
 import {describe, it, before, after, beforeEach, afterEach} from "mocha"
 import {initDb} from "../../../src/db"
+import {createEventTree, eventIncludesOf} from "../../../src/db/service/eventService"
 import * as eventService from "../../../src/db/service/eventService"
+import {VanEvent} from "../../../src/types/VanEvent"
 import {vanEvents, vanEventTree} from "../../fixtures/vanEvent"
-import {cloneDeep} from "lodash"
+import {cloneDeep, find} from "lodash"
 import * as nock from "nock"
+import * as sinonChai from "sinon-chai"
+import sinon from "ts-sinon"
 
 describe("event service", () => {
+  chai.use(sinonChai)
   const eventsAttrs = cloneDeep(vanEvents)
-  const eventTreeAttrs = cloneDeep(vanEventTree)
-  let db
-  let id = 1
+  const oldEventTrees = cloneDeep(vanEventTree)
+  const oldEventTree = oldEventTrees[0]
+  const newEventTree = {
+    ...oldEventTree,
+    name: "very new name",
+    locations: [
+      {...oldEventTree.locations, name: "very new name"},
+      ...oldEventTree.locations.slice(1),
+    ],
+    shifts: [
+      {...oldEventTree.shifts[0], name: "very new name"},
+      ...oldEventTree.shifts.slice(1)
+    ],
+    signups: [
+      {
+        ...oldEventTree.signups[0],
+        status: { statusId: 3, name: "Declined" },
+        person: {
+          ...oldEventTree.signups[0].person,
+          firstName: "very new name",
+        },
+      },
+      ...oldEventTree.signups.slice(1),
+    ],
+  }
+  const newEventTrees = [newEventTree, oldEventTrees[1]]
+  const newEventTreeWithNewSignup: VanEvent = {
+    ...oldEventTree,
+    signups: [
+      ...oldEventTree.signups,
+      {
+        actionKitId: 10000000,
+        status: { statusId: 4, name: "Invited"  },
+        role: { roleId: 2 },
+        person: {
+          actionKitId: 10000000,
+          salutation: "",
+          firstName: "Tyrone",
+          middleName: "",
+          lastName: "Slothrop",
+          suffix: "",
+          addresses: [
+            {
+              addressLine1: "111 Main St",
+              addressLine2: "",
+              city: "Ridgewood",
+              stateOrProvince: "NY",
+              zipOrPostalCode: "11385",
+              countryCode: "US",
+              type: "Home",
+            },
+          ],
+          emails: [{ email: "tyrone@riseup.net", type: "P"}],
+          phones: [],
+        },
+      },
+    ],
+  }
+  
   nock.disableNetConnect()
+  let db
   
   before(async () => db = initDb())
+
+  beforeEach(() => {
+    nock("https://api.securevan.com/v4")
+      .post(() => true)
+      .reply(200, () => Math.random() * 1000000000)
+      .persist()
+  })
+
   afterEach(async () => {
     await db.event.destroy({where: {}})
     await db.location.destroy({where: {}})
@@ -21,48 +92,98 @@ describe("event service", () => {
     await db.signup.destroy({where: {}})
     await db.person.destroy({where: {}})
   })
+
   after(async () => await db.sequelize.close())
-  
-  it("creates an event", async () => {
-    await eventService.create(db)(eventsAttrs[0])
-    expect(await db.event.count()).to.eql(1)
-  })
-  
-  it("creates many events", async () => {
-    await eventService.createMany(db)(eventsAttrs)
-    expect(await db.event.count()).to.eql(2)
-  })
-  
-  it("creates an event with associations", async () => {
-    nock("https://api.securevan.com/v4")
-      .post((uri) => true)
-      .reply(200, () => incrementId(id))
-      .persist()
 
-    await eventService.create(db)(eventTreeAttrs[0])
-    expect(await db.event.count()).to.eql(1)
-    expect(await db.shift.count()).to.eql(1)
-    expect(await db.location.count()).to.eql(1)
-    expect(await db.signup.count()).to.eql(2)
-    expect(await db.person.count()).to.eql(2)
+  describe("saving event trees", async () => {
+    
+    let createSpy, updateSpy
+    beforeEach(() => {
+      createSpy = sinon.spy(eventService, "createEventTree")
+      updateSpy = sinon.spy(eventService, "updateEventTree")
+    })
+    afterEach(() => {
+      createSpy.restore()
+      updateSpy.restore()
+    })
+
+    it("creates event trees if they do not exist", async () => {
+      await eventService.saveMany(db)(oldEventTrees)
+      expect(createSpy).to.have.been.calledTwice
+      expect(updateSpy).not.to.have.been.called
+    })
+
+    it("updates an event if it already exists", async () => {
+      await eventService.saveMany(db)(oldEventTrees)
+      await eventService.saveMany(db)(newEventTrees)
+      expect(createSpy).to.have.been.calledTwice
+      expect(updateSpy).to.have.been.calledTwice
+    })
   })
   
-  it("creates many events with associations", async () => {
-    nock("https://api.securevan.com/v4")
-      .post((uri) => true)
-      .reply(200, () => incrementId(id))
-      .persist()
+  describe("creating an event tree", () => {
 
-    await eventService.createMany(db)(eventTreeAttrs)
-    expect(await db.event.count()).to.eql(2)
-    expect(await db.shift.count()).to.eql(2)
-    expect(await db.location.count()).to.eql(2)
-    expect(await db.signup.count()).to.eql(2)
-    expect(await db.person.count()).to.eql(2)
+    it("creates an event", async () => {
+      await eventService.createEventTree(db)(eventsAttrs[0])
+      expect(await db.event.count()).to.eql(1)
+    })
+  
+    it("creates many events", async () => {
+      await eventService.createEventTrees(db)(eventsAttrs)
+      expect(await db.event.count()).to.eql(2)
+    })
+  
+    it("creates an event with associations", async () => {
+      await eventService.createEventTree(db)(oldEventTrees[0])
+      expect(await db.event.count()).to.eql(1)
+      expect(await db.shift.count()).to.eql(1)
+      expect(await db.location.count()).to.eql(1)
+      expect(await db.signup.count()).to.eql(2)
+      expect(await db.person.count()).to.eql(2)
+    })
   })
-
-  const incrementId = (currentId) => {
-    id = currentId + 1
-    return currentId
-  }
+  
+  describe("updating an event tree", async () => {
+    
+    let event, updatedEvent
+    
+    beforeEach(async () => {
+      event = await eventService.createEventTree(db)(oldEventTrees[0])
+      updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
+    })
+    
+    it("updates a nested location", async () => {
+      expect(await updatedEvent.getLocations().then(locs => locs[0].name)).to.eql("very new name")
+    })
+    
+    it("updates a nested location", async () => {
+      expect(await updatedEvent.getShifts().then(shifts => shifts[0].name)).to.eql("very new name")
+    })
+    
+    it("updates a nested signup", async () => {
+      const signup = await updatedEvent
+        .getSignups()
+        .then(signups => find(signups, { actionKitId: oldEventTrees[0].signups[0].actionKitId }))
+      
+      expect(signup.status).to.eql({ statusId: 3, name: "Declined" })
+    })
+  
+    it("creates a new signup", async () => {
+      expect(await db.signup.count()).to.eql(2)
+      const e = await  db.event.findOne({ where: { id: event.id }, ...eventIncludesOf(db) })
+      await eventService.updateEventTree(db)(e, newEventTreeWithNewSignup)
+      expect(await db.signup.count()).to.eql(3)
+    })
+    
+    it("udpates a nested person", async () => {
+      const person = await updatedEvent
+        .getSignups()
+        .then(signups =>
+          find(
+            signups, { actionKitId: oldEventTrees[0].signups[0].actionKitId }
+            ).getPerson(),
+        )
+      expect(person.firstName).to.eql("very new name")
+    })
+  })
 })
