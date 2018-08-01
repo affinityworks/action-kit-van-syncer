@@ -4,15 +4,16 @@ import {VanSignupStatus} from "../../src/types/VanSignup"
 import {VanEvent} from "../../src/types/VanEvent"
 import {PersonAttributes} from "../../src/db/models/person"
 import {personAttrs} from "./vanPerson"
-import {eventAttrs, locationAttrs} from "./vanEvent"
+import {eventAttrs} from "./vanEvent"
 import {shiftAttrs} from "./vanShift"
+import {locationAttrs} from "./vanLocation"
 
 export const signupAttrs: SignupAttributes = {
   id: 1,
   vanId: 1,
-  archived: "test",
-  createdAt: "test",
-  updatedAt: "test",
+  archived: "2018-07-25T16:00:00-00:00",
+  createdAt: "2018-07-25T16:00:00-00:00",
+  updatedAt: "2018-07-25T16:00:00-00:00",
   personId: 1,
   eventId: 1,
   vanEventId: 1,
@@ -24,11 +25,14 @@ export const signupAttrs: SignupAttributes = {
   actionKitId: 1,
   eventSignupId: 1,
   status: { statusId: 4,  name: "Invited"   }, // JSON
-  role: { roleId: 2,  name: "Attendee"}, // JSON
+  role: {
+    roleId: 198854,
+    name: "Canvasser",
+  }, // JSON
   person: personAttrs, // assoc
   event: eventAttrs, // assoc
   shift: shiftAttrs, // assoc
-  location: locationAttrs,
+  location: locationAttrs[0],
 }
 
 export const signupUpdate: VanSignupUpdateRequest = {

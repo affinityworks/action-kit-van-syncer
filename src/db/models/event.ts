@@ -5,13 +5,15 @@ import {LocationAttributes, LocationInstance} from "./location"
 import {ShiftAttributes, ShiftInstance} from "./shift"
 import {SignupAttributes, SignupInstance} from "./signup"
 import Bluebird = require("bluebird")
+import * as vanApi from "../../service/vanApi"
+import {VanLocationCreateResponse} from "../../service/vanApi"
 type Model = SequelizeStaticAndInstance["Model"]
 
 export interface EventAttributes extends AbstractAttributes, VanEvent {
   locations?: LocationAttributes[],
-  shifts?: ShiftAttributes[],
-  signups?: SignupAttributes[],
+  shifts: ShiftAttributes[],
 }
+
 export interface EventInstance extends Instance<EventAttributes>, EventAttributes {
   getLocations(): Bluebird<LocationInstance[]>,
   getShifts(): Bluebird<ShiftInstance[]>,
@@ -34,6 +36,10 @@ export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
     shortName: t.STRING,
     startDate: t.DATE,
     vanId: t.INTEGER,
+  }, {
+    hooks: {
+      afterCreate: postEventToVan,
+    },
   })
 
   event.associate = (db: Models) => {
@@ -55,4 +61,28 @@ export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
   }
 
   return event
+}
+
+const postEventToVan = async (event: EventInstance) => {
+  const locations = await postLocationsToVan(event)
+  const shifts = await event.getShifts()
+  const eventAttrs = {
+    ...event.get(),
+    shifts,
+    locations,
+  }
+
+  const eventId =
+    event.eventId ||
+    await vanApi.createEvent(eventAttrs).then(r => r.eventId)
+  await event.update({eventId})
+}
+
+const postLocationsToVan = async (event: EventInstance): Promise<VanLocationCreateResponse[]> => {
+  const locations = event.getLocations()
+  return await locations.map(async (location: LocationInstance) => {
+    const locationId = await vanApi.createLocation(location)
+    await location.update(locationId)
+    return locationId
+  })
 }

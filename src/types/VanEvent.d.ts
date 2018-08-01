@@ -8,7 +8,7 @@ declare interface VanEvent {
   ////////////////////
   eventId?: number,
   name: string,
-  shortName?: string,
+  shortName: string,
   description: string,
   startDate: Date | string,
   endDate: Date | string,
@@ -22,6 +22,6 @@ declare interface VanEvent {
   createdDate: Date | string,
   roles?: VanRole[],
   locations?: VanLocation[],
-  shifts?: VanShift[],
+  shifts: VanShift[],
   signups?: VanSignup[],
 }

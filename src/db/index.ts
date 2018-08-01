@@ -23,7 +23,6 @@ export interface Database {
 }
 
 export const initDb = (): Database => {
-
   const sequelize = config.use_env_variable
     ? new SequelizeClass(process.env[config.use_env_variable], config)
     : new SequelizeClass(config.database, config.username, config.password, config)

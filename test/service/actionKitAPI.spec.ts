@@ -72,7 +72,7 @@ describe("actionKitAPI", () => {
   describe("getEventTrees", () => {
     it("returns an array of trees", async () => {
       nock("https://roboticdogs.actionkit.com")
-        .get("/rest/v1/event/?_limit=100&_offset=0")
+        .get("/rest/v1/event/?campaign=289&_limit=100&_offset=0")
         .reply(200, responses.eventsResponse)
         .get("/rest/v1/eventsignup/1267/")
         .reply(200, responses.signupResponseHost)
@@ -93,7 +93,7 @@ describe("actionKitAPI", () => {
 
     it("filters out any events with NOSYNC in the title", async () => {
       nock("https://roboticdogs.actionkit.com")
-        .get("/rest/v1/event/?_limit=100&_offset=0")
+        .get("/rest/v1/event/?campaign=289&_limit=100&_offset=0")
         .reply(200, responses.eventsResponseWithNoSync)
 
       const eventTrees = await getEventTrees()

@@ -1,3 +1,4 @@
+///<reference path="../../../node_modules/@types/sinon/index.d.ts"/>
 import {describe, it, test, before, after} from "mocha"
 import {expect} from "chai"
 import {Database, initDb} from "../../../src/db"
@@ -6,14 +7,22 @@ import {EventInstance} from "../../../src/db/models/event"
 import {ShiftInstance} from "../../../src/db/models/shift"
 import {parseDatesIn} from "../../../src/service/parse"
 import {vanEventTree} from "../../fixtures/vanEvent"
+import {vanApiStubOf} from "../../support/spies"
+import * as nock from "nock"
+import sinon from "ts-sinon"
 
 describe("Shift model", () => {
+  nock.disableNetConnect()
+  const sandbox = sinon.createSandbox()
+
   const eventAttrs = vanEventTree[0]
   const shiftAttrs = vanEventTree[0].shifts[0]
-  let db: Database, shift: ShiftInstance, event: EventInstance
+  let db: Database, shift: ShiftInstance, event: EventInstance, createEventStub, createLocationStub
 
   before(async () => {
     db = initDb()
+    createEventStub = vanApiStubOf(sandbox, "createEvent", { eventId: 1000000 })
+    createLocationStub = vanApiStubOf(sandbox, "createLocation", { locationId: 1000000} )
     event = await db.event.create(eventAttrs)
     shift = await db.shift.create({
       ...shiftAttrs,
@@ -23,6 +32,8 @@ describe("Shift model", () => {
   })
 
   after(async () => {
+    createEventStub.restore()
+    createLocationStub.restore()
     await db.event.destroy({where: {}})
     await db.shift.destroy({where: {}})
     await db.sequelize.close()

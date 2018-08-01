@@ -69,8 +69,8 @@ export const getPhone = async (phoneUrl: string): Promise<ActionKitPhone> => {
   return await getResource(phoneUrl)
 }
 
-export const getEventTrees = async () => {
-  const events = await getEvents(secrets.actionKitAPI.eventsEndpoint)
+export const getEventTrees = async (eventsEndpoint = secrets.actionKitAPI.eventsEndpoint): Promise<ActionKitEvent[]> => {
+  const events = await getEvents(eventsEndpoint)
   return Promise.all(events.filter(noSyncEventFilter).map(getEventTree))
 }
 

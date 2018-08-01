@@ -80,7 +80,7 @@ export const eventsResponse: ActionKitEventResponseInEnvelope = {
         },
       ],
       host_is_confirmed: true,
-      id: 1049,
+      id: 1050,
       is_approved: false,
       is_private: false,
       latitude: 50.6664,

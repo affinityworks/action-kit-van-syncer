@@ -6,35 +6,40 @@ import {VanSignup, VanSignupStatus} from "../types/VanSignup"
 
 // TODO: fill these in with actual ids once we find or create them
 export const roles: { [key: string]: VanRole } = {
-  HOST: { roleId: 1 },
-  ATTENDEE: { roleId: 2 },
+  HOST: { roleId: 198856, name: "Host" },
+  ATTENDEE: { roleId: 198854, name: "Canvasser" },
 }
 
 export const parseVanEvents = (akes: ActionKitEvent[]): VanEvent[] =>
   akes.map(parseVanEvent)
 
-const parseVanEvent = (ake: ActionKitEvent): VanEvent => ({
-  actionKitId: ake.id,
-  name: ake.title,
-  description: ake.public_description,
-  startDate: `${ake.starts_at_utc}-00:00`,
-  endDate: `${ake.ends_at_utc}-00:00`,
-  eventType: {}, // TODO: is this right?
-  codes: [{}], // TODO: ditto
-  notes: [{}], // TODO: ditto
-  createdDate: ake.created_at,
-  shifts: [{
-    name: "FULL SHIFT",
-    startTime: `${ake.starts_at_utc}-00:00`, // TODO: just time?
-    endTime: `${ake.ends_at_utc}-00:00`, // TODO: ditto
-  }],
-  roles: values(roles),
-  locations: [{
-    name: ake.venue,
-    address: parseVanAddress(ake, "Custom"),
-  }],
-  signups: ake.signups.map(parseVanSignup),
-})
+const parseVanEvent = (ake: ActionKitEvent): VanEvent => {
+  return {
+    actionKitId: ake.id,
+    name: ake.title,
+    shortName: ake.title.slice(0, 12),
+    description: ake.public_description,
+    startDate: `${ake.starts_at_utc}-00:00`,
+    endDate: `${ake.ends_at_utc || setEndTime(ake.starts_at_utc)}-00:00`,
+    eventType: {
+      eventTypeId: 227492,
+    },
+    codes: [],
+    notes: [],
+    createdDate: ake.created_at,
+    shifts: [{
+      name: "FULL SHIFT",
+      startTime: `${ake.starts_at_utc}-00:00`,
+      endTime: `${ake.ends_at_utc || setEndTime(ake.starts_at_utc)}-00:00`,
+    }],
+    roles: values(roles),
+    locations: [{
+      name: ake.venue,
+      address: parseVanAddress(ake, "Custom"),
+    }],
+    signups: ake.signups.map(parseVanSignup),
+  }
+}
 
 const parseVanAddress = (akx: ActionKitEvent | ActionKitPerson, type: VanAddressType): VanAddress => ({
   addressLine1: akx.address1,
@@ -102,3 +107,9 @@ export const parseDatesIn = (obj: Attributes): Attributes =>
 
 const isDateField = (k: string): boolean =>
   k.includes("Date") || k.includes("Time")
+
+const setEndTime = (timestamp: Date|string): Date => {
+  const date = parseDate(timestamp)
+  date.setSeconds(date.getSeconds() + 10)
+  return date
+}

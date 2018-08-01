@@ -9,8 +9,9 @@ import Bluebird = require("bluebird")
  * SAVE
  *********/
 
-export const saveMany = (db: Database) => (eventTrees: VanEvent[]): Promise<EventInstance[]> =>
-  Promise.all(eventTrees.map(save(db)))
+export const saveMany = (db: Database) => async (eventTrees: VanEvent[]) => {
+  return await eventTrees.map(save(db))
+}
 
 export const save = (db: Database) => async (eventTree: VanEvent): Promise<EventInstance> => {
   const {actionKitId} = eventTree
@@ -32,13 +33,20 @@ export const createEventTree = (db: Database) => async (eventTree: VanEvent): Pr
   return event
 }
 
-const createEvent = (db: Database, eventTree: VanEvent): Bluebird<EventInstance> =>
-  db.event.create(eventTree, eventIncludesOf(db))
-
+const createEvent = (db: Database, eventTree: VanEvent): Bluebird<EventInstance> => {
+  try {
+    return db.event.create(eventTree, eventIncludesOf(db))
+  } catch (e) {
+    console.log(e)
+  }
+}
 
 // TODO: try to use `bulkCreate` here (figure out assoc's)
-const createSignups = (db: Database, event: EventInstance, eventTree: VanEvent): Promise<any[]> =>
-  Promise.all((eventTree.signups || []).map(s => createSignup(db, s, event)))
+const createSignups = (db: Database, event: EventInstance, eventTree: VanEvent): Array<Promise<SignupInstance>> => {
+  return (eventTree.signups || []).map(async (s) => {
+    return await createSignup(db, s, event)
+  })
+}
 
 const createSignup = async (db: Database, signup: VanSignup, event: EventInstance): Promise<SignupInstance> =>
   db.signup.create({
@@ -47,7 +55,6 @@ const createSignup = async (db: Database, signup: VanSignup, event: EventInstanc
     shiftId: event.shifts[0].id || await event.getShifts().then(ss => ss[0].id),
     locationId: event.locations[0] || await event.getLocations().then(ls => ls[0].id),
   }, signupIncludesOf(db))
-
 
 /*********
  * UPDATE

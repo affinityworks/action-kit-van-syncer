@@ -14,6 +14,9 @@ declare interface VanSignupCreateRequest {
   status: {
     statusId: number,
   },
+  location: {
+    locationId: number,
+  },
   printedLists?: [{ number: string }],
   minivanExports?: [{ minivanExportId: number, databaseMode: number}]
 }

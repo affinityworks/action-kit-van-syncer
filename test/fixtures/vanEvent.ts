@@ -1,62 +1,50 @@
 import {LocationAttributes} from "../../src/db/models/location"
 import {VanEvent} from "../../src/types/VanEvent"
 import {EventAttributes} from "../../src/db/models/event"
+import {shiftAttrs, vanShift} from "./vanShift"
+import {roleAttrs, roleOne, roleTwo} from "./vanRole"
+import {locationAttrs} from "./vanLocation"
 
 export const vanEvents: VanEvent[] = [{
   actionKitId: 1049,
   name: "Affinity Test Event #1",
+  shortName: "Affinity Tes",
   description: "Affinity Test Event #1",
   createdDate: "2018-06-07T15:57:50",
   startDate: "2018-07-25T16:00:00-00:00",
   endDate: "2018-07-25T20:00:00-00:00",
-  eventType: {}, // hmmm...
-  codes: [{}],
-  notes: [{}],
+  eventType: {
+    eventTypeId: 227492,
+  },
+  codes: [],
+  notes: [],
+  shifts: [vanShift],
 }, {
-  actionKitId: 1049,
+  actionKitId: 1050,
   name: "Affinity Test Event #2",
+  shortName: "Affinity Tes",
   description: "Affinity Test Event #2",
   startDate: "2018-07-25T16:00:00-00:00",
   endDate: "2018-07-25T20:00:00-00:00",
   createdDate: "2018-06-07T15:57:50",
-  eventType: {}, // hmmm...
-  codes: [{}],
-  notes: [{}],
+  eventType: {
+    eventTypeId: 227492,
+  },
+  codes: [],
+  notes: [],
+  shifts: [vanShift],
 }]
 
 export const vanEventTree: VanEvent[] = [
   { // eventsResponse.objects[0]
     ...vanEvents[0],
-    shifts: [
-      {
-        name: "FULL SHIFT",
-        startTime: "2018-07-25T16:00:00-00:00",
-        endTime: "2018-07-25T20:00:00-00:00",
-      },
-    ],
-    roles: [
-      { roleId: 1 },
-      { roleId: 2 },
-    ],
-    locations: [
-      {
-        name: "Space Jam",
-        address: {
-          addressLine1: "123 Albany Avenue",
-          addressLine2: "",
-          city: "New York",
-          stateOrProvince: "NY",
-          zipOrPostalCode: "11215-1104",
-          countryCode: "US", // hmm.. must be "USA"?
-          type: "Custom",
-        },
-      },
-    ],
+    roles: roleAttrs,
+    locations: [locationAttrs[0]],
     signups: [
       { // signupResponseHost
         actionKitId: 1267,
-        status: { statusId: 4, name: "Invited"  },
-        role: { roleId: 1 },
+        status: { statusId: 4, name: "Invited" },
+        role: roleTwo,
         person: { // userResponseHost
           actionKitId: 350567,
           salutation: "",
@@ -81,8 +69,8 @@ export const vanEventTree: VanEvent[] = [
       },
       { // signupResponseAttendee
         actionKitId: 1268,
-        status: { statusId: 4, name: "Invited"  },
-        role: { roleId: 2 },
+        status: { statusId: 4, name: "Invited" },
+        role: roleOne,
         person: { // userResponseAttendee
           actionKitId: 350568,
           salutation: "",
@@ -131,94 +119,10 @@ export const vanEventTree: VanEvent[] = [
   },
   { // eventsResponse.objects[0]
     ...vanEvents[1],
-    roles: [
-      {
-        roleId: 1,
-      },
-      {
-        roleId: 2,
-      },
-    ],
-    shifts: [
-      {
-        name: "FULL SHIFT",
-        startTime: "2018-07-25T16:00:00-00:00",
-        endTime: "2018-07-25T20:00:00-00:00",
-      },
-    ],
-    locations: [
-      {
-        name: "Barn",
-        address: {
-          addressLine1: "789 Dean Road",
-          addressLine2: "",
-          city: "Nashville",
-          zipOrPostalCode: "37201-1104",
-          stateOrProvince: "TN",
-          countryCode: "US",
-          type: "Custom",
-        },
-      },
-    ],
+    roles: roleAttrs,
+    locations: [locationAttrs[1]],
     signups: [],
-    // attendee_count: 1,
-    // confirmed_at: "2018-06-07T15:58:33",
-    // country: "United States",
-    // host_is_confirmed: true,
-    // is_approved: false,
-    // is_private: false,
-    // latitude: 50.6664,
-    // longitude: -83.9855,
-    // max_attendees: 50,
-    // note_to_attendees: "",
-    // status: "active",
-    // updated_at: "2018-06-07T16:09:34",
   },
 ]
 
-export const locationAttrs: LocationAttributes = {
-  name: "Space Jam",
-  displayName: "Really professional space Jam",
-  locationId: 1,
-}
-
-export const eventAttrs: EventAttributes = {
-  ...vanEventTree[0],
-  vanId: 1,
-  signups: [
-    { // signupResponseHost
-      personId: 1,
-      eventId: 1,
-      vanEventId: 1,
-      shiftId: 1,
-      vanShiftId: 1,
-      roleId: 1,
-      vanRoleId: 1,
-      locationId: 1,
-      actionKitId: 1267,
-      status: { statusId: 4, name: "Invited"  },
-      role: { roleId: 1 },
-      person: { // userResponseHost
-        actionKitId: 350567,
-        salutation: "",
-        firstName: "James",
-        middleName: "",
-        lastName: "V",
-        suffix: "",
-        addresses: [
-          {
-            addressLine1: "",
-            addressLine2: "",
-            city: "Brooklyn",
-            stateOrProvince: "NY",
-            zipOrPostalCode: "11213",
-            countryCode: "US",
-            type: "Home",
-          },
-        ],
-        emails: [{ email: "james@affinity.works", type: "P"}],
-        phones: [],
-      },
-    },
-  ],
-}
+export const eventAttrs: EventAttributes = { ...vanEventTree[0], vanId: 1 }

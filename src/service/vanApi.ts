@@ -3,7 +3,7 @@ import {EventAttributes} from "../db/models/event"
 import {LocationAttributes} from "../db/models/location"
 import {PersonAttributes} from "../db/models/person"
 import {ShiftAttributes} from "../db/models/shift"
-import config from "../../config/"
+import config from "../../config/index"
 import {get} from "lodash"
 const {secrets} = config
 
@@ -33,18 +33,18 @@ const api = () => {
 
 // CREATE RESOURCES
 
-export const createEvent = async (attrs: EventAttributes): Promise<VanEventCreateResponse> => {
+export const createEvent = async (attrs): Promise<VanEventCreateResponse> => {
   const eventId = await createResource("/events", attrs)
   return { eventId }
 }
 
 export const createPerson = async (attrs: PersonAttributes): Promise<VanPersonCreateResponse> => {
-  const vanId = await createResource("/people/findOrCreate", attrs)
+  const { vanId } = await createResource("/people/findOrCreate", attrs)
   return { vanId }
 }
 
-export const createShift = async (attrs: ShiftAttributes): Promise<VanShiftCreateResponse> => {
-  const eventShiftId = await createResource(`/events/${attrs.eventId}/shifts`, attrs)
+export const createShift = async (eventId: number, attrs: ShiftAttributes): Promise<VanShiftCreateResponse> => {
+  const eventShiftId = await createResource(`/events/${eventId}/shifts`, attrs)
   return { eventShiftId }
 }
 
@@ -53,9 +53,18 @@ export const createSignup = async (attrs: VanSignupCreateRequest): Promise<VanSi
   return { eventSignupId }
 }
 
-const createResource = async (resourceEndpoint, attrs): Promise<number> => {
-  const response = await api().post(resourceEndpoint, attrs)
-  return get(response, ["data"])
+export const createLocation = async (attrs: LocationAttributes): Promise<VanLocationCreateResponse> => {
+  const locationId = await createResource("/locations/findOrCreate", attrs)
+  return { locationId }
+}
+
+const createResource = async (resourceEndpoint, attrs) => {
+  try {
+    const response = await api().post(resourceEndpoint, attrs)
+    return get(response, ["data"])
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 // UPDATE RESOURCES

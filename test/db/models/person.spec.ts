@@ -1,12 +1,14 @@
-import {describe, it, test, before, after} from "mocha"
+import {describe, it, before, after} from "mocha"
 import {expect} from "chai"
 import {Database, initDb} from "../../../src/db"
-import {keys, pick, omit, map, cloneDeep} from "lodash"
+import {keys, pick, cloneDeep, omit} from "lodash"
 import {PersonInstance} from "../../../src/db/models/person"
-import {vanEventTree} from "../../fixtures/vanEvent"
+import {signupAttrs} from "../../fixtures/vanSignup"
+import * as nock from "nock"
 
 describe("Person model", () => {
-  const personAttrs = cloneDeep(vanEventTree[0].signups[1].person)
+  nock.disableNetConnect()
+  const personAttrs = cloneDeep(signupAttrs.person)
   let db: Database, person: PersonInstance
 
   before(async () => {
@@ -40,7 +42,8 @@ describe("Person model", () => {
     })
 
     it("saves correct fields", () => {
-      expect(pick(person, keys(personAttrs))).to.eql(personAttrs)
+      const omitKeys = ["updatedAt", "createdAt"]
+      expect(omit(pick(person, keys(personAttrs)), omitKeys)).to.eql(omit(personAttrs, omitKeys))
     })
   })
 })

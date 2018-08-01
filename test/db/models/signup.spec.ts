@@ -1,7 +1,7 @@
 import {expect} from "chai"
 import {cloneDeep, keys, pick} from "lodash"
 import {after, before, beforeEach, afterEach, describe, it} from "mocha"
-import {createShift} from "../../../src/api/vanApi"
+import {createShift} from "../../../src/service/vanApi"
 import {Database, initDb} from "../../../src/db"
 import {EventInstance} from "../../../src/db/models/event"
 import {SignupInstance} from "../../../src/db/models/signup"
@@ -10,12 +10,15 @@ import sinon from "ts-sinon"
 import * as chai from "chai"
 import * as sinonChai from "sinon-chai"
 import {vanApiStubOf} from "../../support/spies"
+import {signupAttrs} from "../../fixtures/vanSignup"
+import * as nock from "nock"
 
 describe("Signup model", () => {
+  nock.disableNetConnect()
   chai.use(sinonChai)
   const defaultEventAttrs = cloneDeep(vanEventTree[0])
-  const personAttrs = defaultEventAttrs.signups[0].person
-  const signupAttrs = defaultEventAttrs.signups[0]
+  const personAttrs = signupAttrs.person
+  const sandbox = sinon.createSandbox()
   
   let db: Database,
     event: EventInstance,
@@ -23,16 +26,18 @@ describe("Signup model", () => {
     createSignupStub: sinon.SinonStub,
     createPersonStub: sinon.SinonStub,
     createEventStub: sinon.SinonStub,
-    createShiftStub: sinon.SinonStub
+    createShiftStub: sinon.SinonStub,
+    createLocationStub: sinon.SinonStub
 
   const setup = async (eventAttrs = defaultEventAttrs) => {
 
     db = initDb()
 
-    createSignupStub = vanApiStubOf("createSignup", { eventSignupId: 1000000 })
-    createPersonStub = vanApiStubOf("createPerson", { vanId: 1000000 })
-    createEventStub = vanApiStubOf("createEvent", { eventId: 1000000 })
-    createShiftStub = vanApiStubOf("createShift", { eventShiftId: 1000000 })
+    createSignupStub = vanApiStubOf(sandbox, "createSignup", { eventSignupId: 1000000 })
+    createPersonStub = vanApiStubOf(sandbox, "createPerson", { vanId: 1000000 })
+    createEventStub = vanApiStubOf(sandbox, "createEvent", { eventId: 1000000 })
+    createShiftStub = vanApiStubOf(sandbox, "createShift", { eventShiftId: 1000000 })
+    createLocationStub = vanApiStubOf(sandbox, "createLocation", { locationId: 1000000 })
 
     event = await db.event.create(eventAttrs, {
       include: [{ model: db.shift }],
@@ -53,6 +58,7 @@ describe("Signup model", () => {
     createSignupStub.restore()
     createPersonStub.restore()
     createShiftStub.restore()
+    createLocationStub.restore()
     
     await db.event.destroy({where: {}})
     await db.shift.destroy({where: {}})
@@ -102,7 +108,7 @@ describe("Signup model", () => {
 
     it("belongs to a person", async () => {
       const p = await signup.getPerson()
-      expect(pick(p.get(), keys(personAttrs))).to.eql(personAttrs)
+      expect(p.get("id")).to.eql(personAttrs.id)
     })
   })
 
@@ -114,15 +120,6 @@ describe("Signup model", () => {
 
         before(async () => await setup())
         after(async () => await teardown())
-
-        it("posts nested event to VAN", async () => {
-          const e = await signup.getEvent()
-          expect(createEventStub).to.have.been.calledWith(e.get())
-        })
-  
-        it("saves VAN event id to db", async () => {
-          expect(await db.event.findOne({ where: { eventId: 1000000 }})).to.exist
-        })
   
         it("posts nested person to VAN", async () => {
           const person = await signup.getPerson()
@@ -135,7 +132,7 @@ describe("Signup model", () => {
   
         it ("posts nested shift to VAN", async () => {
           const shift = await signup.getShift()
-          expect(createShiftStub.getCall(0).args[0]).to.eql(shift.get())
+          expect(createShiftStub.getCall(0).args).to.eql([1000000, shift.get()])
         })
   
         it ("saves VAN shift id to db", async () => {
