@@ -10,13 +10,14 @@ import {cloneDeep, find} from "lodash"
 import * as nock from "nock"
 import * as sinonChai from "sinon-chai"
 import sinon from "ts-sinon"
-import {vanApiStubOf, vanApiStubRandomVanIdResponse} from "../../support/spies"
+import {vanApiStubOf, vanApiStubRandomResponse} from "../../support/spies"
+import {wait} from "../../support/time"
 
 describe("event service", () => {
   nock.disableNetConnect()
   chai.use(sinonChai)
 
-  let db, createEventStub, createLocationStub, createPersonStub
+  let db, createEventStub, createLocationStub, createPersonStub, createShiftStub, createSignupStub
   const sandbox = sinon.createSandbox()
   const eventsAttrs = cloneDeep(vanEvents)
   const oldEventTrees = cloneDeep(vanEventTree)
@@ -84,12 +85,18 @@ describe("event service", () => {
   before(async () => {
     db = initDb()
     await destroyAll()
+  })
+
+  beforeEach(() => {
     createEventStub = vanApiStubOf(sandbox, "createEvent", { eventId: 1000000 })
-    createLocationStub = vanApiStubOf(sandbox, "createLocation", { locationId: 1000000 })
-    createPersonStub = vanApiStubRandomVanIdResponse(sandbox, "createPerson")
+    createShiftStub = vanApiStubOf(sandbox, "createShift", { eventShiftId: 1000000 })
+    createLocationStub = vanApiStubRandomResponse(sandbox, "createLocation", "locationId")
+    createPersonStub = vanApiStubRandomResponse(sandbox, "createPerson", "vanId")
+    createSignupStub = vanApiStubRandomResponse(sandbox, "createSignup", "eventSignupId")
   })
 
   afterEach(async () => {
+    sandbox.restore()
     await destroyAll()
   })
 
@@ -102,8 +109,6 @@ describe("event service", () => {
   }
 
   after(async () => {
-    createLocationStub.restore()
-    createEventStub.restore()
     sandbox.restore()
     await db.sequelize.close()
   })
@@ -120,21 +125,19 @@ describe("event service", () => {
       updateSpy.restore()
     })
 
-    // TODO: Fix these tests. For some reason the spies are not getting called even though I can watch these
-    // TODO: functions get called twice in a debugger
-    // it("creates event trees if they do not exist", async () => {
-    //   db = initDb()
-    //   await eventService.saveMany(db)(oldEventTrees)
-    //   expect(createSpy).to.have.been.calledTwice
-    //   expect(updateSpy).not.to.have.been.called
-    // })
-    //
-    // it("updates an event if it already exists", async () => {
-    //   await eventService.saveMany(db)(oldEventTrees)
-    //   await eventService.saveMany(db)(newEventTrees)
-    //   expect(createSpy).to.have.been.calledTwice
-    //   expect(updateSpy).to.have.been.calledTwice
-    // })
+    it("creates event trees if they do not exist",async () => {
+      await eventService.saveMany(db)(oldEventTrees)
+
+      expect(createSpy).to.have.been.calledTwice
+      expect(updateSpy).not.to.have.been.called
+    })
+
+    it("updates an event if it already exists", async () => {
+      await eventService.saveMany(db)(oldEventTrees)
+      await eventService.saveMany(db)(newEventTrees)
+      expect(createSpy).to.have.been.calledTwice
+      expect(updateSpy).to.have.been.calledTwice
+    })
   })
   
   describe("creating an event tree", () => {

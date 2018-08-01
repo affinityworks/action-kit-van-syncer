@@ -9,8 +9,8 @@ import Bluebird = require("bluebird")
  * SAVE
  *********/
 
-export const saveMany = (db: Database) => async (eventTrees: VanEvent[]) => {
-  return await eventTrees.map(save(db))
+export const saveMany = (db: Database) => async (eventTrees: VanEvent[]): Promise<EventInstance[]> => {
+  return await Promise.all(eventTrees.map(save(db)))
 }
 
 export const save = (db: Database) => async (eventTree: VanEvent): Promise<EventInstance> => {
@@ -48,13 +48,14 @@ const createSignups = (db: Database, event: EventInstance, eventTree: VanEvent):
   })
 }
 
-const createSignup = async (db: Database, signup: VanSignup, event: EventInstance): Promise<SignupInstance> =>
-  db.signup.create({
+const createSignup = async (db: Database, signup: VanSignup, event: EventInstance): Promise<SignupInstance> =>{
+  return db.signup.create({
     ...signup,
     eventId: event.id,
     shiftId: event.shifts[0].id || await event.getShifts().then(ss => ss[0].id),
     locationId: event.locations[0] || await event.getLocations().then(ls => ls[0].id),
   }, signupIncludesOf(db))
+}
 
 /*********
  * UPDATE
