@@ -91,7 +91,7 @@ describe("Event model", () => {
     describe("on creation", () => {
       describe("when all resources are new", () => {
         it("posts nested event to VAN", async () => {
-          // expect(createEventStub).to.have.been.calledWith( { ...event.get(), locations: [location] })
+          expect(createEventStub.getCall(0).args[0].id).to.eql(event.id)
         })
 
         it("saves VAN event id to db", async () => {

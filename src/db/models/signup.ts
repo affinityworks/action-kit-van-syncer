@@ -57,21 +57,17 @@ export const signupFactory = (s: Sequelize, t: DataTypes): Model => {
 }
 
 const postSignupToVan = async (signup: SignupInstance, options: object): Promise<any> => {
-  try {
-    const event = await signup.getEvent()
-    const eventId = event.eventId
-    const eventLocations = await event.getLocations()
-    const locations = eventLocations.map( eventLocation => eventLocation.locationId)
-    const personId = await postPersonToVan(signup)
-    const shiftId = await postShiftToVan(eventId, signup)
-    const childIds = { ...fromPairs([personId, shiftId]), eventId, locationId: locations[0] }
+  const event = await signup.getEvent()
+  const eventId = event.eventId
+  const eventLocations = await event.getLocations()
+  const locations = eventLocations.map( eventLocation => eventLocation.locationId)
+  const personId = await postPersonToVan(signup)
+  const shiftId = await postShiftToVan(eventId, signup)
+  const childIds = { ...fromPairs([personId, shiftId]), eventId, locationId: locations[0] }
 
-    const signupRequest = parseVanSignupRequest(signup, childIds)
-    const eventSignupId = await vanApi.createSignup(signupRequest)
-    await signup.update(eventSignupId)
-  } catch (e) {
-    console.log(util.inspect(e))
-  }
+  const signupRequest = parseVanSignupRequest(signup, childIds)
+  const eventSignupId = await vanApi.createSignup(signupRequest)
+  await signup.update(eventSignupId)
 }
 
 const postPersonToVan = async (signup: SignupInstance): Promise<[string, number]> => {

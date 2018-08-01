@@ -33,13 +33,8 @@ export const createEventTree = (db: Database) => async (eventTree: VanEvent): Pr
   return event
 }
 
-const createEvent = (db: Database, eventTree: VanEvent): Bluebird<EventInstance> => {
-  try {
-    return db.event.create(eventTree, eventIncludesOf(db))
-  } catch (e) {
-    console.log(e)
-  }
-}
+const createEvent = (db: Database, eventTree: VanEvent): Bluebird<EventInstance> =>
+  db.event.create(eventTree, eventIncludesOf(db))
 
 // TODO: try to use `bulkCreate` here (figure out assoc's)
 const createSignups = (db: Database, event: EventInstance, eventTree: VanEvent): Array<Promise<SignupInstance>> => {

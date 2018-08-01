@@ -14,7 +14,7 @@ export const vanApiStubOf = (sinonSandbox, method: VanApiMethod, response: VanAp
     .stub(vanApi, method)
     .callsFake(() => Promise.resolve(response))
 
-export const vanApiStubRandomResponse = (sinonSandbox, method: VanApiMethod, id): sinon.SinonStub =>
+export const vanApiRandomStubOf = (sinonSandbox, method: VanApiMethod, id): sinon.SinonStub =>
   sinonSandbox
     .stub(vanApi, method)
-    .callsFake(() => ({ [id]: Math.round(Math.random() * 1000000000) }))
+    .callsFake(() => Promise.resolve({ [id]: Math.round(Math.random() * 1000000000) }))

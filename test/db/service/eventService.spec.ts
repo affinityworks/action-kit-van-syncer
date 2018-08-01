@@ -10,8 +10,7 @@ import {cloneDeep, find} from "lodash"
 import * as nock from "nock"
 import * as sinonChai from "sinon-chai"
 import sinon from "ts-sinon"
-import {vanApiStubOf, vanApiStubRandomResponse} from "../../support/spies"
-import {wait} from "../../support/time"
+import {vanApiRandomStubOf, vanApiStubOf} from "../../support/spies"
 
 describe("event service", () => {
   nock.disableNetConnect()
@@ -88,11 +87,11 @@ describe("event service", () => {
   })
 
   beforeEach(() => {
-    createEventStub = vanApiStubOf(sandbox, "createEvent", { eventId: 1000000 })
-    createShiftStub = vanApiStubOf(sandbox, "createShift", { eventShiftId: 1000000 })
-    createLocationStub = vanApiStubRandomResponse(sandbox, "createLocation", "locationId")
-    createPersonStub = vanApiStubRandomResponse(sandbox, "createPerson", "vanId")
-    createSignupStub = vanApiStubRandomResponse(sandbox, "createSignup", "eventSignupId")
+    createEventStub = vanApiRandomStubOf(sandbox, "createEvent", "eventId")
+    createShiftStub = vanApiRandomStubOf(sandbox, "createShift", "eventShiftId")
+    createLocationStub = vanApiRandomStubOf(sandbox, "createLocation", "locationId")
+    createPersonStub = vanApiRandomStubOf(sandbox, "createPerson", "vanId")
+    createSignupStub = vanApiRandomStubOf(sandbox, "createSignup", "eventSignupId")
   })
 
   afterEach(async () => {
