@@ -17,12 +17,12 @@
   "environments": {
     "test": {
       "scripts": {
-        "test": "find ./test -name '*.spec.ts' | NODE_ENV=test xargs mocha -R spec -r ts-node/register",
+        "test": "find ./test -name '*.spec.ts' | NODE_ENV=staging xargs mocha -R spec -r ts-node/register",
         "test-setup": "node_modules/.bin/sequelize db:migrate"
       },
       "addons": ["heroku-postgresql:in-dyno"],
       "env": {
-        "NODE_ENV": "test"
+        "NODE_ENV": "staging"
       }
     }
   }
