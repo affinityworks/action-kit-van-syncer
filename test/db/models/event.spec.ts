@@ -1,4 +1,4 @@
-import {describe, it, test, before, after} from "mocha"
+import {describe, it, test, before, after, beforeEach, afterEach} from "mocha"
 import {expect} from "chai"
 import {initDb} from "../../../src/db"
 import {keys, pick, omit, map, cloneDeep} from "lodash"
@@ -19,7 +19,7 @@ describe("Event model", () => {
   const eventAttrs = et[0]
   const locationAttrs = et[0].locations[0]
   const shiftsAttrs = et[0].shifts
-  let db, event, createEventStub, createLocationStub, location
+  let db, event, createEventStub, createLocationStub, location, updateEventStub
 
   before(async () => {
     db = initDb()
@@ -116,6 +116,62 @@ describe("Event model", () => {
 
       it("deletes associated shifts", async () => {
         expect(await db.shift.count()).to.eql(counts.shift - 1)
+      })
+    })
+
+    describe("on update", () => {
+      before(async () => {
+        updateEventStub = vanApiStubOf(sandbox, "updateEvent", { eventId: 1000001 })
+        await event.update({ name: "Updated Name" })
+      })
+
+      describe("makes update call to VAN", () => {
+        it("posts event to VAN", async () => {
+          expect(updateEventStub).to.have.been.calledOnce
+        })
+
+        it("does not update VAN Id", async () => {
+          expect(await db.location.findOne({where: {locationId: 1000001}})).to.not.exist
+        })
+
+        describe("nested field changed", () => {
+          beforeEach(async () => {
+            sandbox.restore()
+            updateEventStub = vanApiStubOf(sandbox, "updateEvent", { eventId: 1000001 })
+            await event.update({ name: "Updated Name" })
+          })
+
+          afterEach(async () => {
+            sandbox.restore()
+          })
+
+          it("notes changed", async () => {
+            await event.update({ ...event.get(), notes: [{id: 1}]})
+            expect(updateEventStub.getCall(0).args[0].notes).to.eql([{ id: 1 }])
+          })
+
+          it("event type changed", async () => {
+            await event.update({ ...event.get(), eventType: {eventTypeId: 227493}})
+            expect(updateEventStub.getCall(0).args[0].eventType).to.eql({ eventTypeId: 227493 })
+          })
+
+          it("roles changed", async () => {
+            const newRoles = [{roleId: 198857, name: "SUPER"}, {roleId: 2000001, name: "COOL"}]
+            await event.update({ ...event.get(), roles: newRoles })
+            expect(updateEventStub.getCall(0).args[0].roles).to.eql(newRoles)
+          })
+
+          it("codes changed", async () => {
+            const newCodes = [{ eventCodeId: 1234 }]
+            await event.update({ ...event.get(), codes: newCodes})
+            expect(updateEventStub.getCall(0).args[0].codes).to.eql(newCodes)
+          })
+        })
+      })
+
+      it("does not make VAN call if nothing changed", async () => {
+        await event.update(event.get())
+        expect(updateEventStub).to.have.been.calledOnce
       })
     })
   })

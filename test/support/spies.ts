@@ -7,12 +7,17 @@ type VanApiMethod =
   "createPerson" |
   "createShift" |
   "createSignup" |
-  "createLocation"
+  "createLocation" |
+  "updateEvent"
 
 export const vanApiStubOf = (sinonSandbox, method: VanApiMethod, response: VanApiResponse): sinon.SinonStub =>
   sinonSandbox
     .stub(vanApi, method)
     .callsFake(() => Promise.resolve(response))
+
+export const vanApiStubNoResponse = (sinonSandbox, method: VanApiMethod): sinon.SinonStub =>
+  sinonSandbox
+    .stub(vanApi, method)
 
 export const vanApiRandomStubOf = (sinonSandbox, method: VanApiMethod, id): sinon.SinonStub =>
   sinonSandbox

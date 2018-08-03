@@ -2,18 +2,22 @@ import {describe, it, test, before, after} from "mocha"
 import {expect} from "chai"
 import {initDb} from "../../../src/db"
 import {keys, pick} from "lodash"
-import {vanEvents, vanEventTree} from "../../fixtures/vanEvent"
+import {vanEvents, vanEventTree, vanEventWithLocation} from "../../fixtures/vanEvent"
 import {locationAttrs as la} from "../../fixtures/vanLocation"
 import nock = require("nock")
+import * as sinonChai from "sinon-chai"
 import sinon from "ts-sinon"
+import * as chai from "chai"
 import {vanApiStubOf} from "../../support/spies"
 import {createLocation} from "../../../src/service/vanApi"
 
 describe("Location model", () => {
   nock.disableNetConnect()
+  chai.use(sinonChai)
+
   const sandbox = sinon.createSandbox()
 
-  const locationAttrs = { ...la[0], locationId: Math.round(Math.random() * 1000000000) }
+  const locationAttrs = vanEventWithLocation.locations[0]
   let db, location, event, createEventStub, createLocationStub
 
   before(async () => {
@@ -21,17 +25,16 @@ describe("Location model", () => {
     createEventStub = vanApiStubOf(sandbox, "createEvent", { eventId: 1000000 })
     createLocationStub = vanApiStubOf(sandbox, "createLocation", { locationId: 1000000 })
 
-    event = await db.event.create(vanEvents[0])
-    location = await db.location.create({
-      ...locationAttrs, eventId: event.id,
-    }, {
-      include: [{ model: db.event } ],
+    event = await db.event.create(vanEventWithLocation, {
+      include: [
+        { model: db.location },
+      ],
     })
+    location = await event.getLocations().then(locations => locations[0] )
   })
 
   after(async () => {
-    createEventStub.restore()
-    createLocationStub.restore()
+    sandbox.restore()
     await db.event.destroy({where: {}})
     await db.location.destroy({where: {}})
     await db.sequelize.close()
@@ -42,13 +45,13 @@ describe("Location model", () => {
     it("has the right fields", () => {
       expect(keys(location.get())).to.eql([
         "id",
-        "name",
-        "address",
         "locationId",
-        "eventId",
-        "updatedAt",
-        "createdAt",
+        "name",
         "displayName",
+        "eventId",
+        "address",
+        "createdAt",
+        "updatedAt",
       ])
     })
 
@@ -62,6 +65,34 @@ describe("Location model", () => {
     it("belongs to an event", async () => {
       const e = await location.getEvent()
       expect(e.get("id")).to.eql(event.id)
+    })
+  })
+
+  describe("hooks", async () => {
+    before(async () => {
+      createLocationStub.restore()
+      createLocationStub = vanApiStubOf(sandbox, "createLocation", { locationId: 1000001 })
+      await location.update({ name: "Updated Name" })
+    })
+
+    describe("on update", () => {
+      it("posts location to VAN", async () => {
+        expect(createLocationStub).to.have.been.calledOnce
+      })
+
+      it("saves VAN location id to db", async () => {
+        expect(await db.location.findOne({where: {locationId: 1000001}})).to.exist
+      })
+
+      it("does not make VAN call if nothing changed", async () => {
+        await location.update(location.get())
+        expect(createLocationStub).to.have.been.calledOnce
+      })
+
+      it("does not make VAN call if locationId is updated", async () => {
+        await location.update({ locationId: 1 })
+        expect(createLocationStub).to.have.been.calledOnce
+      })
     })
   })
 })

@@ -7,6 +7,7 @@ import {SignupAttributes, SignupInstance} from "./signup"
 import Bluebird = require("bluebird")
 import * as vanApi from "../../service/vanApi"
 import {VanLocationCreateResponse} from "../../service/vanApi"
+import * as _ from "lodash"
 type Model = SequelizeStaticAndInstance["Model"]
 
 export interface EventAttributes extends AbstractAttributes, VanEvent {
@@ -39,6 +40,7 @@ export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
   }, {
     hooks: {
       afterCreate: postEventToVan,
+      afterUpdate: putEventToVan,
     },
   })
 
@@ -63,14 +65,11 @@ export const eventFactory = (s: Sequelize, t: DataTypes): Model => {
   return event
 }
 
+// CREATE
+
 const postEventToVan = async (event: EventInstance) => {
   const locations = await postLocationsToVan(event)
-  const shifts = await event.getShifts()
-  const eventAttrs = {
-    ...event.get(),
-    shifts,
-    locations,
-  }
+  const eventAttrs = await getEventAttrs(event, locations)
 
   const eventId =
     event.eventId ||
@@ -85,4 +84,54 @@ const postLocationsToVan = async (event: EventInstance): Promise<VanLocationCrea
     await location.update(locationId)
     return locationId
   })
+}
+
+// UPDATE
+
+const VALID_UPDATE_FIELDS = [
+  "codes",
+  "createdDate",
+  "description",
+  "endDate",
+  "eventType",
+  "name",
+  "notes",
+  "roles",
+  "shortName",
+  "startDate",
+]
+
+const putEventToVan = async (event: EventInstance) => {
+  if (isUpdated(event)) {
+    const locations = await event.getLocations()
+    const locationIds = locations.map(location => { location.locationId })
+    const eventAttrs = await getEventAttrs(event, locationIds)
+    await vanApi.updateEvent(eventAttrs)
+  }
+}
+
+const isUpdated = (event: EventInstance) =>
+  validUpdateTimestampDiff(event)
+    && hasValidChangedField(event)
+    && hasNotChanged(event, "eventId")
+
+const validUpdateTimestampDiff = (event: EventInstance): boolean =>
+  event.createdAt.valueOf() !== event.updatedAt.valueOf()
+
+const hasValidChangedField = (event): boolean =>
+  VALID_UPDATE_FIELDS
+    .map(field => event.changed(field) && !_.isEqual(event.previous(field), event[field]))
+    .some(x => x)
+
+const hasNotChanged = (event, field) => !event.changed(field)
+
+// HELPERS
+
+const getEventAttrs = async (event, locations) => {
+  const shifts = await event.getShifts()
+  return {
+    ...event.get(),
+    shifts,
+    locations,
+  }
 }

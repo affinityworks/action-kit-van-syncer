@@ -3,7 +3,7 @@ import {VanEvent} from "../../src/types/VanEvent"
 import {EventAttributes} from "../../src/db/models/event"
 import {shiftAttrs, vanShift} from "./vanShift"
 import {roleAttrs, roleOne, roleTwo} from "./vanRole"
-import {locationAttrs} from "./vanLocation"
+import {locationAttrs as la, locationAttrs} from "./vanLocation"
 
 export const vanEvents: VanEvent[] = [{
   actionKitId: 1049,
@@ -34,6 +34,16 @@ export const vanEvents: VanEvent[] = [{
   notes: [],
   shifts: [vanShift],
 }]
+
+export const vanEventWithLocation = {
+  ...vanEvents[0],
+  locations: [
+    {
+      ...la[0],
+      locationId: 1000000,
+    },
+  ],
+}
 
 export const vanEventTree: VanEvent[] = [
   { // eventsResponse.objects[0]
@@ -125,4 +135,4 @@ export const vanEventTree: VanEvent[] = [
   },
 ]
 
-export const eventAttrs: EventAttributes = { ...vanEventTree[0], vanId: 1 }
+export const eventAttrs: EventAttributes = { ...vanEventTree[0], eventId: 1 }

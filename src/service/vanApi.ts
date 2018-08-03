@@ -70,7 +70,7 @@ const createResource = async (resourceEndpoint, attrs) => {
 // UPDATE RESOURCES
 
 export const updateEvent = async (attrs: EventAttributes) => {
-  await updateResource(`/events/${attrs.vanId}`, attrs, api().put)
+  await updateResource(`/events/${attrs.eventId}`, attrs, api().put)
 }
 
 export const updatePerson = async (attrs: PersonAttributes) => {

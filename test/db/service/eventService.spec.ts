@@ -10,14 +10,14 @@ import {cloneDeep, find} from "lodash"
 import * as nock from "nock"
 import * as sinonChai from "sinon-chai"
 import sinon from "ts-sinon"
-import {vanApiRandomStubOf, vanApiStubOf} from "../../support/spies"
+import {vanApiRandomStubOf, vanApiStubNoResponse, vanApiStubOf} from "../../support/spies"
 import {wait} from "../../support/time"
 
 describe("event service", () => {
   nock.disableNetConnect()
   chai.use(sinonChai)
 
-  let db, createEventStub, createLocationStub, createPersonStub, createShiftStub, createSignupStub
+  let db, createEventStub, createLocationStub, createPersonStub, createShiftStub, createSignupStub, updateEventStub
   const sandbox = sinon.createSandbox()
   const eventsAttrs = cloneDeep(vanEvents)
   const oldEventTrees = cloneDeep(vanEventTree)
@@ -93,6 +93,8 @@ describe("event service", () => {
     createLocationStub = vanApiRandomStubOf(sandbox, "createLocation", "locationId")
     createPersonStub = vanApiRandomStubOf(sandbox, "createPerson", "vanId")
     createSignupStub = vanApiRandomStubOf(sandbox, "createSignup", "eventSignupId")
+
+    updateEventStub = vanApiStubNoResponse(sandbox, "updateEvent")
   })
 
   afterEach(async () => {
