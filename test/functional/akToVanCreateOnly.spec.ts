@@ -31,7 +31,7 @@ describe("AK to VAN Create Resource Slice", () => {
 
     await sync(db)
 
-    await wait(3000)
+    await wait(10000)
 
     const event = await db.event.findOne()
     const person = await db.person.findOne()
