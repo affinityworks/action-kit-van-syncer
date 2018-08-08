@@ -78,7 +78,7 @@ export const updatePerson = async (attrs: PersonAttributes) => {
 }
 
 export const updateSignup = async (attrs: VanSignupUpdateRequest) => {
-  await updateResource(`/signups/${attrs.vanId}`, attrs, api().put)
+  await updateResource(`/signups/${attrs.eventSignupId}`, attrs, api().put)
 }
 
 const updateResource = async (resourceEndpoint, attrs, httpMethod) => {

@@ -170,7 +170,6 @@ describe("event service", () => {
     })
   })
 
-  // TODO: Fix these tests
   describe("updating an event tree", async () => {
 
     let event, updatedEvent
@@ -224,7 +223,7 @@ describe("event service", () => {
         .getSignups()
         .then(signups =>
           find(
-            signups, { actionKitId: oldEventTrees[0].signups[0].actionKitId }
+            signups, { actionKitId: oldEventTrees[0].signups[0].actionKitId },
             ).getPerson(),
         )
       expect(person.firstName).to.eql("very new name")

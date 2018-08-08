@@ -19,5 +19,5 @@ declare interface VanSignupUpdateRequest {
   },
   printedLists?: [{ number: string }],
   minivanExports?: [{ minivanExportId: number, databaseMode: number}],
-  vanId: number
+  eventSignupId: number
 }
