@@ -59,8 +59,8 @@ const createSignup = async (db: Database, signup: VanSignup, event: EventInstanc
 export const updateEventTree = (db: Database) => async (event: EventInstance, eventTree: VanEvent):
   Promise<EventInstance> => {
   await updateLocations(event, eventTree)
-  await event.update(eventTree)
   await updateShifts(event, eventTree)
+  await event.update(eventTree)
   await updateSignups(db)(event, eventTree)
   // await Promise.all([
   //   event.update(eventTree),
