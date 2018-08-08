@@ -43,7 +43,7 @@ const createSignups = (db: Database, event: EventInstance, eventTree: VanEvent):
   })
 }
 
-const createSignup = async (db: Database, signup: VanSignup, event: EventInstance): Promise<SignupInstance> =>{
+const createSignup = async (db: Database, signup: VanSignup, event: EventInstance): Promise<SignupInstance> => {
   return db.signup.create({
     ...signup,
     eventId: event.id,
