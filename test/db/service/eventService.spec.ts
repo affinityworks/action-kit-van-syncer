@@ -17,7 +17,8 @@ describe("event service", () => {
   nock.disableNetConnect()
   chai.use(sinonChai)
 
-  let db, createEventStub, createLocationStub, createPersonStub, createShiftStub, createSignupStub, updateEventStub
+  let db, createEventStub, createLocationStub, createPersonStub, createShiftStub, createSignupStub
+  let updateEventStub, updateSignupStub
   const sandbox = sinon.createSandbox()
   const eventsAttrs = cloneDeep(vanEvents)
   const oldEventTrees = cloneDeep(vanEventTree)
@@ -95,6 +96,7 @@ describe("event service", () => {
     createSignupStub = vanApiRandomStubOf(sandbox, "createSignup", "eventSignupId")
 
     updateEventStub = vanApiStubNoResponse(sandbox, "updateEvent")
+    updateSignupStub = vanApiStubNoResponse(sandbox, "updateSignup")
   })
 
   afterEach(async () => {
