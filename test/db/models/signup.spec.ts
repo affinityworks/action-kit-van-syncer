@@ -1,17 +1,18 @@
+import * as chai from "chai"
 import {expect} from "chai"
+import * as sinonChai from "sinon-chai"
+import * as nock from "nock"
 import {cloneDeep, keys, pick} from "lodash"
-import {after, before, beforeEach, afterEach, describe, it} from "mocha"
-import {createShift} from "../../../src/service/vanApi"
+import {after, before, beforeEach, describe, it} from "mocha"
+import sinon from "ts-sinon"
+
 import {Database, initDb} from "../../../src/db"
 import {EventInstance} from "../../../src/db/models/event"
 import {SignupInstance} from "../../../src/db/models/signup"
 import {vanEventTree} from "../../fixtures/vanEvent"
-import sinon from "ts-sinon"
-import * as chai from "chai"
-import * as sinonChai from "sinon-chai"
 import {vanApiStubNoResponse, vanApiStubOf} from "../../support/spies"
 import {signupAttrs} from "../../fixtures/vanSignup"
-import * as nock from "nock"
+import * as signupModel from "../../../src/db/models/signup"
 
 describe("Signup model", () => {
   nock.disableNetConnect()
@@ -28,7 +29,8 @@ describe("Signup model", () => {
     createEventStub: sinon.SinonStub,
     createShiftStub: sinon.SinonStub,
     createLocationStub: sinon.SinonStub,
-    updateSignupStub: sinon.SinonStub
+    updateSignupStub: sinon.SinonStub,
+    parseVanSignupStub: sinon.SinonStub
 
   const setup = async (eventAttrs = defaultEventAttrs) => {
     db = initDb()
@@ -42,7 +44,7 @@ describe("Signup model", () => {
     updateSignupStub = vanApiStubNoResponse(sandbox, "updateSignup")
 
     event = await db.event.create(eventAttrs, {
-      include: [{ model: db.shift }],
+      include: [{ model: db.shift }, { model: db.location }],
     })
 
     signup = await db.signup.create({
@@ -194,6 +196,74 @@ describe("Signup model", () => {
       describe("when nested shift already exists in VAN", () => {
 
         it("does not POST shift to VAN")
+      })
+    })
+
+    describe("on update", () => {
+
+      describe("validate update", () => {
+
+        before(async () => {
+          await setup()
+          parseVanSignupStub = sandbox.stub(signupModel, "parseVanSignupUpdate")
+        })
+
+        beforeEach(() => {
+          updateSignupStub.restore()
+          updateSignupStub = vanApiStubNoResponse(sandbox, "updateSignup")
+        })
+
+        after(async () => await teardown())
+
+        it("updates signup in VAN when status field is updated", async () => {
+          await signup.update({ status: { statusId: 5,  name: "SuperCoolStatus" } })
+          expect(updateSignupStub).to.have.been.calledOnce
+        })
+
+        it("updates signup in VAN when shiftId field is updated", async () => {
+          await signup.update({ shiftId: 1234 })
+          expect(updateSignupStub).to.have.been.calledOnce
+        })
+
+        it("updates signup in VAN when role field is updated", async () => {
+          await signup.update({ role: { roleId: 20000, name: "Medic" } })
+          expect(updateSignupStub).to.have.been.calledOnce
+        })
+
+        it("does not update in VAN when eventSignupId is updated", async () => {
+          await signup.update({ eventSignupId: 12345 })
+          expect(updateSignupStub).to.not.have.been.called
+        })
+      })
+
+      describe("parseVanSignupUpdate", () => {
+        before(async () => {
+          await setup()
+        })
+
+        beforeEach(() => {
+          updateSignupStub.restore()
+          updateSignupStub = vanApiStubNoResponse(sandbox, "updateSignup")
+        })
+
+        after(async () => await teardown())
+
+        it("formats the update correctly", async () => {
+          await signup.update({
+            role: { roleId: 100310, name: "Medic" },
+            status: { statusId: 5,  name: "SuperCoolStatus" },
+          })
+
+          expect(updateSignupStub.getCall(0).args[0]).to.eql({
+            event: { eventId: 1000000 },
+            eventSignupId: 1000000,
+            person: { vanId: 1000000 },
+            location: { locationId: 1000000 },
+            role: { roleId: 100310 },
+            shift: { eventShiftId: 1000000 },
+            status: { statusId: 5 },
+          })
+        })
       })
     })
   })

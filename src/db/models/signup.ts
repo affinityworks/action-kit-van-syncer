@@ -125,9 +125,11 @@ const putSignupToVan = async (signup: SignupInstance) => {
   }
 }
 
-const isUpdated = (signup: SignupInstance) =>
-  validUpdateTimestampDiff(signup)
-  && hasValidChangedField(signup)
+const isUpdated = (signup: SignupInstance) => {
+  return validUpdateTimestampDiff(signup)
+    && hasValidChangedField(signup)
+    && hasNotChanged(signup, "eventSignupId")
+}
 
 const validUpdateTimestampDiff = (signup: SignupInstance): boolean =>
   signup.createdAt.valueOf() !== signup.updatedAt.valueOf()
@@ -137,7 +139,9 @@ const hasValidChangedField = (signup): boolean =>
     .map(field => signup.changed(field) && !_.isEqual(signup.previous(field), signup[field]))
     .some(x => x)
 
-const parseVanSignupUpdate = async (signup: SignupInstance): Promise<VanSignupUpdateRequest> => {
+const hasNotChanged = (signup, field) => !signup.changed(field)
+
+export const parseVanSignupUpdate = async (signup: SignupInstance): Promise<VanSignupUpdateRequest> => {
   const event = await signup.getEvent()
   const eventLocations = await event.getLocations()
   const locations = eventLocations.map( eventLocation => eventLocation.locationId)
