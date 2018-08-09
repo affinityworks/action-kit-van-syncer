@@ -9,7 +9,7 @@ import {vanEventTree} from "../../fixtures/vanEvent"
 import sinon from "ts-sinon"
 import * as chai from "chai"
 import * as sinonChai from "sinon-chai"
-import {vanApiStubOf} from "../../support/spies"
+import {vanApiStubNoResponse, vanApiStubOf} from "../../support/spies"
 import {signupAttrs} from "../../fixtures/vanSignup"
 import * as nock from "nock"
 
@@ -27,10 +27,10 @@ describe("Signup model", () => {
     createPersonStub: sinon.SinonStub,
     createEventStub: sinon.SinonStub,
     createShiftStub: sinon.SinonStub,
-    createLocationStub: sinon.SinonStub
+    createLocationStub: sinon.SinonStub,
+    updateSignupStub: sinon.SinonStub
 
   const setup = async (eventAttrs = defaultEventAttrs) => {
-
     db = initDb()
 
     createSignupStub = vanApiStubOf(sandbox, "createSignup", { eventSignupId: 1000000 })
@@ -38,6 +38,8 @@ describe("Signup model", () => {
     createEventStub = vanApiStubOf(sandbox, "createEvent", { eventId: 1000000 })
     createShiftStub = vanApiStubOf(sandbox, "createShift", { eventShiftId: 1000000 })
     createLocationStub = vanApiStubOf(sandbox, "createLocation", { locationId: 1000000 })
+
+    updateSignupStub = vanApiStubNoResponse(sandbox, "updateSignup")
 
     event = await db.event.create(eventAttrs, {
       include: [{ model: db.shift }],
@@ -54,11 +56,7 @@ describe("Signup model", () => {
   }
 
   const teardown = async () => {
-    createEventStub.restore()
-    createSignupStub.restore()
-    createPersonStub.restore()
-    createShiftStub.restore()
-    createLocationStub.restore()
+    sandbox.restore()
     
     await db.event.destroy({where: {}})
     await db.shift.destroy({where: {}})
