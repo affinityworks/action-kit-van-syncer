@@ -110,6 +110,6 @@ const isDateField = (k: string): boolean =>
 
 const setEndTime = (timestamp: Date|string): Date => {
   const date = parseDate(timestamp)
-  date.setSeconds(date.getSeconds() + 10)
+  date.setHours(date.getHours() + 1)
   return date
 }

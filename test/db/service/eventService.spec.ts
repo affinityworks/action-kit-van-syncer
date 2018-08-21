@@ -12,6 +12,7 @@ import * as sinonChai from "sinon-chai"
 import sinon from "ts-sinon"
 import {vanApiRandomStubOf, vanApiStubNoResponse, vanApiStubOf} from "../../support/spies"
 import {wait} from "../../support/time"
+import {locationAttrs} from "../../fixtures/vanLocation"
 
 describe("event service", () => {
   nock.disableNetConnect()
@@ -27,7 +28,7 @@ describe("event service", () => {
     ...oldEventTree,
     name: "very new name",
     locations: [
-      {...oldEventTree.locations, name: "very new name"},
+      {...oldEventTree.locations, name: "very new location name"},
       ...oldEventTree.locations.slice(1),
     ],
     shifts: [
@@ -176,13 +177,25 @@ describe("event service", () => {
 
     let event, updatedEvent
 
-    it("updates a nested location", async () => {
-      event = await eventService.createEventTree(db)(oldEventTrees[0])
-      await wait(500)
-      updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
-      await wait(500)
-      const name = await updatedEvent.getLocations().then(locs => locs[0].name)
-      expect(name).to.eql("very new name")
+    describe("locations", () => {
+      it("updates a nested location", async () => {
+        event = await eventService.createEventTree(db)(oldEventTrees[0])
+        await wait(500)
+        updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
+        await wait(500)
+        const name = await updatedEvent.getLocations().then(locs => locs[0].name)
+        expect(name).to.eql("very new location name")
+      })
+
+      it("updates a nested location van id", async () => {
+        event = await eventService.createEventTree(db)(oldEventTrees[0])
+        await wait(500)
+        const oldLocationId = await event.getLocations().then(locs => locs[0].locationId)
+        updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
+        await wait(500)
+        const newLocationId = await updatedEvent.getLocations().then(locs => locs[0].locationId)
+        expect(oldLocationId).to.not.eql(newLocationId)
+      })
     })
 
     it("updates a nested shift", async () => {

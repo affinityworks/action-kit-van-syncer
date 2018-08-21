@@ -58,22 +58,17 @@ const createSignup = async (db: Database, signup: VanSignup, event: EventInstanc
 
 export const updateEventTree = (db: Database) => async (event: EventInstance, eventTree: VanEvent):
   Promise<EventInstance> => {
-  await updateLocations(event, eventTree)
+  await updateLocation(event, eventTree.locations[0])
   await updateShifts(event, eventTree)
   await event.update(eventTree)
   await updateSignups(db)(event, eventTree)
-  // await Promise.all([
-  //   event.update(eventTree),
-  //   updateShifts(event, eventTree),
-  //   updateSignups(db)(event, eventTree),
-  // ])
   return event
 }
 
-const updateLocations = (event: EventInstance, eventTree: VanEvent): Bluebird<object[]> =>
-  event
-    .getLocations()
-    .then(locs => Promise.all(locs.map((loc, i) => loc.update(eventTree.locations[i]))))
+const updateLocation =  async (event: EventInstance, eventTreeLocation: VanLocation) => {
+  const eventLocation = await event.getLocations().then(locs => locs[0])
+  return await eventLocation.update(eventTreeLocation)
+}
 
 const updateShifts = (event: EventInstance, eventTree: VanEvent): Bluebird<object[]> =>
   event
