@@ -17,7 +17,7 @@ const parseVanEvent = (ake: ActionKitEvent): VanEvent => {
   return {
     actionKitId: ake.id,
     name: ake.title,
-    shortName: `ID: ${ake.id}`,
+    shortName: `AKID: ${ake.id}`,
     description: ake.public_description,
     startDate: `${ake.starts_at_utc}-00:00`,
     endDate: `${ake.ends_at_utc || setEndTime(ake.starts_at_utc)}-00:00`,
@@ -53,19 +53,25 @@ const parseVanAddress = (akx: ActionKitEvent | ActionKitPerson, type: VanAddress
 
 const parseVanSignup = (aks: ActionKitSignup): VanSignup => ({
   actionKitId: aks.id,
-  status: parseVanSignupStatus(aks.status),
+  status: parseVanSignupStatus(aks),
   role: lowerFirst(aks.role) === "host" ? roles.HOST : roles.ATTENDEE,
   person: parseVanPerson(aks.user),
 })
 
-const parseVanSignupStatus = (akss: ActionKitSignupStatus): VanSignupStatus => {
-  switch (akss) {
-    case "active":
-      return { statusId: 4, name: "Invited"  }
-    case "cancelled":
-      return { statusId: 3, name: "Declined" }
-    case "deleted":
-      return { statusId: 2, name: "Completed"}
+/*
+signup + attended false + active -> Scheduled
+
+signup + attended true + complete -> Confirmed
+
+signup + attended false + complete -> No Show
+ */
+const parseVanSignupStatus = (aks: ActionKitSignup): VanSignupStatus => {
+  if (aks && !aks.attended && aks.status === "active") {
+    return { statusId: 1, name: "Scheduled" }
+  } else if (aks && aks.attended && aks.status === "complete") {
+    return { statusId: 11, name: "Confirmed" }
+  } else if (aks && !aks.attended && aks.status === "complete") {
+    return { statusId: 6, name: "No Show" }
   }
 }
 

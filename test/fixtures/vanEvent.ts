@@ -8,7 +8,7 @@ import {locationAttrs as la, locationAttrs} from "./vanLocation"
 export const vanEvents: VanEvent[] = [{
   actionKitId: 1049,
   name: "Affinity Test Event #1",
-  shortName: "Affinity Tes",
+  shortName: "AKID: 1049",
   description: "Affinity Test Event #1",
   createdDate: "2018-06-07T15:57:50",
   startDate: "2018-07-25T16:00:00-00:00",
@@ -22,7 +22,7 @@ export const vanEvents: VanEvent[] = [{
 }, {
   actionKitId: 1050,
   name: "Affinity Test Event #2",
-  shortName: "Affinity Tes",
+  shortName: "AKID: 1050",
   description: "Affinity Test Event #2",
   startDate: "2018-07-25T16:00:00-00:00",
   endDate: "2018-07-25T20:00:00-00:00",
@@ -53,7 +53,7 @@ export const vanEventTree: VanEvent[] = [
     signups: [
       { // signupResponseHost
         actionKitId: 1267,
-        status: { statusId: 4, name: "Invited" },
+        status: { statusId: 1, name: "Scheduled" },
         role: roleTwo,
         person: { // userResponseHost
           actionKitId: 350567,
@@ -79,7 +79,7 @@ export const vanEventTree: VanEvent[] = [
       },
       { // signupResponseAttendee
         actionKitId: 1268,
-        status: { statusId: 4, name: "Invited" },
+        status: { statusId: 1, name: "Scheduled" },
         role: roleOne,
         person: { // userResponseAttendee
           actionKitId: 350568,

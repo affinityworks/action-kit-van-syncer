@@ -6,6 +6,7 @@ import {wait} from "../support/time"
 import * as actionKitAPI from "../../src/service/actionKitAPI"
 import sinon from "ts-sinon"
 import {updatedActionKitEventTree} from "../fixtures/functionalActionKitEventUpdate"
+import {expect} from "chai"
 
 describe("AK to VAN Create And Update Resources Slice", () => {
   const db = initDb()
@@ -33,13 +34,11 @@ describe("AK to VAN Create And Update Resources Slice", () => {
     this.timeout(0)
 
     await sync(db)
-
     await wait(10000)
 
     sandbox.stub(actionKitAPI, "getEventTrees").returns(Promise.resolve(updatedActionKitEventTree))
 
     await sync(db)
-
     await wait(5000)
   })
 })
