@@ -9,7 +9,8 @@ type VanApiMethod =
   "createSignup" |
   "createLocation" |
   "updateEvent" |
-  "updateSignup"
+  "updateSignup" |
+  "updatePerson"
 
 export const vanApiStubOf = (sinonSandbox, method: VanApiMethod, response: VanApiResponse): sinon.SinonStub =>
   sinonSandbox

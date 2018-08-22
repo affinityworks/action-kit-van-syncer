@@ -104,7 +104,9 @@ const VALID_UPDATE_FIELDS = [
 const putEventToVan = async (event: EventInstance) => {
   if (isUpdated(event)) {
     const locations = await event.getLocations()
-    const locationIds = locations.map(location => { location.locationId })
+    const locationIds = locations.map(location => {
+      return { locationId: location.locationId }
+    })
     const eventAttrs = await getEventAttrs(event, locationIds)
     await vanApi.updateEvent(eventAttrs)
   }

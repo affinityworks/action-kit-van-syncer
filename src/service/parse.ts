@@ -17,7 +17,7 @@ const parseVanEvent = (ake: ActionKitEvent): VanEvent => {
   return {
     actionKitId: ake.id,
     name: ake.title,
-    shortName: ake.title.slice(0, 12),
+    shortName: `ID: ${ake.id}`,
     description: ake.public_description,
     startDate: `${ake.starts_at_utc}-00:00`,
     endDate: `${ake.ends_at_utc || setEndTime(ake.starts_at_utc)}-00:00`,

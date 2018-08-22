@@ -76,19 +76,19 @@ const updateShifts = (event: EventInstance, eventTree: VanEvent): Bluebird<objec
     .then(shifts => Promise.all(shifts.map((shift, i) => shift.update(eventTree.shifts[i]))))
 
 const updateSignups = (db: Database) => (event: EventInstance, eventTree: VanEvent): Promise<any[]> =>
-  Promise.all(eventTree.signups.map(updateSignup(db, event)))
+  Promise.all(eventTree.signups.map(updateOrCreateSignup(db, event)))
 
-const updateSignup = (db: Database, event: EventInstance) => async (vanSignup: VanSignup): Promise<any|any[]> => {
+const updateOrCreateSignup = (db: Database, event: EventInstance) => async (vanSignup: VanSignup): Promise<any|any[]> => {
   const {actionKitId} = vanSignup
   const signup = await db.signup.findOne({ where: { actionKitId }, ...signupIncludesOf(db) })
-  return !signup
-    ? createSignup(db, vanSignup, event)
-    : Promise.all([
-      signup.update(vanSignup),
-      signup.getPerson().then(p => p.update(vanSignup.person)),
-    ])
+  return !signup ? createSignup(db, vanSignup, event) : updateSignup(signup, vanSignup)
 }
 
+const updateSignup = async (signup: SignupInstance, vanSignup: VanSignup) => {
+  signup.update(vanSignup)
+  const person = await signup.getPerson()
+  person.update(vanSignup.person)
+}
 
 /***********
  * HELPERS

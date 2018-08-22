@@ -61,9 +61,11 @@ export const createLocation = async (attrs: LocationAttributes): Promise<VanLoca
 const createResource = async (resourceEndpoint, attrs) => {
   try {
     const response = await api().post(resourceEndpoint, attrs)
-    return get(response, ["data"])
-  } catch (e) {
-    console.log(e)
+    const id = get(response, ["data"])
+    console.log("[VAN CREATE] Resource Endpoint: ", resourceEndpoint, " ID: ", id.vanId || id)
+    return id
+  } catch (err) {
+    console.error("[ERROR][VAN CREATE]", resourceEndpoint, JSON.stringify(err, null, 4))
   }
 }
 
@@ -82,5 +84,10 @@ export const updateSignup = async (attrs: VanSignupUpdateRequest) => {
 }
 
 const updateResource = async (resourceEndpoint, attrs, httpMethod) => {
-  await httpMethod(resourceEndpoint, attrs)
+  try {
+    await httpMethod(resourceEndpoint, attrs)
+    console.log("[VAN UPDATE] Resource Endpoint: ", resourceEndpoint)
+  } catch (err) {
+    console.error("[ERROR][VAN UPDATE]", resourceEndpoint, JSON.stringify(err, null, 4))
+  }
 }

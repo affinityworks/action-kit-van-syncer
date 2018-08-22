@@ -1,11 +1,15 @@
 import {after, before, describe, it} from "mocha"
 import {initDb} from "../../src/db"
 import {sync} from "../../src"
-import {expect} from "chai"
+import * as nock from "nock"
 import {wait} from "../support/time"
+import * as actionKitAPI from "../../src/service/actionKitAPI"
+import sinon from "ts-sinon"
+import {updatedActionKitEventTree} from "../fixtures/functionalActionKitEventUpdate"
 
-describe("AK to VAN Create Resource Slice", () => {
+describe("AK to VAN Create And Update Resources Slice", () => {
   const db = initDb()
+  const sandbox = sinon.createSandbox()
 
   before(async () => {
     await db.event.destroy({where: {}})
@@ -13,6 +17,7 @@ describe("AK to VAN Create Resource Slice", () => {
     await db.shift.destroy({where: {}})
     await db.signup.destroy({where: {}})
     await db.person.destroy({where: {}})
+    nock.restore()
   })
 
   after(async () => {
@@ -24,18 +29,17 @@ describe("AK to VAN Create Resource Slice", () => {
     await db.sequelize.close()
   })
 
-  it("pulls from AK successfully", async function() {
+  it("sends create and update requests to VAN", async function() {
     this.timeout(0)
 
     await sync(db)
 
     await wait(10000)
 
-    const event = await db.event.findOne()
-    const person = await db.person.findOne()
-    const signup = await db.signup.findOne()
-    expect(event.eventId).to.exist
-    expect(person.vanId).to.exist
-    expect(signup.eventSignupId).to.exist
+    sandbox.stub(actionKitAPI, "getEventTrees").returns(Promise.resolve(updatedActionKitEventTree))
+
+    await sync(db)
+
+    await wait(5000)
   })
 })

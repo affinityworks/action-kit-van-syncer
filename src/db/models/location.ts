@@ -37,7 +37,8 @@ const WATCHED_UPDATE_FIELDS = ["name", "address"]
 
 const postUpdatedLocationToVan = async (location: LocationInstance) => {
   if (isUpdated(location)) {
-    const locationId = await vanApi.createLocation(location)
+    const updatedLocation = { ...location.get(), locationId: null }
+    const locationId = await vanApi.createLocation(updatedLocation)
     location.locationId = locationId.locationId
   }
 }
