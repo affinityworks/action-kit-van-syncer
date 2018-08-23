@@ -13,8 +13,10 @@
    "scripts": {
       "test": "find ./test -name '*.spec.ts' -not -path './test/functional/*' | NODE_ENV=test xargs mocha -R spec -r ts-node/register",
       "test-e2e": "find ./test/functional -name '*.spec.ts' | NODE_ENV=test xargs mocha -R spec -r ts-node/register",
-      "build": "./node_modules/typescript/bin/tsc",
-      "start": "tsc && NODE_ENV=development node build/src/index.js",
+      "test-all": "yarn test && yarn test-e2e",
+      "migrate": "npx sequelize db:migrate --env=$NODE_ENV",
+      "build": "npx tsc",
+      "start": "npx tsc && NODE_ENV=development node build/src/index.js",
       "startProd": "NODE_ENV=production node build/src/index.js"
    },
    "devDependencies": {

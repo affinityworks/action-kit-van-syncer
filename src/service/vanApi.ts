@@ -6,6 +6,7 @@ import {ShiftAttributes} from "../db/models/shift"
 import config from "../../config/index"
 import {get} from "lodash"
 const {secrets} = config
+import { inspect } from "util"
 
 // TODO (aguestuser): consider moving these to `/types` dir
 export type VanApiResponse =
@@ -62,10 +63,10 @@ const createResource = async (resourceEndpoint, attrs) => {
   try {
     const response = await api().post(resourceEndpoint, attrs)
     const id = get(response, ["data"])
-    console.log("[VAN CREATE] Resource Endpoint: ", resourceEndpoint, " ID: ", id.vanId || id)
+    console.log(`[VAN CREATE][${Date.now()}] Resource Endpoint: `, resourceEndpoint, " ID: ", id.vanId || id)
     return id
   } catch (err) {
-    console.error("[ERROR][VAN CREATE]", resourceEndpoint, err)
+    handleError(err, "CREATE", resourceEndpoint)
   }
 }
 
@@ -86,8 +87,17 @@ export const updateSignup = async (attrs: VanSignupUpdateRequest) => {
 const updateResource = async (resourceEndpoint, attrs, httpMethod) => {
   try {
     await httpMethod(resourceEndpoint, attrs)
-    console.log("[VAN UPDATE] Resource Endpoint: ", resourceEndpoint)
+    console.log(`[VAN UPDATE][${Date.now()}] Resource Endpoint: `, resourceEndpoint)
   } catch (err) {
-    console.error("[ERROR][VAN UPDATE]", resourceEndpoint, err)
+    handleError(err, "UPDATE", resourceEndpoint)
   }
+}
+
+// ERROR HANDLING
+
+export const handleError = (err, vanAction, resourceEndpoint) => {
+  const errorTitle = `[ERROR][VAN ${vanAction}][${Date.now()}]`
+  console.error(errorTitle, `Endpoint: ${resourceEndpoint}`)
+  console.error(errorTitle, `Request: ${inspect(err.response.config.data)}`)
+  console.error(errorTitle, `Response: ${inspect(err.response.data)}`)
 }

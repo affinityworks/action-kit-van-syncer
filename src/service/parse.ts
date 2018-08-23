@@ -88,19 +88,21 @@ const parseVanPerson = (akp: ActionKitPerson): VanPerson => ({
 })
 
 const parseVanPhones = (akphs: ActionKitPhone[]): VanPhone[] =>
-  akphs.map(parseVanPhone)
+  akphs.filter(phone => typeof phone !== "undefined").map(parseVanPhone)
 
-const parseVanPhone = (akph: ActionKitPhone): VanPhone => ({
-  actionKitId: akph.id,
-  phoneNumber: akph.normalized_phone,
-  phoneType: {
-    home: "H",
-    work: "W",
-    mobile: "M",
-    home_fax: "F",
-    mobile_fax: "F",
-  }[akph.type] || "M",
-})
+const parseVanPhone = (akph: ActionKitPhone): VanPhone => {
+  return {
+    actionKitId: akph.id,
+    phoneNumber: akph.normalized_phone,
+    phoneType: {
+      home: "H",
+      work: "W",
+      mobile: "M",
+      home_fax: "F",
+      mobile_fax: "F",
+    }[akph.type] || "M",
+  }
+}
 
 export const parseDate = (timestamp: Date|string): Date =>
   new Date(Date.parse(timestamp.toString()))

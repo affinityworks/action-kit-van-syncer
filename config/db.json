@@ -17,5 +17,10 @@
     "logging": false,
     "use_env_variable": "DATABASE_URL"
   },
-  "production": {}
+  "production": {
+    "database": "ak2van_production",
+    "dialect": "postgres",
+    "logging": false,
+    "use_env_variable": "DATABASE_URL"
+  }
 }

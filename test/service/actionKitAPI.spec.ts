@@ -98,13 +98,13 @@ describe("actionKitAPI", () => {
       expect(eventTrees).to.eql(actionKitEventTree)
     })
 
-    it("filters out any events with blacklisted campaign", async () => {
+    it("filters out any events not in whitelisted campaigns", async () => {
       expect(
         noSyncEventFilter(responses.eventsResponseWithNoSync.objects[0]),
       ).to.eql(false)
     })
 
-    it("does not filter out any events not in blacklisted campaign", async () => {
+    it("does not filter out events in whitelisted campaigns", async () => {
       expect(
         noSyncEventFilter(responses.eventsResponseWithNoSync.objects[1]),
       ).to.eql(true)

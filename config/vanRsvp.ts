@@ -27,7 +27,6 @@ const staging = {
       "/rest/v1/campaign/13/": { name: "Training", eventTypeId: 227494 },
       "/rest/v1/campaign/1/":  { name: "Community Event", eventTypeId: 227496 }, // TODO: Swap out for Field Event
     },
-    blacklist: ["/rest/v1/campaign/4/"],
   },
 }
 
@@ -40,9 +39,6 @@ const production = {
       // "/rest/v1/campaign/13/": "Training", TODO: Get Event Type for Training
       // "/rest/v1/campaign/1/": "Field Events", TODO: Get Event Type for Field Events
     },
-    blacklist: [
-      "/rest/v1/campaign/4/",
-    ],
   },
 }
 
