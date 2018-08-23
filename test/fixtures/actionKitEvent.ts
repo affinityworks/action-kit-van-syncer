@@ -92,7 +92,7 @@ export const actionKitEventTree: ActionKitEvent[] = [
         },
       },
       {
-        attended: false,
+        attended: true,
         created_at: "2018-06-07T15:59:20",
         event: "/rest/v1/event/1049/",
         fields: {},
@@ -104,7 +104,7 @@ export const actionKitEventTree: ActionKitEvent[] = [
           "/rest/v1/eventsignupaction/2481976/",
         ],
         signupfields: [],
-        status: "active",
+        status: "complete",
         updated_at: "2018-06-07T15:59:20",
         user: {
           actions: "/rest/v1/action/?user=350568",

@@ -2,7 +2,7 @@ import axios from "axios"
 import * as _ from "lodash"
 import {Subject} from "rxjs/Subject"
 import config from "../../config/"
-const {secrets} = config
+const {secrets, vanRsvp} = config
 
 export const actionKitSubject = new Subject()
 const limit = 100
@@ -74,7 +74,7 @@ export const getEventTrees = async (eventsEndpoint = secrets.actionKitAPI.events
   return Promise.all(events.filter(noSyncEventFilter).map(getEventTree))
 }
 
-const noSyncEventFilter = event => !event.title.includes("NOSYNC")
+export const noSyncEventFilter = (event): boolean => !_.includes(vanRsvp.actionKit.blacklist, event.campaign)
 
 export const getEventTree = async (event): Promise<ActionKitEvent> => {
   const eventSignups = await Promise.all(event.signups.map(async (signupUrl) => {

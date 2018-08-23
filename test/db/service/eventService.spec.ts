@@ -19,7 +19,7 @@ describe("event service", () => {
   chai.use(sinonChai)
 
   let db, createEventStub, createLocationStub, createPersonStub, createShiftStub, createSignupStub
-  let updateEventStub, updateSignupStub
+  let updateEventStub, updateSignupStub, updatePersonStub
   const sandbox = sinon.createSandbox()
   const eventsAttrs = cloneDeep(vanEvents)
   const oldEventTrees = cloneDeep(vanEventTree)
@@ -98,6 +98,7 @@ describe("event service", () => {
 
     updateEventStub = vanApiStubNoResponse(sandbox, "updateEvent")
     updateSignupStub = vanApiStubNoResponse(sandbox, "updateSignup")
+    updatePersonStub = vanApiStubNoResponse(sandbox, "updatePerson")
   })
 
   afterEach(async () => {

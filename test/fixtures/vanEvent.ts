@@ -15,6 +15,7 @@ export const vanEvents: VanEvent[] = [{
   endDate: "2018-07-25T20:00:00-00:00",
   eventType: {
     eventTypeId: 227492,
+    name: "Canvass",
   },
   codes: [],
   notes: [],
@@ -29,6 +30,7 @@ export const vanEvents: VanEvent[] = [{
   createdDate: "2018-06-07T15:57:50",
   eventType: {
     eventTypeId: 227492,
+    name: "Canvass",
   },
   codes: [],
   notes: [],
@@ -79,7 +81,10 @@ export const vanEventTree: VanEvent[] = [
       },
       { // signupResponseAttendee
         actionKitId: 1268,
-        status: { statusId: 1, name: "Scheduled" },
+        status: {
+          name: "Confirmed",
+          statusId: 11,
+        },
         role: roleOne,
         person: { // userResponseAttendee
           actionKitId: 350568,

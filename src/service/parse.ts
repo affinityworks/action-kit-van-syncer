@@ -3,6 +3,8 @@ import {Attributes} from "../types/Attributes"
 import {values} from "lodash"
 import {VanEvent} from "../types/VanEvent"
 import {VanSignup, VanSignupStatus} from "../types/VanSignup"
+import config from "../../config/index"
+const {vanRsvp} = config
 
 // TODO: fill these in with actual ids once we find or create them
 export const roles: { [key: string]: VanRole } = {
@@ -21,9 +23,7 @@ const parseVanEvent = (ake: ActionKitEvent): VanEvent => {
     description: ake.public_description,
     startDate: `${ake.starts_at_utc}-00:00`,
     endDate: `${ake.ends_at_utc || setEndTime(ake.starts_at_utc)}-00:00`,
-    eventType: {
-      eventTypeId: 227492,
-    },
+    eventType: parseVanEventType(ake.campaign),
     codes: [],
     notes: [],
     createdDate: ake.created_at,
@@ -67,11 +67,11 @@ signup + attended false + complete -> No Show
  */
 const parseVanSignupStatus = (aks: ActionKitSignup): VanSignupStatus => {
   if (aks && !aks.attended && aks.status === "active") {
-    return { statusId: 1, name: "Scheduled" }
+    return vanRsvp.van.statuses.scheduled
   } else if (aks && aks.attended && aks.status === "complete") {
-    return { statusId: 11, name: "Confirmed" }
+    return vanRsvp.van.statuses.confirmed
   } else if (aks && !aks.attended && aks.status === "complete") {
-    return { statusId: 6, name: "No Show" }
+    return vanRsvp.van.statuses.noshow
   }
 }
 
@@ -118,4 +118,8 @@ const setEndTime = (timestamp: Date|string): Date => {
   const date = parseDate(timestamp)
   date.setHours(date.getHours() + 1)
   return date
+}
+
+const parseVanEventType = (campaign: string): object => {
+  return vanRsvp.actionKit.whitelistMapping[campaign]
 }

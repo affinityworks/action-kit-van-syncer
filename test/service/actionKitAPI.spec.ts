@@ -1,7 +1,14 @@
 import {expect} from "chai"
 import {describe, it, xit, before} from "mocha"
 import * as nock from "nock"
-import {getEvents, getEventSignup, getUser, getEventTrees, getEventTree} from "../../src/service/actionKitAPI"
+import {
+  getEvents,
+  getEventSignup,
+  getUser,
+  getEventTrees,
+  getEventTree,
+  noSyncEventFilter,
+} from "../../src/service/actionKitAPI"
 import {actionKitEventTree, actionKitEventTreeWithNoSyncEvent} from "../fixtures/actionKitEvent"
 import * as responses from "../fixtures/Responses"
 
@@ -91,13 +98,16 @@ describe("actionKitAPI", () => {
       expect(eventTrees).to.eql(actionKitEventTree)
     })
 
-    it("filters out any events with NOSYNC in the title", async () => {
-      nock("https://roboticdogs.actionkit.com")
-        .get("/rest/v1/event/?campaign=289&_limit=100&_offset=0")
-        .reply(200, responses.eventsResponseWithNoSync)
+    it("filters out any events with blacklisted campaign", async () => {
+      expect(
+        noSyncEventFilter(responses.eventsResponseWithNoSync.objects[0]),
+      ).to.eql(false)
+    })
 
-      const eventTrees = await getEventTrees()
-      expect(eventTrees).to.eql(actionKitEventTreeWithNoSyncEvent)
+    it("does not filter out any events not in blacklisted campaign", async () => {
+      expect(
+        noSyncEventFilter(responses.eventsResponseWithNoSync.objects[1]),
+      ).to.eql(true)
     })
   })
 

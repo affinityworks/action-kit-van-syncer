@@ -65,7 +65,7 @@ const createResource = async (resourceEndpoint, attrs) => {
     console.log("[VAN CREATE] Resource Endpoint: ", resourceEndpoint, " ID: ", id.vanId || id)
     return id
   } catch (err) {
-    console.error("[ERROR][VAN CREATE]", resourceEndpoint, JSON.stringify(err, null, 4))
+    console.error("[ERROR][VAN CREATE]", resourceEndpoint, err)
   }
 }
 
@@ -88,6 +88,6 @@ const updateResource = async (resourceEndpoint, attrs, httpMethod) => {
     await httpMethod(resourceEndpoint, attrs)
     console.log("[VAN UPDATE] Resource Endpoint: ", resourceEndpoint)
   } catch (err) {
-    console.error("[ERROR][VAN UPDATE]", resourceEndpoint, JSON.stringify(err, null, 4))
+    console.error("[ERROR][VAN UPDATE]", resourceEndpoint, err)
   }
 }

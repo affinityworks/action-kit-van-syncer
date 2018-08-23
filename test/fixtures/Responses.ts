@@ -110,7 +110,7 @@ export const eventsResponse: ActionKitEventResponseInEnvelope = {
 export const eventsResponseWithNoSync: ActionKitEventResponseInEnvelope = {
   ...eventsResponse,
   objects: [
-    { ...eventsResponse.objects[0], title: "Affinity Test Event #1 NOSYNC" },
+    { ...eventsResponse.objects[0], campaign: "/rest/v1/campaign/666/" },
     eventsResponse.objects[1],
   ],
 }
@@ -132,7 +132,7 @@ export const signupResponseHost: ActionKitSignupResponse = {
 }
 
 export const signupResponseAttendee: ActionKitSignupResponse = {
-  attended: false,
+  attended: true,
   created_at: "2018-06-07T15:59:20",
   event: "/rest/v1/event/1049/",
   fields: {},
@@ -144,7 +144,7 @@ export const signupResponseAttendee: ActionKitSignupResponse = {
     "/rest/v1/eventsignupaction/2481976/",
   ],
   signupfields: [],
-  status: "active",
+  status: "complete",
   updated_at: "2018-06-07T15:59:20",
   user: "/rest/v1/user/350568/",
 }
