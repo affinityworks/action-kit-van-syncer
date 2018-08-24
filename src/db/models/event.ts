@@ -80,7 +80,11 @@ const postEventToVan = async (event: EventInstance) => {
 const postLocationsToVan = async (event: EventInstance): Promise<VanLocationCreateResponse[]> => {
   const locations = event.getLocations()
   return await locations.map(async (location: LocationInstance) => {
-    const locationId = await vanApi.createLocation(location)
+    const locationAttrs = location.get()
+    const locationId = await vanApi.createLocation({
+      ...locationAttrs,
+      name: locationAttrs.name.slice(0, 50),
+    })
     await location.update(locationId)
     return locationId
   })

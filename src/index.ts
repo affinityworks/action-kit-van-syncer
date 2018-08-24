@@ -9,15 +9,11 @@ export const sync = async (db = initDb()) => {
   console.log(`[AK FETCH STARTED]`)
   const eventTrees = await getEventTrees()
   console.log(`[AK FETCH COMPLETE]`)
-  console.log(eventTrees)
   console.log(`[AK2VAN PARSE STARTED]`)
   const vanEventTrees = parseVanEvents(eventTrees)
-  console.log(vanEventTrees)
   console.log(`[AK2VAN PARSE COMPLETE]`)
   console.log("[VAN SYNC STARTED]")
   await saveMany(db)(vanEventTrees)
-  console.log("[VAN SYNC COMPLETE]")
-  console.log(`[AK2VAN SYNC COMPLETE][${Date.now()}]`)
 }
 
 const SECOND = 1000

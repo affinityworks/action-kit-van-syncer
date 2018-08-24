@@ -98,6 +98,5 @@ const updateResource = async (resourceEndpoint, attrs, httpMethod) => {
 export const handleError = (err, vanAction, resourceEndpoint) => {
   const errorTitle = `[ERROR][VAN ${vanAction}][${Date.now()}]`
   console.error(errorTitle, `Endpoint: ${resourceEndpoint}`)
-  console.error(errorTitle, `Request: ${inspect(err.response.config.data)}`)
-  console.error(errorTitle, `Response: ${inspect(err.response.data)}`)
+  console.error(errorTitle, `Response: ${inspect(err.response)}`)
 }

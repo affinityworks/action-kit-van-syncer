@@ -6,12 +6,6 @@ import {VanSignup, VanSignupStatus} from "../types/VanSignup"
 import config from "../../config/index"
 const {vanRsvp} = config
 
-// TODO: fill these in with actual ids once we find or create them
-export const roles: { [key: string]: VanRole } = {
-  HOST: { roleId: 198856, name: "Host" },
-  ATTENDEE: { roleId: 198854, name: "Canvasser" },
-}
-
 export const parseVanEvents = (akes: ActionKitEvent[]): VanEvent[] =>
   akes.map(parseVanEvent)
 
@@ -32,12 +26,12 @@ const parseVanEvent = (ake: ActionKitEvent): VanEvent => {
       startTime: `${ake.starts_at_utc}-00:00`,
       endTime: `${ake.ends_at_utc || setEndTime(ake.starts_at_utc)}-00:00`,
     }],
-    roles: values(roles),
+    roles: parseVanRoles(ake.campaign),
     locations: [{
       name: ake.venue,
       address: parseVanAddress(ake, "Custom"),
     }],
-    signups: ake.signups.map(parseVanSignup),
+    signups: ake.signups.map(signup => parseVanSignup(signup, ake.campaign)),
   }
 }
 
@@ -51,10 +45,12 @@ const parseVanAddress = (akx: ActionKitEvent | ActionKitPerson, type: VanAddress
   type,
 })
 
-const parseVanSignup = (aks: ActionKitSignup): VanSignup => ({
+const parseVanSignup = (aks: ActionKitSignup, campaign: string): VanSignup => ({
   actionKitId: aks.id,
   status: parseVanSignupStatus(aks),
-  role: lowerFirst(aks.role) === "host" ? roles.HOST : roles.ATTENDEE,
+  role: lowerFirst(aks.role) === "host"
+      ? vanRsvp.actionKit.whitelistMapping[campaign].roles.host
+      : vanRsvp.actionKit.whitelistMapping[campaign].roles.attendee,
   person: parseVanPerson(aks.user),
 })
 
@@ -72,23 +68,29 @@ const parseVanSignupStatus = (aks: ActionKitSignup): VanSignupStatus => {
     return vanRsvp.van.statuses.confirmed
   } else if (aks && !aks.attended && aks.status === "complete") {
     return vanRsvp.van.statuses.noshow
+  } else {
+    return vanRsvp.van.statuses.scheduled
   }
 }
 
 const parseVanPerson = (akp: ActionKitPerson): VanPerson => ({
   actionKitId: akp.id,
   salutation: akp.prefix,
-  firstName: akp.first_name,
-  middleName: akp.middle_name,
-  lastName: akp.last_name,
+  firstName: akp.first_name.slice(0, 19),
+  middleName: akp.middle_name.slice(0, 19),
+  lastName: akp.last_name.slice(0, 24),
   suffix: akp.suffix,
   addresses: [parseVanAddress(akp, "Home")],
   emails: [{ email: akp.email, type: "P" }],
   phones: parseVanPhones(akp.phones),
 })
 
-const parseVanPhones = (akphs: ActionKitPhone[]): VanPhone[] =>
-  akphs.filter(phone => typeof phone !== "undefined").map(parseVanPhone)
+const parseVanPhones = (akphs: ActionKitPhone[]): VanPhone[] => {
+  return akphs
+    .filter(phone => typeof phone !== "undefined")
+    .filter(phone => RegExp(/^1?[2-9][0-8]\d[2-9]\d{6,6}$/g).test(phone.normalized_phone))
+    .map(parseVanPhone)
+}
 
 const parseVanPhone = (akph: ActionKitPhone): VanPhone => {
   return {
@@ -123,5 +125,12 @@ const setEndTime = (timestamp: Date|string): Date => {
 }
 
 const parseVanEventType = (campaign: string): object => {
-  return vanRsvp.actionKit.whitelistMapping[campaign]
+  return vanRsvp.actionKit.whitelistMapping[campaign].eventType
+}
+
+const parseVanRoles = (campaign: string): [object] => {
+  return [
+    vanRsvp.actionKit.whitelistMapping[campaign].roles.host,
+    vanRsvp.actionKit.whitelistMapping[campaign].roles.attendee,
+  ]
 }
