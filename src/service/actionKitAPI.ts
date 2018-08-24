@@ -39,7 +39,7 @@ const handleError = (err, resourceEndpoint) => {
 }
 
 const getResource = async (resourceUrl: string) => {
-  const response =  await getWithRetry(resourceUrl)
+  const response = await getWithRetry(resourceUrl)
   return _.get(response, ["data"])
 }
 
@@ -50,6 +50,8 @@ export const getResources = async (resourceUrl: string, offset: number = 0, reso
 
   const response = await getWithRetry(endpoint)
   const nextUrl = _.get(response, ["data", "meta", "next"])
+  const totalCount = _.get(response, ["data", "meta", "total_count"])
+  console.log(`Fetching ${offset + LIMIT > totalCount ? totalCount : offset + LIMIT} out of ${totalCount} events.`)
   const nextResources = _.get(response, ["data", "objects"])
   const acc = resources.concat(nextResources)
 

@@ -237,8 +237,8 @@ export const userResponseAttendee: ActionKitPersonResponse = {
 export const phoneResponseAttendeeHome = {
   created_at: "2018-06-12T20:13:49",
   id: 568,
-  normalized_phone: "6151234567",
-  phone: "6151234567",
+  normalized_phone: "6152234567",
+  phone: "6152234567",
   resource_uri: "/rest/v1/phone/568/",
   source: "user",
   type: "home",
@@ -249,8 +249,8 @@ export const phoneResponseAttendeeHome = {
 export const phoneResponseAttendeeMobile = {
   created_at: "2018-06-12T20:15:11",
   id: 569,
-  normalized_phone: "3041234567",
-  phone: "+1-304-123-4567",
+  normalized_phone: "1041234567",
+  phone: "+1-104-123-4567",
   resource_uri: "/rest/v1/phone/569/",
   source: "user",
   type: "mobile",

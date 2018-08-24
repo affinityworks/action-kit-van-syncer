@@ -110,12 +110,8 @@ export const vanEventTree: VanEvent[] = [
           }],
           phones: [{
             actionKitId: 568,
-            phoneNumber: "6151234567",
+            phoneNumber: "6152234567",
             phoneType: "H",
-          }, {
-            actionKitId: 569,
-            phoneNumber: "3041234567",
-            phoneType: "M",
           }],
           // region: "",
           // source: "website",

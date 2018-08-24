@@ -8,9 +8,20 @@ const defaults = {
   },
   actionKit: {
     whitelistMapping: {
-      "/rest/v1/campaign/289/": { name: "Canvass", eventTypeId: 227492 },
+      "/rest/v1/campaign/289/": {
+        eventType: {name: "Canvass", eventTypeId: 227492 },
+        roles: {
+          host: {
+            roleId: 198856,
+            name: "Host",
+          },
+          attendee: {
+            roleId: 198854,
+            name: "Canvasser",
+          },
+        },
+      },
     },
-    blacklist: ["/rest/v1/campaign/666/"],
   },
 }
 
