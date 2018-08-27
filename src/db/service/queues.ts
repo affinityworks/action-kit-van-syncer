@@ -1,7 +1,7 @@
 import Bottleneck from "bottleneck"
 
 export const vanQueue = new Bottleneck({
-  minTime: 5000,
+  minTime: 120,
   maxConcurrent: 1,
   id: "van",
 })

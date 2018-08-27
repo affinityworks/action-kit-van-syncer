@@ -229,13 +229,9 @@ describe("event service", () => {
       await wait(500)
       updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
       await wait(500)
-      const person = await updatedEvent
-        .getSignups()
-        .then(signups =>
-          find(
-            signups, { actionKitId: oldEventTrees[0].signups[0].actionKitId },
-            ).getPerson(),
-        )
+      const signups = await updatedEvent.getSignups()
+      const signup = signups.filter(su => su.actionKitId === oldEventTrees[0].signups[0].actionKitId)[0]
+      const person = await signup.getPerson()
       expect(person.firstName).to.eql("very new name")
     })
   })

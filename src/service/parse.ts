@@ -128,7 +128,7 @@ const parseVanEventType = (campaign: string): object => {
   return vanRsvp.actionKit.whitelistMapping[campaign].eventType
 }
 
-const parseVanRoles = (campaign: string): [object] => {
+const parseVanRoles = (campaign: string) => {
   return [
     vanRsvp.actionKit.whitelistMapping[campaign].roles.host,
     vanRsvp.actionKit.whitelistMapping[campaign].roles.attendee,

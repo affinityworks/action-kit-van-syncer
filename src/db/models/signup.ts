@@ -86,7 +86,7 @@ const postShiftToVan = async (eventId: number, signup: SignupInstance): Promise<
   const eventShiftId =
     shift.eventShiftId ||
     await vanQueue.schedule(
-      { priority: 4 }, () => vanApi.createShift(eventId, shift.get())
+      { priority: 4 }, () => vanApi.createShift(eventId, shift.get()),
     ).then(r => r.eventShiftId)
 
   await shift.update({eventShiftId})
