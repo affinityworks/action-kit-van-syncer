@@ -9,6 +9,7 @@ import * as vanApi from "../../service/vanApi"
 import {VanLocationCreateResponse} from "../../service/vanApi"
 import * as _ from "lodash"
 type Model = SequelizeStaticAndInstance["Model"]
+import { vanQueue } from "../service/queues"
 
 export interface EventAttributes extends AbstractAttributes, VanEvent {
   locations?: LocationAttributes[],
@@ -73,7 +74,7 @@ const postEventToVan = async (event: EventInstance) => {
 
   const eventId =
     event.eventId ||
-    await vanApi.createEvent(eventAttrs).then(r => r.eventId)
+    await vanQueue.schedule({ priority: 2 }, () => vanApi.createEvent(eventAttrs).then(r => r.eventId))
   await event.update({eventId})
 }
 
@@ -81,10 +82,10 @@ const postLocationsToVan = async (event: EventInstance): Promise<VanLocationCrea
   const locations = event.getLocations()
   return await locations.map(async (location: LocationInstance) => {
     const locationAttrs = location.get()
-    const locationId = await vanApi.createLocation({
+    const locationId = await vanQueue.schedule({ priority: 1 }, () => vanApi.createLocation({
       ...locationAttrs,
-      name: locationAttrs.name.slice(0, 50),
-    })
+      name: locationAttrs.name,
+    }))
     await location.update(locationId)
     return locationId
   })

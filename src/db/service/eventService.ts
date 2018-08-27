@@ -5,6 +5,7 @@ import {EventInstance} from "../models/event"
 import {SignupInstance} from "../models/signup"
 import Bluebird = require("bluebird")
 import {inspect} from "util"
+import {dbQueue} from "./queues"
 
 /*********
  * SAVE
@@ -24,9 +25,6 @@ export const save = (db: Database) => async (eventTree: VanEvent): Promise<Event
  * CREATE
  *********/
 
-export const createEventTrees = (db: Database) => (attrs: VanEvent[]): Promise<EventInstance[]> =>
-  Promise.all(attrs.map(createEventTree(db)))
-
 // TODO: wrap this in transaction
 export const createEventTree = (db: Database) => async (eventTree: VanEvent): Promise<EventInstance> => {
   const event = await createEvent(db, eventTree)
@@ -36,7 +34,10 @@ export const createEventTree = (db: Database) => async (eventTree: VanEvent): Pr
 
 const createEvent = async (db: Database, eventTree: VanEvent): Promise<EventInstance> => {
   try {
-    return await db.event.create(eventTree, eventIncludesOf(db))
+    return await dbQueue.schedule(
+      { priority: 1 },
+      async () => db.event.create(eventTree, eventIncludesOf(db)),
+    )
   } catch (err) {
     console.error(`[ERROR][AK2VAN DB CREATE EVENT][${Date.now()}]`, "Error: ", inspect(err))
   }
@@ -51,12 +52,12 @@ const createSignups = (db: Database, event: EventInstance, eventTree: VanEvent):
 
 const createSignup = async (db: Database, signup: VanSignup, event: EventInstance): Promise<SignupInstance> => {
   try {
-    return await db.signup.create({
+    return await dbQueue.schedule({ priority: 2 }, async () => db.signup.create({
       ...signup,
       eventId: event.id,
       shiftId: event.shifts[0].id || await event.getShifts().then(ss => ss[0].id),
       locationId: event.locations[0] || await event.getLocations().then(ls => ls[0].id),
-    }, signupIncludesOf(db))
+    }, signupIncludesOf(db)))
   } catch (err) {
     console.error(`[ERROR][AK2VAN DB CREATE SIGNUP][${Date.now()}]`, "Error: ", inspect(err))
   }

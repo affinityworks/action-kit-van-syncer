@@ -28,7 +28,7 @@ const parseVanEvent = (ake: ActionKitEvent): VanEvent => {
     }],
     roles: parseVanRoles(ake.campaign),
     locations: [{
-      name: ake.venue,
+      name: ake.venue.slice(0, 49),
       address: parseVanAddress(ake, "Custom"),
     }],
     signups: ake.signups.map(signup => parseVanSignup(signup, ake.campaign)),
