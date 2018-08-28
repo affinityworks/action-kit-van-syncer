@@ -29,6 +29,8 @@ const development = defaults
 
 const test = defaults
 
+const ci = defaults
+
 const staging = {
   van: defaults.van,
   actionKit: {
@@ -93,70 +95,107 @@ const production = {
   van: defaults.van,
   actionKit: {
     whitelistMapping: {
-      "/rest/v1/campaign/11/": { name: "Canvassing", eventTypeId: 23808 },
-      "/rest/v1/campaign/12/": { name: "Phone Bank", eventTypeId: 102321 },
-      // "/rest/v1/campaign/13/": "Training", TODO: Get Event Type for Training
-      // "/rest/v1/campaign/1/": "Field Events", TODO: Get Event Type for Field Events
+      "/rest/v1/campaign/11/": {
+        eventType: { name: "Canvass", eventTypeId: 301681 },
+        roles: {
+          host: {
+            // TODO: Get this from Yes on 1631 team
+          },
+          attendee: {
+            // TODO: Get this from Yes on 1631 team
+          },
+        },
+      },
+      "/rest/v1/campaign/12/": {
+        eventType: { name: "Phonebank", eventTypeId: 301682 },
+        roles: {
+          host: {
+            // TODO: Get this from Yes on 1631 team
+          },
+          attendee: {
+            // TODO: Get this from Yes on 1631 team
+          },
+        },
+      },
+      "/rest/v1/campaign/13/": {
+        eventType: { name: "Training", eventTypeId: 301683 },
+        roles: {
+          host: {
+            // TODO: Get this from Yes on 1631 team
+          },
+          attendee: {
+            // TODO: Get this from Yes on 1631 team
+          },
+        },
+      },
+      "/rest/v1/campaign/1/": {
+        eventType: { name: "Field Event", eventTypeId: 301684 },
+        roles: {
+          host: {
+            // TODO: Get this from Yes on 1631 team
+          },
+          attendee: {
+            // TODO: Get this from Yes on 1631 team
+          },
+        },
+      },
     },
   },
 }
 
 /*
-"eventTypeId": 23808,
-    "name": "Canvassing",
+[
+  {
+    "eventTypeId": 301681,
+    "name": "Canvass",
     "roles": [
       {
-        "roleId": 87160,
-        "name": "Attendee",
-        "isEventLead": true
-      },
-      {
-        "roleId": 87161,
-        "name": "Canvassing",
-        "isEventLead": true
-      },
-      {
-        "roleId": 87162,
-        "name": "Data Entry",
-        "isEventLead": true
-      },
-      {
-        "roleId": 87163,
-        "name": "Phone Calling",
+        "roleId": 263693,
+        "name": "Admin",
         "isEventLead": true
       }
     ],
 
- {
-    "eventTypeId": 102321,
-    "name": "Phone Bank",
+  },
+  {
+    "eventTypeId": 301684,
+    "name": "Field Event",
     "roles": [
       {
-        "roleId": 87160,
-        "name": "Attendee",
+        "roleId": 263693,
+        "name": "Admin",
         "isEventLead": true
-      },
+      }
+
+  {
+    "eventTypeId": 301682,
+    "name": "Phonebank",
+    "roles": [
       {
-        "roleId": 87161,
-        "name": "Canvassing",
-        "isEventLead": true
-      },
-      {
-        "roleId": 87162,
-        "name": "Data Entry",
-        "isEventLead": true
-      },
-      {
-        "roleId": 87163,
-        "name": "Phone Calling",
+        "roleId": 263693,
+        "name": "Admin",
         "isEventLead": true
       }
     ],
+  },
+  {
+    "eventTypeId": 301683,
+    "name": "Training",
+    "roles": [
+      {
+        "roleId": 263693,
+        "name": "Admin",
+        "isEventLead": true
+      }
+    ],
+  }
+]
  */
 
 export default {
   development,
   test,
+  ci,
   staging,
   production,
 }

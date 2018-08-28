@@ -13,10 +13,28 @@
     "logging": false,
     "use_env_variable": false
   },
+  "ci": {
+    "database": "ak2van_ci",
+    "dialect": "postgres",
+    "logging": false,
+    "pool": {
+      "max": 20,
+      "min": 0,
+      "acquire": 10000,
+      "idle": 10000
+    },
+    "use_env_variable": "DATABASE_URL"
+  },
   "staging": {
     "database": "ak2van_staging",
     "dialect": "postgres",
     "logging": false,
+    "pool": {
+      "max": 20,
+      "min": 0,
+      "acquire": 10000,
+      "idle": 10000
+    },
     "use_env_variable": "DATABASE_URL"
   },
   "production": {
