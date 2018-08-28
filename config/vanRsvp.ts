@@ -99,10 +99,12 @@ const production = {
         eventType: { name: "Canvass", eventTypeId: 301681 },
         roles: {
           host: {
-            // TODO: Get this from Yes on 1631 team
+            roleId: 264367,
+            name: "Host",
           },
           attendee: {
-            // TODO: Get this from Yes on 1631 team
+            roleId: 266408,
+            name: "Attendee",
           },
         },
       },
@@ -110,10 +112,12 @@ const production = {
         eventType: { name: "Phonebank", eventTypeId: 301682 },
         roles: {
           host: {
-            // TODO: Get this from Yes on 1631 team
+            roleId: 264367,
+            name: "Host",
           },
           attendee: {
-            // TODO: Get this from Yes on 1631 team
+            roleId: 266408,
+            name: "Attendee",
           },
         },
       },
@@ -121,10 +125,12 @@ const production = {
         eventType: { name: "Training", eventTypeId: 301683 },
         roles: {
           host: {
-            // TODO: Get this from Yes on 1631 team
+            roleId: 264367,
+            name: "Host",
           },
           attendee: {
-            // TODO: Get this from Yes on 1631 team
+            roleId: 266408,
+            name: "Attendee",
           },
         },
       },
@@ -132,10 +138,12 @@ const production = {
         eventType: { name: "Field Event", eventTypeId: 301684 },
         roles: {
           host: {
-            // TODO: Get this from Yes on 1631 team
+            roleId: 264367,
+            name: "Host",
           },
           attendee: {
-            // TODO: Get this from Yes on 1631 team
+            roleId: 266408,
+            name: "Attendee",
           },
         },
       },
