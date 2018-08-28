@@ -16,8 +16,9 @@
       "test-all": "yarn test && yarn test-e2e",
       "migrate": "npx sequelize db:migrate --env=$NODE_ENV",
       "build": "npx tsc",
-      "start": "npx tsc && NODE_ENV=development node build/src/index.js",
-      "startProd": "NODE_ENV=production node build/src/index.js"
+      "postinstall": "NODE_ENV=$NODE_ENV yarn migrate",
+      "start": "NODE_ENV=$NODE_ENV npx ts-node src/index.ts",
+      "startDev": "npx tsc && NODE_ENV=development node build/src/index.js"
    },
    "devDependencies": {
       "@types/chai": "^4.1.3",

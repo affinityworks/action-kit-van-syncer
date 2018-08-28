@@ -7,7 +7,6 @@ import {repeatEvery} from "../test/support/time"
 const SECOND = 1000
 const MINUTE = 60 * SECOND
 const HOUR = 60 * MINUTE
-const THIRTY_SECONDS = 30 * SECOND
 const EIGHT_HOURS = 8 * HOUR
 
 export const sync = async (db = initDb()) => {
@@ -28,9 +27,11 @@ export const sync = async (db = initDb()) => {
 }
 
 export const repeatSync = async () => {
-  repeatEvery(THIRTY_SECONDS, await sync) // TODO: Change to EIGHT_HOURS for prod
+  repeatEvery(EIGHT_HOURS, await sync)
 }
 
-// (async () => {
-//   repeatSync()
-// })()
+(async () => {
+  if (process.env.NODE_ENV === "staging" || process.env.NODE_ENV === "production") {
+    repeatSync()
+  }
+})()
