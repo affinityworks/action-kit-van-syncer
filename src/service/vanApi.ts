@@ -6,6 +6,8 @@ import {ShiftAttributes} from "../db/models/shift"
 import config from "../../config/index"
 import {get} from "lodash"
 const {secrets} = config
+import { inspect } from "util"
+import {wait} from "../../test/support/time"
 
 // TODO (aguestuser): consider moving these to `/types` dir
 export type VanApiResponse =
@@ -59,11 +61,23 @@ export const createLocation = async (attrs: LocationAttributes): Promise<VanLoca
 }
 
 const createResource = async (resourceEndpoint, attrs) => {
+  const response = await postWithRetry(resourceEndpoint, attrs)
+  const id = get(response, ["data"])
+  console.log(`[VAN CREATE][${Date.now()}] Resource Endpoint: `, resourceEndpoint, " ID: ", id.vanId || id)
+  return id
+}
+
+export const postWithRetry =  async (endpoint, attrs, retries = 5, waittime = 500, apiInstance = api()) => {
   try {
-    const response = await api().post(resourceEndpoint, attrs)
-    return get(response, ["data"])
-  } catch (e) {
-    console.log(e)
+    return await apiInstance.post(endpoint, attrs)
+  } catch (err) {
+    if (retries > 0) {
+      await wait(waittime)
+      return await postWithRetry(endpoint, attrs, retries - 1, waittime * 2, apiInstance)
+    } else {
+      handleError(err, "CREATE", endpoint)
+      return
+    }
   }
 }
 
@@ -78,9 +92,22 @@ export const updatePerson = async (attrs: PersonAttributes) => {
 }
 
 export const updateSignup = async (attrs: VanSignupUpdateRequest) => {
-  await updateResource(`/signups/${attrs.vanId}`, attrs, api().put)
+  await updateResource(`/signups/${attrs.eventSignupId}`, attrs, api().put)
 }
 
 const updateResource = async (resourceEndpoint, attrs, httpMethod) => {
-  await httpMethod(resourceEndpoint, attrs)
+  try {
+    await httpMethod(resourceEndpoint, attrs)
+    console.log(`[VAN UPDATE][${Date.now()}] Resource Endpoint: `, resourceEndpoint)
+  } catch (err) {
+    handleError(err, "UPDATE", resourceEndpoint)
+  }
+}
+
+// ERROR HANDLING
+
+export const handleError = (err, vanAction, resourceEndpoint) => {
+  const errorTitle = `[ERROR][VAN ${vanAction}][${Date.now()}]`
+  console.error(errorTitle, `Endpoint: ${resourceEndpoint}`)
+  console.error(errorTitle, `Response: ${inspect(err.response)}`)
 }

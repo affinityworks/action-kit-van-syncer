@@ -54,5 +54,5 @@ export const signupUpdate: VanSignupUpdateRequest = {
   status: {
     statusId: signupAttrs.status.statusId,
   },
-  vanId: 1,
+  eventSignupId: 1,
 }

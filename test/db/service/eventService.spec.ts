@@ -12,12 +12,14 @@ import * as sinonChai from "sinon-chai"
 import sinon from "ts-sinon"
 import {vanApiRandomStubOf, vanApiStubNoResponse, vanApiStubOf} from "../../support/spies"
 import {wait} from "../../support/time"
+import {locationAttrs} from "../../fixtures/vanLocation"
 
 describe("event service", () => {
   nock.disableNetConnect()
   chai.use(sinonChai)
 
-  let db, createEventStub, createLocationStub, createPersonStub, createShiftStub, createSignupStub, updateEventStub
+  let db, createEventStub, createLocationStub, createPersonStub, createShiftStub, createSignupStub
+  let updateEventStub, updateSignupStub, updatePersonStub
   const sandbox = sinon.createSandbox()
   const eventsAttrs = cloneDeep(vanEvents)
   const oldEventTrees = cloneDeep(vanEventTree)
@@ -26,7 +28,7 @@ describe("event service", () => {
     ...oldEventTree,
     name: "very new name",
     locations: [
-      {...oldEventTree.locations, name: "very new name"},
+      {...oldEventTree.locations, name: "very new location name"},
       ...oldEventTree.locations.slice(1),
     ],
     shifts: [
@@ -95,6 +97,8 @@ describe("event service", () => {
     createSignupStub = vanApiRandomStubOf(sandbox, "createSignup", "eventSignupId")
 
     updateEventStub = vanApiStubNoResponse(sandbox, "updateEvent")
+    updateSignupStub = vanApiStubNoResponse(sandbox, "updateSignup")
+    updatePersonStub = vanApiStubNoResponse(sandbox, "updatePerson")
   })
 
   afterEach(async () => {
@@ -153,12 +157,6 @@ describe("event service", () => {
       expect(await db.event.count()).to.eql(1)
     })
 
-    it("creates many events", async () => {
-      await eventService.createEventTrees(db)(eventsAttrs)
-      await wait(500)
-      expect(await db.event.count()).to.eql(2)
-    })
-
     it("creates an event with associations", async () => {
       await eventService.createEventTree(db)(oldEventTrees[0])
       await wait(500)
@@ -170,18 +168,29 @@ describe("event service", () => {
     })
   })
 
-  // TODO: Fix these tests
   describe("updating an event tree", async () => {
 
     let event, updatedEvent
 
-    it("updates a nested location", async () => {
-      event = await eventService.createEventTree(db)(oldEventTrees[0])
-      await wait(500)
-      updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
-      await wait(500)
-      const name = await updatedEvent.getLocations().then(locs => locs[0].name)
-      expect(name).to.eql("very new name")
+    describe("locations", () => {
+      it("updates a nested location", async () => {
+        event = await eventService.createEventTree(db)(oldEventTrees[0])
+        await wait(500)
+        updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
+        await wait(500)
+        const name = await updatedEvent.getLocations().then(locs => locs[0].name)
+        expect(name).to.eql("very new location name")
+      })
+
+      it("updates a nested location van id", async () => {
+        event = await eventService.createEventTree(db)(oldEventTrees[0])
+        await wait(500)
+        const oldLocationId = await event.getLocations().then(locs => locs[0].locationId)
+        updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
+        await wait(500)
+        const newLocationId = await updatedEvent.getLocations().then(locs => locs[0].locationId)
+        expect(oldLocationId).to.not.eql(newLocationId)
+      })
     })
 
     it("updates a nested shift", async () => {
@@ -220,13 +229,9 @@ describe("event service", () => {
       await wait(500)
       updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
       await wait(500)
-      const person = await updatedEvent
-        .getSignups()
-        .then(signups =>
-          find(
-            signups, { actionKitId: oldEventTrees[0].signups[0].actionKitId }
-            ).getPerson(),
-        )
+      const signups = await updatedEvent.getSignups()
+      const signup = signups.filter(su => su.actionKitId === oldEventTrees[0].signups[0].actionKitId)[0]
+      const person = await signup.getPerson()
       expect(person.firstName).to.eql("very new name")
     })
   })

@@ -13,7 +13,7 @@ declare interface AbstractActionKitSignup {
   updated_at: Date | string,
 }
 
-declare type ActionKitSignupStatus = "active" | "deleted" | "cancelled"
+declare type ActionKitSignupStatus = "active" | "deleted" | "cancelled" | "complete"
 
 declare interface ActionKitSignupResponse extends AbstractActionKitSignup {
   user: string,

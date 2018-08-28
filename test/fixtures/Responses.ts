@@ -110,7 +110,7 @@ export const eventsResponse: ActionKitEventResponseInEnvelope = {
 export const eventsResponseWithNoSync: ActionKitEventResponseInEnvelope = {
   ...eventsResponse,
   objects: [
-    { ...eventsResponse.objects[0], title: "Affinity Test Event #1 NOSYNC" },
+    { ...eventsResponse.objects[0], campaign: "/rest/v1/campaign/666/" },
     eventsResponse.objects[1],
   ],
 }
@@ -132,7 +132,7 @@ export const signupResponseHost: ActionKitSignupResponse = {
 }
 
 export const signupResponseAttendee: ActionKitSignupResponse = {
-  attended: false,
+  attended: true,
   created_at: "2018-06-07T15:59:20",
   event: "/rest/v1/event/1049/",
   fields: {},
@@ -144,7 +144,7 @@ export const signupResponseAttendee: ActionKitSignupResponse = {
     "/rest/v1/eventsignupaction/2481976/",
   ],
   signupfields: [],
-  status: "active",
+  status: "complete",
   updated_at: "2018-06-07T15:59:20",
   user: "/rest/v1/user/350568/",
 }
@@ -237,8 +237,8 @@ export const userResponseAttendee: ActionKitPersonResponse = {
 export const phoneResponseAttendeeHome = {
   created_at: "2018-06-12T20:13:49",
   id: 568,
-  normalized_phone: "6151234567",
-  phone: "6151234567",
+  normalized_phone: "6152234567",
+  phone: "6152234567",
   resource_uri: "/rest/v1/phone/568/",
   source: "user",
   type: "home",
@@ -249,8 +249,8 @@ export const phoneResponseAttendeeHome = {
 export const phoneResponseAttendeeMobile = {
   created_at: "2018-06-12T20:15:11",
   id: 569,
-  normalized_phone: "3041234567",
-  phone: "+1-304-123-4567",
+  normalized_phone: "1041234567",
+  phone: "+1-104-123-4567",
   resource_uri: "/rest/v1/phone/569/",
   source: "user",
   type: "mobile",

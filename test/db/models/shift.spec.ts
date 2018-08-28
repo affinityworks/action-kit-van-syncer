@@ -1,4 +1,3 @@
-///<reference path="../../../node_modules/@types/sinon/index.d.ts"/>
 import {describe, it, test, before, after} from "mocha"
 import {expect} from "chai"
 import {Database, initDb} from "../../../src/db"
@@ -32,8 +31,7 @@ describe("Shift model", () => {
   })
 
   after(async () => {
-    createEventStub.restore()
-    createLocationStub.restore()
+    sandbox.restore()
     await db.event.destroy({where: {}})
     await db.shift.destroy({where: {}})
     await db.sequelize.close()

@@ -8,13 +8,14 @@ import {locationAttrs as la, locationAttrs} from "./vanLocation"
 export const vanEvents: VanEvent[] = [{
   actionKitId: 1049,
   name: "Affinity Test Event #1",
-  shortName: "Affinity Tes",
-  description: "Affinity Test Event #1",
+  shortName: "AKID: 1049",
+  description: "Affinity Test Event 1",
   createdDate: "2018-06-07T15:57:50",
   startDate: "2018-07-25T16:00:00-00:00",
   endDate: "2018-07-25T20:00:00-00:00",
   eventType: {
     eventTypeId: 227492,
+    name: "Canvass",
   },
   codes: [],
   notes: [],
@@ -22,13 +23,14 @@ export const vanEvents: VanEvent[] = [{
 }, {
   actionKitId: 1050,
   name: "Affinity Test Event #2",
-  shortName: "Affinity Tes",
-  description: "Affinity Test Event #2",
+  shortName: "AKID: 1050",
+  description: "Affinity Test Event 2",
   startDate: "2018-07-25T16:00:00-00:00",
   endDate: "2018-07-25T20:00:00-00:00",
   createdDate: "2018-06-07T15:57:50",
   eventType: {
     eventTypeId: 227492,
+    name: "Canvass",
   },
   codes: [],
   notes: [],
@@ -53,7 +55,7 @@ export const vanEventTree: VanEvent[] = [
     signups: [
       { // signupResponseHost
         actionKitId: 1267,
-        status: { statusId: 4, name: "Invited" },
+        status: { statusId: 1, name: "Scheduled" },
         role: roleTwo,
         person: { // userResponseHost
           actionKitId: 350567,
@@ -79,7 +81,10 @@ export const vanEventTree: VanEvent[] = [
       },
       { // signupResponseAttendee
         actionKitId: 1268,
-        status: { statusId: 4, name: "Invited" },
+        status: {
+          name: "Confirmed",
+          statusId: 11,
+        },
         role: roleOne,
         person: { // userResponseAttendee
           actionKitId: 350568,
@@ -105,12 +110,8 @@ export const vanEventTree: VanEvent[] = [
           }],
           phones: [{
             actionKitId: 568,
-            phoneNumber: "6151234567",
+            phoneNumber: "6152234567",
             phoneType: "H",
-          }, {
-            actionKitId: 569,
-            phoneNumber: "3041234567",
-            phoneType: "M",
           }],
           // region: "",
           // source: "website",

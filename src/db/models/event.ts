@@ -9,6 +9,7 @@ import * as vanApi from "../../service/vanApi"
 import {VanLocationCreateResponse} from "../../service/vanApi"
 import * as _ from "lodash"
 type Model = SequelizeStaticAndInstance["Model"]
+import { vanQueue } from "../service/queues"
 
 export interface EventAttributes extends AbstractAttributes, VanEvent {
   locations?: LocationAttributes[],
@@ -73,14 +74,18 @@ const postEventToVan = async (event: EventInstance) => {
 
   const eventId =
     event.eventId ||
-    await vanApi.createEvent(eventAttrs).then(r => r.eventId)
+    await vanQueue.schedule({ priority: 2 }, () => vanApi.createEvent(eventAttrs).then(r => r.eventId))
   await event.update({eventId})
 }
 
 const postLocationsToVan = async (event: EventInstance): Promise<VanLocationCreateResponse[]> => {
   const locations = event.getLocations()
   return await locations.map(async (location: LocationInstance) => {
-    const locationId = await vanApi.createLocation(location)
+    const locationAttrs = location.get()
+    const locationId = await vanQueue.schedule({ priority: 1 }, () => vanApi.createLocation({
+      ...locationAttrs,
+      name: locationAttrs.name,
+    }))
     await location.update(locationId)
     return locationId
   })
@@ -104,7 +109,9 @@ const VALID_UPDATE_FIELDS = [
 const putEventToVan = async (event: EventInstance) => {
   if (isUpdated(event)) {
     const locations = await event.getLocations()
-    const locationIds = locations.map(location => { location.locationId })
+    const locationIds = locations.map(location => {
+      return { locationId: location.locationId }
+    })
     const eventAttrs = await getEventAttrs(event, locationIds)
     await vanApi.updateEvent(eventAttrs)
   }
