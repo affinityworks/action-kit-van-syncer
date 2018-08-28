@@ -101,6 +101,7 @@ const production = {
           host: {
             roleId: 264367,
             name: "Host",
+            isEventLead: true,
           },
           attendee: {
             roleId: 266408,
@@ -114,6 +115,7 @@ const production = {
           host: {
             roleId: 264367,
             name: "Host",
+            isEventLead: true,
           },
           attendee: {
             roleId: 266408,
@@ -127,6 +129,7 @@ const production = {
           host: {
             roleId: 264367,
             name: "Host",
+            isEventLead: true,
           },
           attendee: {
             roleId: 266408,
@@ -140,6 +143,7 @@ const production = {
           host: {
             roleId: 264367,
             name: "Host",
+            isEventLead: true,
           },
           attendee: {
             roleId: 266408,
@@ -150,55 +154,6 @@ const production = {
     },
   },
 }
-
-/*
-[
-  {
-    "eventTypeId": 301681,
-    "name": "Canvass",
-    "roles": [
-      {
-        "roleId": 263693,
-        "name": "Admin",
-        "isEventLead": true
-      }
-    ],
-
-  },
-  {
-    "eventTypeId": 301684,
-    "name": "Field Event",
-    "roles": [
-      {
-        "roleId": 263693,
-        "name": "Admin",
-        "isEventLead": true
-      }
-
-  {
-    "eventTypeId": 301682,
-    "name": "Phonebank",
-    "roles": [
-      {
-        "roleId": 263693,
-        "name": "Admin",
-        "isEventLead": true
-      }
-    ],
-  },
-  {
-    "eventTypeId": 301683,
-    "name": "Training",
-    "roles": [
-      {
-        "roleId": 263693,
-        "name": "Admin",
-        "isEventLead": true
-      }
-    ],
-  }
-]
- */
 
 export default {
   development,
