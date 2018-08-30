@@ -9,7 +9,8 @@ import * as vanApi from "../../service/vanApi"
 import {VanLocationCreateResponse} from "../../service/vanApi"
 import * as _ from "lodash"
 type Model = SequelizeStaticAndInstance["Model"]
-import { vanQueue } from "../service/queues"
+import {vanLogQueue, vanQueue} from "../service/queues"
+import {updateSyncCounts} from "../../service/syncLog"
 
 export interface EventAttributes extends AbstractAttributes, VanEvent {
   locations?: LocationAttributes[],
@@ -76,6 +77,7 @@ const postEventToVan = async (event: EventInstance) => {
     event.eventId ||
     await vanQueue.schedule({ priority: 2 }, () => vanApi.createEvent(eventAttrs).then(r => r.eventId))
   await event.update({eventId})
+  await vanLogQueue.schedule(() => updateSyncCounts("events", "created"))
 }
 
 const postLocationsToVan = async (event: EventInstance): Promise<VanLocationCreateResponse[]> => {
@@ -114,6 +116,7 @@ const putEventToVan = async (event: EventInstance) => {
     })
     const eventAttrs = await getEventAttrs(event, locationIds)
     await vanApi.updateEvent(eventAttrs)
+    await vanLogQueue.schedule(() => updateSyncCounts("events", "updated"))
   }
 }
 

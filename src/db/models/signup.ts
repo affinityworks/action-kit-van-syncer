@@ -10,7 +10,8 @@ type Model = SequelizeStaticAndInstance["Model"]
 import * as vanApi from "../../service/vanApi"
 import {fromPairs, pick} from "lodash"
 import * as _ from "lodash"
-import { vanQueue } from "../service/queues"
+import {vanLogQueue, vanQueue} from "../service/queues"
+import {updateSyncCounts} from "../../service/syncLog"
 
 export interface SignupAttributes extends AbstractAttributes, VanSignup {
   personId: number,
@@ -72,12 +73,14 @@ const postSignupToVan = async (signup: SignupInstance, options: object): Promise
   const signupRequest = parseVanSignupRequest(signup, childIds)
   const eventSignupId = await vanQueue.schedule({ priority: 5 }, () => vanApi.createSignup(signupRequest))
   await signup.update(eventSignupId)
+  await vanLogQueue.schedule(() => updateSyncCounts("signups", "created"))
 }
 
 const postPersonToVan = async (signup: SignupInstance): Promise<[string, number]> => {
   const person = await signup.getPerson()
   const {vanId} = await vanQueue.schedule({ priority: 3 }, () => vanApi.createPerson(person.get()))
   await person.update({vanId})
+  await vanLogQueue.schedule(() => updateSyncCounts("people", "created"))
   return ["vanId", vanId]
 }
 
@@ -124,6 +127,7 @@ const putSignupToVan = async (signup: SignupInstance) => {
   if (isUpdated(signup)) {
     const signupUpdate = await parseVanSignupUpdate(signup)
     await vanApi.updateSignup(signupUpdate)
+    await vanLogQueue.schedule(() => updateSyncCounts("signups", "updated"))
   }
 }
 

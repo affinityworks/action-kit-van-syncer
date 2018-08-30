@@ -3,6 +3,7 @@ import * as _ from "lodash"
 import config from "../../config/"
 import {wait} from "../../test/support/time"
 import {inspect} from "util"
+import {akQueue} from "../db/service/queues"
 const {secrets, vanRsvp} = config
 
 const LIMIT = 100
@@ -51,7 +52,9 @@ export const getResources = async (resourceUrl: string, offset: number = 0, reso
   const response = await getWithRetry(endpoint)
   const nextUrl = _.get(response, ["data", "meta", "next"])
   const totalCount = _.get(response, ["data", "meta", "total_count"])
-  console.log(`Fetching ${offset + LIMIT > totalCount ? totalCount : offset + LIMIT} out of ${totalCount} events.`)
+  process.stdout.write(
+    "Fetched: " + (offset + LIMIT > totalCount ? totalCount : offset + LIMIT) + "/" + totalCount + "\r",
+  )
   const nextResources = _.get(response, ["data", "objects"])
   const acc = resources.concat(nextResources)
 
@@ -87,21 +90,22 @@ export const getPhone = async (phoneUrl: string): Promise<ActionKitPhone> => {
 export const getEventTrees = async (eventsEndpoint = secrets.actionKitAPI.eventsEndpoint): Promise<ActionKitEvent[]> => {
   console.log("Fetching events...")
   const events = await getEvents(eventsEndpoint)
-  console.log("Done fetching events.")
+  console.log("\nDone fetching events.")
   const filteredEvents = events.filter(noSyncEventFilter)
-  const eventTrees = await Promise.all(filteredEvents.map(async event => {
-    return await getEventTree(event)
+  console.log("Fetching event trees...")
+  const eventTrees = await Promise.all(filteredEvents.map(async (event, index) => {
+    return await akQueue.schedule(() => getEventTree(event, index, filteredEvents.length))
   }))
+  console.log("\nDone fetching event trees.")
   return eventTrees
 }
 
 export const noSyncEventFilter = (event): boolean =>
   _.includes(Object.keys(vanRsvp.actionKit.whitelistMapping), event.campaign)
 
-export const getEventTree = async (event): Promise<ActionKitEvent> => {
-  console.log(`Fetching signups for AK Event ${event.id}...`)
+export const getEventTree = async (event, index, total): Promise<ActionKitEvent> => {
+  process.stdout.write("Fetched: " + (index + 1) + "/" + total + "\r")
   const eventSignups = await Promise.all(event.signups.map(await buildSignup))
-  console.log(`Done fetching signups for AK Event ${event.id}.`)
   const filteredSignups = eventSignups.filter(eventSignup => !_.isEmpty(eventSignup))
   return buildEvent(event, filteredSignups)
 }

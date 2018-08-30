@@ -63,7 +63,6 @@ export const createLocation = async (attrs: LocationAttributes): Promise<VanLoca
 const createResource = async (resourceEndpoint, attrs) => {
   const response = await postWithRetry(resourceEndpoint, attrs)
   const id = get(response, ["data"])
-  console.log(`[VAN CREATE][${Date.now()}] Resource Endpoint: `, resourceEndpoint, " ID: ", id.vanId || id)
   return id
 }
 
@@ -98,7 +97,6 @@ export const updateSignup = async (attrs: VanSignupUpdateRequest) => {
 const updateResource = async (resourceEndpoint, attrs, httpMethod) => {
   try {
     await httpMethod(resourceEndpoint, attrs)
-    console.log(`[VAN UPDATE][${Date.now()}] Resource Endpoint: `, resourceEndpoint)
   } catch (err) {
     handleError(err, "UPDATE", resourceEndpoint)
   }

@@ -9,7 +9,7 @@ import {
   getEventTree,
   noSyncEventFilter,
 } from "../../src/service/actionKitAPI"
-import {actionKitEventTree, actionKitEventTreeWithNoSyncEvent} from "../fixtures/actionKitEvent"
+import {actionKitEventTree} from "../fixtures/actionKitEvent"
 import * as responses from "../fixtures/Responses"
 
 describe("actionKitAPI", () => {
@@ -71,7 +71,7 @@ describe("actionKitAPI", () => {
 
     it("returns a correctly formatted event tree", async () => {
       const event = responses.eventsResponse.objects[0]
-      const eventTree = await getEventTree(event)
+      const eventTree = await getEventTree(event, 1, 1)
       expect(eventTree).to.eql(actionKitEventTree[0])
     })
   })

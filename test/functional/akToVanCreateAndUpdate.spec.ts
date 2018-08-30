@@ -1,6 +1,6 @@
 import {after, before, describe, it} from "mocha"
 import {initDb} from "../../src/db"
-import {sync} from "../../src"
+import {repeatSync, sync} from "../../src"
 import * as nock from "nock"
 import {wait} from "../support/time"
 import * as actionKitAPI from "../../src/service/actionKitAPI"
@@ -39,6 +39,6 @@ describe("AK to VAN Create And Update Resources Slice", () => {
     sandbox.stub(actionKitAPI, "getEventTrees").returns(Promise.resolve(updatedActionKitEventTree))
 
     await sync(db)
-    await wait(5000)
+    await wait(10000)
   })
 })
