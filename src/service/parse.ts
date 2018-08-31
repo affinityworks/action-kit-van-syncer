@@ -81,9 +81,15 @@ const parseVanPerson = (akp: ActionKitPerson): VanPerson => ({
   lastName: akp.last_name.slice(0, 24),
   suffix: akp.suffix.slice(0, 49),
   addresses: [parseVanAddress(akp, "Home")],
-  emails: [{ email: akp.email, type: "P" }],
+  emails: parseVanEmails(akp.email),
   phones: parseVanPhones(akp.phones),
 })
+
+const parseVanEmails = (ake: string): VanEmail[] => {
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  const validEmail = emailRegex.test(String(ake).toLowerCase())
+  return validEmail ? [{ email: ake, type: "P" }] : []
+}
 
 const parseVanPhones = (akphs: ActionKitPhone[]): VanPhone[] => {
   return akphs
