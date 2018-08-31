@@ -2,7 +2,7 @@ import {DataTypes, Instance, Models, Sequelize, SequelizeStaticAndInstance} from
 import {AbstractAttributes} from "../../types/Attributes"
 import * as _ from "lodash"
 import * as vanApi from "../../service/vanApi"
-import {vanLogQueue} from "../service/queues"
+import {vanLogQueue, vanQueue} from "../service/queues"
 import {updateSyncCounts} from "../../service/syncLog"
 type Model = SequelizeStaticAndInstance["Model"]
 
@@ -36,7 +36,7 @@ const VALID_UPDATE_FIELDS =
 
 export const putPersonToVan = async (person: PersonInstance) => {
   if (isUpdated(person)) {
-    await vanApi.updatePerson(person.get())
+    await vanQueue.schedule(() => vanApi.updatePerson(person.get()))
     await vanLogQueue.schedule(() => updateSyncCounts("people", "updated"))
   }
 }

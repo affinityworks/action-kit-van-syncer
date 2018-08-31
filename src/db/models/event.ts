@@ -9,7 +9,7 @@ import * as vanApi from "../../service/vanApi"
 import {VanLocationCreateResponse} from "../../service/vanApi"
 import * as _ from "lodash"
 type Model = SequelizeStaticAndInstance["Model"]
-import {vanLogQueue, vanQueue} from "../service/queues"
+import {dbQueue, vanLogQueue, vanQueue} from "../service/queues"
 import {updateSyncCounts} from "../../service/syncLog"
 
 export interface EventAttributes extends AbstractAttributes, VanEvent {
@@ -76,7 +76,7 @@ const postEventToVan = async (event: EventInstance) => {
   const eventId =
     event.eventId ||
     await vanQueue.schedule({ priority: 2 }, () => vanApi.createEvent(eventAttrs).then(r => r.eventId))
-  await event.update({eventId})
+  await dbQueue.schedule(() => event.update({eventId}))
   await vanLogQueue.schedule(() => updateSyncCounts("events", "created"))
 }
 
@@ -88,7 +88,7 @@ const postLocationsToVan = async (event: EventInstance): Promise<VanLocationCrea
       ...locationAttrs,
       name: locationAttrs.name,
     }))
-    await location.update(locationId)
+    await dbQueue.schedule(() => location.update(locationId))
     return locationId
   })
 }
@@ -115,7 +115,7 @@ const putEventToVan = async (event: EventInstance) => {
       return { locationId: location.locationId }
     })
     const eventAttrs = await getEventAttrs(event, locationIds)
-    await vanApi.updateEvent(eventAttrs)
+    await vanQueue.schedule(() => vanApi.updateEvent(eventAttrs))
     await vanLogQueue.schedule(() => updateSyncCounts("events", "updated"))
   }
 }

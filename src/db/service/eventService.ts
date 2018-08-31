@@ -71,20 +71,24 @@ export const updateEventTree = (db: Database) => async (event: EventInstance, ev
   Promise<EventInstance> => {
   await updateLocation(event, eventTree.locations[0])
   await updateShifts(event, eventTree)
-  await event.update(eventTree)
+  await dbQueue.schedule(() => event.update(eventTree))
   await updateSignups(db)(event, eventTree)
   return event
 }
 
 const updateLocation =  async (event: EventInstance, eventTreeLocation: VanLocation) => {
   const eventLocation = await event.getLocations().then(locs => locs[0])
-  return await eventLocation.update(eventTreeLocation)
+  return await dbQueue.schedule(() => eventLocation.update(eventTreeLocation))
 }
 
 const updateShifts = (event: EventInstance, eventTree: VanEvent): Bluebird<object[]> =>
   event
     .getShifts()
-    .then(shifts => Promise.all(shifts.map((shift, i) => shift.update(eventTree.shifts[i]))))
+    .then(
+      shifts => Promise.all(shifts.map(
+        async (shift, i) => await dbQueue.schedule(() => shift.update(eventTree.shifts[i]))),
+      ),
+    )
 
 const updateSignups = (db: Database) => (event: EventInstance, eventTree: VanEvent): Promise<any[]> =>
   Promise.all(eventTree.signups.map(updateOrCreateSignup(db, event)))
@@ -96,9 +100,9 @@ const updateOrCreateSignup = (db: Database, event: EventInstance) => async (vanS
 }
 
 const updateSignup = async (signup: SignupInstance, vanSignup: VanSignup) => {
-  signup.update(vanSignup)
+  await dbQueue.schedule(() => signup.update(vanSignup))
   const person = await signup.getPerson()
-  person.update(vanSignup.person)
+  await dbQueue.schedule(() => person.update(vanSignup.person))
 }
 
 /***********

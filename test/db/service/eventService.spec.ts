@@ -193,7 +193,8 @@ describe("event service", () => {
       })
     })
 
-    it("updates a nested shift", async () => {
+    it("updates a nested shift", async function() {
+      this.timeout(3000)
       event = await eventService.createEventTree(db)(oldEventTrees[0])
       await wait(500)
       updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
@@ -201,7 +202,8 @@ describe("event service", () => {
       expect(await updatedEvent.getShifts().then(shifts => shifts[0].name)).to.eql("very new name")
     })
 
-    it("updates a nested signup", async () => {
+    it("updates a nested signup", async function() {
+      this.timeout(3000)
       event = await eventService.createEventTree(db)(oldEventTrees[0])
       await wait(500)
       updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
@@ -213,7 +215,8 @@ describe("event service", () => {
       expect(signup.status).to.eql({ statusId: 3, name: "Declined" })
     })
 
-    it("creates a new signup", async () => {
+    it("creates a new signup", async function() {
+      this.timeout(3000)
       event = await eventService.createEventTree(db)(oldEventTrees[0])
       await wait(500)
       updatedEvent = await eventService.updateEventTree(db)(event, newEventTree)
