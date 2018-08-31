@@ -24,12 +24,12 @@ export const vanLogQueue = new Bottleneck( {
   id: "vanLog",
 })
 
-vanLogQueue.on("idle", (message, data) => {
-  readline.clearLine(process.stdout, 0)
-  readline.cursorTo(process.stdout, 0)
-  process.stdout.write(
-    "Events: " + getSyncLog().events.created + "/" + getSyncLog().events.updated
-          + " Signups: " + getSyncLog().signups.created + "/" + getSyncLog().signups.updated
-          + " People: " + getSyncLog().people.created + "/" + getSyncLog().people.updated + "\r",
-  )
-})
+// vanLogQueue.on("idle", (message, data) => {
+//   readline.clearLine(process.stdout, 0)
+//   readline.cursorTo(process.stdout, 0)
+//   process.stdout.write(
+//     "Events: " + getSyncLog().events.created + "/" + getSyncLog().events.updated
+//           + " Signups: " + getSyncLog().signups.created + "/" + getSyncLog().signups.updated
+//           + " People: " + getSyncLog().people.created + "/" + getSyncLog().people.updated + "\r",
+//   )
+// })
