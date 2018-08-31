@@ -35,7 +35,11 @@
       "acquire": 10000,
       "idle": 10000
     },
-    "use_env_variable": "DATABASE_URL"
+    "use_env_variable": "DATABASE_URL",
+    "ssl": true,
+    "dialectOptions": {
+      "ssl": true
+    }
   },
   "production": {
     "database": "ak2van_production",
