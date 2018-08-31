@@ -38,13 +38,13 @@ export const updateSyncCounts = async (resource, action) => {
 
 export const printSyncLog = () => {
   if (isNotFirstSync()) {
-    console.log(`[LAST SYNC RESULTS]`)
+    console.log("\n[LAST SYNC RESULTS]")
     console.log(JSON.stringify(getSyncLog(), null, 4))
     resetSyncLog()
   }
 }
 
-const getSyncLog = () => syncLog
+export const getSyncLog = () => syncLog
 
 const resetSyncLog = () => syncLog = defaultLog
 
@@ -55,10 +55,10 @@ const calcSyncTime = (ms) => {
   return syncDate.getUTCMinutes() + " minute(s)"
 }
 
-const getTotalCreatedCount = () => {
+export const getTotalCreatedCount = () => {
   return syncLog.people.created + syncLog.signups.created + syncLog.events.created
 }
 
-const getTotalUpdatedCount = () => {
+export const getTotalUpdatedCount = () => {
   return syncLog.people.updated + syncLog.signups.updated + syncLog.events.updated
 }
