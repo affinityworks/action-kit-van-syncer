@@ -76,7 +76,7 @@ const postEventToVan = async (event: EventInstance) => {
   const eventId =
     event.eventId ||
     await vanQueue.schedule({ priority: 2 }, () => vanApi.createEvent(eventAttrs).then(r => r.eventId))
-  await dbQueue.schedule(() => event.update({eventId}))
+  await event.update({eventId})
   await vanLogQueue.schedule(() => updateSyncCounts("events", "created"))
 }
 
@@ -88,7 +88,7 @@ const postLocationsToVan = async (event: EventInstance): Promise<VanLocationCrea
       ...locationAttrs,
       name: locationAttrs.name,
     }))
-    await dbQueue.schedule(() => location.update(locationId))
+    await location.update(locationId)
     return locationId
   })
 }

@@ -72,14 +72,14 @@ const postSignupToVan = async (signup: SignupInstance, options: object): Promise
 
   const signupRequest = parseVanSignupRequest(signup, childIds)
   const eventSignupId = await vanQueue.schedule({ priority: 5 }, () => vanApi.createSignup(signupRequest))
-  await dbQueue.schedule(() => signup.update(eventSignupId))
+  await signup.update(eventSignupId)
   await vanLogQueue.schedule(() => updateSyncCounts("signups", "created"))
 }
 
 const postPersonToVan = async (signup: SignupInstance): Promise<[string, number]> => {
   const person = await signup.getPerson()
   const {vanId} = await vanQueue.schedule({ priority: 3 }, () => vanApi.createPerson(person.get()))
-  await dbQueue.schedule(() => person.update({vanId}))
+  await person.update({vanId})
   await vanLogQueue.schedule(() => updateSyncCounts("people", "created"))
   return ["vanId", vanId]
 }
@@ -92,7 +92,7 @@ const postShiftToVan = async (eventId: number, signup: SignupInstance): Promise<
       { priority: 4 }, () => vanApi.createShift(eventId, shift.get()),
     ).then(r => r.eventShiftId)
 
-  await dbQueue.schedule(() => shift.update({eventShiftId}))
+  await shift.update({eventShiftId})
   return ["eventShiftId", eventShiftId]
 }
 
