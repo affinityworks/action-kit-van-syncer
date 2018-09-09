@@ -55,7 +55,7 @@ export const vanEventTree: VanEvent[] = [
     signups: [
       { // signupResponseHost
         actionKitId: 1267,
-        status: { statusId: 1, name: "Scheduled" },
+        status: { statusId: 6, name: "No Show" },
         role: roleTwo,
         person: { // userResponseHost
           actionKitId: 350567,
@@ -81,10 +81,7 @@ export const vanEventTree: VanEvent[] = [
       },
       { // signupResponseAttendee
         actionKitId: 1268,
-        status: {
-          name: "Confirmed",
-          statusId: 11,
-        },
+        status: { statusId: 2, name: "Completed" },
         role: roleOne,
         person: { // userResponseAttendee
           actionKitId: 350568,
