@@ -10,6 +10,7 @@ export const parseVanEvents = (akes: ActionKitEvent[]): VanEvent[] =>
   akes.map(parseVanEvent)
 
 const parseVanEvent = (ake: ActionKitEvent): VanEvent => {
+  const endTime = `${ake.ends_at_utc || setEndTime(ake.starts_at_utc)}-00:00`
   return {
     actionKitId: ake.id,
     name: ake.title.slice(0, 499),
@@ -24,14 +25,14 @@ const parseVanEvent = (ake: ActionKitEvent): VanEvent => {
     shifts: [{
       name: "FULL SHIFT",
       startTime: `${ake.starts_at_utc}-00:00`,
-      endTime: `${ake.ends_at_utc || setEndTime(ake.starts_at_utc)}-00:00`,
+      endTime,
     }],
     roles: parseVanRoles(ake.campaign),
     locations: [{
       name: ake.venue.slice(0, 49),
       address: parseVanAddress(ake, "Custom"),
     }],
-    signups: ake.signups.map(signup => parseVanSignup(signup, ake.campaign)),
+    signups: ake.signups.map(signup => parseVanSignup(signup, ake.campaign, endTime)),
   }
 }
 
@@ -45,31 +46,24 @@ const parseVanAddress = (akx: ActionKitEvent | ActionKitPerson, type: VanAddress
   type,
 })
 
-const parseVanSignup = (aks: ActionKitSignup, campaign: string): VanSignup => ({
+const parseVanSignup = (aks: ActionKitSignup, campaign: string, endTime: string): VanSignup => ({
   actionKitId: aks.id,
-  status: parseVanSignupStatus(aks),
+  status: parseVanSignupStatus(aks, endTime),
   role: lowerFirst(aks.role) === "host"
       ? vanRsvp.actionKit.whitelistMapping[campaign].roles.host
       : vanRsvp.actionKit.whitelistMapping[campaign].roles.attendee,
   person: parseVanPerson(aks.user),
 })
 
-/*
-signup + attended false + active -> Scheduled
+const parseVanSignupStatus = (aks: ActionKitSignup, endTime: string): VanSignupStatus => {
+  const now = new Date(Date.now())
+  const endDate = new Date(endTime)
 
-signup + attended true + complete -> Confirmed
-
-signup + attended false + complete -> No Show
- */
-const parseVanSignupStatus = (aks: ActionKitSignup): VanSignupStatus => {
-  if (aks && !aks.attended && aks.status === "active") {
+  if (endDate > now) {
     return vanRsvp.van.statuses.scheduled
-  } else if (aks && aks.attended && aks.status === "complete") {
-    return vanRsvp.van.statuses.confirmed
-  } else if (aks && !aks.attended && aks.status === "complete") {
-    return vanRsvp.van.statuses.noshow
   } else {
-    return vanRsvp.van.statuses.scheduled
+    const status = aks.attended ? vanRsvp.van.statuses.completed : vanRsvp.van.statuses.noshow
+    return status
   }
 }
 

@@ -4,6 +4,7 @@ const defaults = {
       scheduled: { statusId: 1, name: "Scheduled" },
       confirmed: { statusId: 11, name: "Confirmed" },
       noshow: { statusId: 6, name: "No Show" },
+      completed: { statusId: 2, name: "Completed" },
     },
   },
   actionKit: {
